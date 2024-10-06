@@ -7,6 +7,9 @@ import logoRed from "../assets/images/logo-red.png";
 import eye from "../assets/images/eye.png";
 import eyeHide from "../assets/images/eye-hide.png";
 import google from "../assets/images/google.png";
+import check from "../assets/icons/check.png";
+import arrowForward from "../assets/icons/arrow-forward.png";
+import calendar from "../assets/icons/calendar.png";
 
 export default {
   home,
@@ -18,4 +21,7 @@ export default {
   eye,
   eyeHide,
   google,
+  check,
+  arrowForward,
+  calendar,
 };

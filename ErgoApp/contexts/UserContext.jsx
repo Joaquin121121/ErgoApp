@@ -4,7 +4,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage"; // React N
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({
+    fullName: "",
+    sport: "Football",
+    category: "Amateur",
+    birthDate: "01/01/1999",
+  });
 
   // Load the stored user from AsyncStorage when the component mounts
   useEffect(() => {

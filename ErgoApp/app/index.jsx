@@ -3,10 +3,15 @@ import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import icons from "../scripts/icons.js";
 import { useEffect } from "react";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Index() {
   return (
-    <SafeAreaView className="h-full bg-[#EC2227]">
+    <LinearGradient
+      colors={["#E81D23", "#821014"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 2, y: 0 }}
+    >
       <ScrollView contentContainerStyle={{ height: "100%" }}>
         <View
           className="w-full justify-center items-center h-full px-4"
@@ -20,6 +25,6 @@ export default function Index() {
           <Link href="/sign-in">Link</Link>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </LinearGradient>
   );
 }

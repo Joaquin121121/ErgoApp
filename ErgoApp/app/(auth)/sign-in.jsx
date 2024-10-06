@@ -6,15 +6,47 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import icons from "../../scripts/icons.js";
 import FormField from "../../components/FormField.jsx";
 import CustomButton from "../../components/CustomButton.jsx";
+import UserContext from "../../contexts/UserContext.jsx";
 import { Link } from "expo-router";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { db } from "../../scripts/firebase.js";
 
 const SignIn = () => {
   const [form, setForm] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const { user, setUser } = useContext(UserContext);
+
+  const auth = getAuth();
+
+  const handleLogIn = async () => {
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, form.email, form.password)
+        .then(async (userCredential) => {
+          const docRef = doc(db, "userdata", userCredential.user.uid);
+          const docSnap = await getDoc(docRef);
+          const userdata = docSnap.data();
+          setUser(userdata);
+          console.log(userdata);
+          navigate(userdata.hasData ? "/main" : "/start");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.error(errorCode, errorMessage);
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
+    setLoading(false);
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -31,19 +63,19 @@ const SignIn = () => {
               title="Email"
               value={form.email}
               handleChangeText={(e) => setForm({ ...form, email: e })}
-              otherStyles="mt-7"
+              otherStyles="mt-8"
               keyboardType="email-address"
             />
             <FormField
               title="Contraseña"
               value={form.password}
               handleChangeText={(e) => setForm({ ...form, password: e })}
-              otherStyles="mt-7"
+              otherStyles="mt-8"
             />
             <CustomButton
               title="Iniciar Sesión"
-              handlePress={() => {}}
-              containerStyles="w-full mt-7 bg-secondary"
+              handlePress={handleLogIn}
+              containerStyles="w-full mt-8 bg-secondary"
               textStyles="text-white"
             ></CustomButton>
 
