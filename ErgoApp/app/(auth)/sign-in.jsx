@@ -12,7 +12,7 @@ import icons from "../../scripts/icons.js";
 import FormField from "../../components/FormField.jsx";
 import CustomButton from "../../components/CustomButton.jsx";
 import UserContext from "../../contexts/UserContext.jsx";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { db } from "../../scripts/firebase.js";
 
@@ -26,7 +26,7 @@ const SignIn = () => {
   const auth = getAuth();
 
   const handleLogIn = async () => {
-    setLoading(true);
+    /*  setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, form.email, form.password)
         .then(async (userCredential) => {
@@ -45,7 +45,8 @@ const SignIn = () => {
     } catch (error) {
       console.log(error.message);
     }
-    setLoading(false);
+    setLoading(false); */
+    router.replace("/home");
   };
 
   return (

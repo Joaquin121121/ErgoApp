@@ -10,6 +10,8 @@ import google from "../assets/images/google.png";
 import check from "../assets/icons/check.png";
 import arrowForward from "../assets/icons/arrow-forward.png";
 import calendar from "../assets/icons/calendar.png";
+import dumbbell from "../assets/icons/dumbbell.png";
+import secondaryRuler from "../assets/icons/ruler-secondary.png";
 
 export default {
   home,
@@ -24,4 +26,5 @@ export default {
   check,
   arrowForward,
   calendar,
+  dumbbell,
 };

@@ -50,20 +50,21 @@ const TabsLayout = () => {
           }}
         />
         <Tabs.Screen
-          name="myStudies"
+          name="train"
           options={{
-            title: "Estudios",
+            title: "Entrenar",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={icons.myStudies}
+                icon={icons.dumbbell}
                 color={color}
-                name="Estudios"
+                name="Entrenar"
                 focused={focused}
               />
             ),
           }}
         />
+
         <Tabs.Screen
           name="myStats"
           options={{
@@ -80,15 +81,15 @@ const TabsLayout = () => {
           }}
         />
         <Tabs.Screen
-          name="myProfile"
+          name="myStudies"
           options={{
-            title: "Mi Perfil",
+            title: "Estudios",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={icons.myProfile}
+                icon={icons.myStudies}
                 color={color}
-                name="Mi Perfil"
+                name="Estudios"
                 focused={focused}
               />
             ),

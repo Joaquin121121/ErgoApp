@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const MyProfile = () => {
+const train = () => {
   return (
     <View>
       <Text>myProfile</Text>
@@ -9,4 +9,4 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile;
+export default train;

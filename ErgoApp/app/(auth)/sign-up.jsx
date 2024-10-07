@@ -15,6 +15,7 @@ import CustomButton from "../../components/CustomButton";
 import SelectField from "../../components/SelectField";
 import UserContext from "../../contexts/UserContext";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { RadioButton } from "react-native-paper";
 
 const SignUp = () => {
   const sports = ["Football", "Voley"];
@@ -24,6 +25,7 @@ const SignUp = () => {
 
   const [date, setDate] = useState(new Date());
   const [pickerVisible, setPickerVisible] = useState(false);
+  const [heightUnit, setHeightUnit] = useState("cm");
 
   const signIn = () => {
     setUser({
@@ -35,7 +37,7 @@ const SignUp = () => {
     router.replace("sign-in");
   };
 
-  const togglePicker = () => {
+  const toggleVisibility = () => {
     setPickerVisible(!pickerVisible);
   };
 
@@ -46,12 +48,12 @@ const SignUp = () => {
         saveChanges();
       }
     } else {
-      togglePicker();
+      toggleVisibility();
     }
   };
 
   const saveChanges = () => {
-    togglePicker();
+    toggleVisibility();
     setUser({ ...user, birthDate: date.toDateString() });
   };
 
@@ -89,7 +91,7 @@ const SignUp = () => {
             <FormField
               title="Fecha"
               value={date}
-              togglePicker={togglePicker}
+              toggleVisibility={toggleVisibility}
               pickerVisible={pickerVisible}
               otherStyles="mt-8"
             ></FormField>

@@ -10,6 +10,7 @@ module.exports = {
         tertiary: "#333333",
         gray: "#9E9E9E",
         offWhite: "#F5F5F5",
+        lightRed: "#FFC1C1",
       },
       fontFamily: {
         pthin: ["Poppins-Thin", "sans-serif"],

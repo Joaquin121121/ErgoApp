@@ -10,7 +10,7 @@ const FormField = ({
   placeholder,
   handleChangeText,
   otherStyles,
-  togglePicker,
+  toggleVisibility,
   pickerVisible,
   onChange,
   ...props
@@ -26,7 +26,7 @@ const FormField = ({
         {title === "Fecha" ? (
           <Pressable
             className="w-full h-full flex-row items-center"
-            onPress={togglePicker}
+            onPress={toggleVisibility}
           >
             <Text className="flex-1 text-black font-pregular text-base ">
               {value.toDateString()}
@@ -46,6 +46,8 @@ const FormField = ({
             onChangeText={handleChangeText}
             autoCapitalize="none"
             secureTextEntry={title === "Contraseña" && !showPassword}
+            onFocus={toggleVisibility}
+            onBlur={toggleVisibility}
           />
         )}
 
