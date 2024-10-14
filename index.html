@@ -26,8 +26,9 @@
       .card {
         border-radius: 15px;
         background-color: white;
-        width: 40%;
-        height: 90%;
+        width: 70%;
+        height: 110vh;
+        margin-top: 160px;
       }
       h1,
       h2 {
@@ -40,7 +41,6 @@
       }
 
       .editable-placeholder::before {
-        content: "Ingrese un valor...";
         position: absolute;
         top: 50%;
         left: 10px;
@@ -55,17 +55,26 @@
     </style>
     <title>Testeo de Funcionalidades</title>
   </head>
-  <body>
-    <div class="card">
+  <body style="overflow-x: hidden">
+    <button
+      class="btn btn-primary"
+      style="position: absolute; right: 20%; top: 20%; z-index: 1"
+      onclick="changePage()"
+      id="swapButton"
+    >
+      Calcular ECR
+    </button>
+    <div id="card" class="card">
       <h1>Testeo de Funcionalidades</h1>
-      <h2>Calculadora de ECR</h2>
-      <table class="table table-bordered" style="margin-top: 20px">
+      <h2>Calculadora de RSI</h2>
+      <table
+        class="table table-bordered"
+        style="margin: auto; margin-top: 20px; width: 40%"
+      >
         <thead>
           <tr>
             <th></th>
-            <th>Test 1</th>
-            <th>Test 2</th>
-            <th>Test 3</th>
+            <th>Valor</th>
           </tr>
         </thead>
         <tbody>
@@ -75,36 +84,27 @@
                 background-color: #e81d23;
                 color: white;
                 text-align: center;
-                width: 20%;
+                width: 60%;
               "
             >
-              SJ
+              Tiempo de vuelo
             </td>
             <td
               contenteditable="true"
               class="editable-placeholder"
               id="row-1-1"
             ></td>
-            <td
-              contenteditable="true"
-              class="editable-placeholder"
-              id="row-1-2"
-            ></td>
-            <td
-              contenteditable="true"
-              class="editable-placeholder"
-              id="row-1-3"
-            ></td>
           </tr>
         </tbody>
       </table>
-      <table class="table table-bordered" style="margin-top: 20px">
+      <table
+        class="table table-bordered"
+        style="margin: auto; margin-top: 20px; width: 40%"
+      >
         <thead>
           <tr>
             <th></th>
-            <th>Test 1</th>
-            <th>Test 2</th>
-            <th>Test 3</th>
+            <th>Valor</th>
           </tr>
         </thead>
         <tbody>
@@ -114,25 +114,15 @@
                 background-color: #e81d23;
                 color: white;
                 text-align: center;
-                width: 20%;
+                width: 60%;
               "
             >
-              CMJ
+              Tiempo de contacto
             </td>
             <td
               contenteditable="true"
               class="editable-placeholder"
               id="row-2-1"
-            ></td>
-            <td
-              contenteditable="true"
-              class="editable-placeholder"
-              id="row-2-2"
-            ></td>
-            <td
-              contenteditable="true"
-              class="editable-placeholder"
-              id="row-2-3"
             ></td>
           </tr>
         </tbody>
@@ -140,18 +130,207 @@
       <button
         id="button"
         class="btn btn-success"
-        style="width: 40%; margin: 20px auto"
-        onclick="handleClick()"
+        style="width: 20%; margin: 20px auto"
+        onclick="handleRsi()"
       >
-        Calcular ECR
+        Calcular RSI
       </button>
-      <h2 id="index" style="margin-top: 40px">Tu ECR es:</h2>
+      <h2 id="index" style="margin-top: 40px">Tu RSI es:</h2>
+      <h2 id="feedback" style="margin-top: 40px"></h2>
     </div>
     <script>
+      const rsiHtml = `<h1>Testeo de Funcionalidades</h1>
+      <h2>Calculadora de RSI</h2>
+      <table
+        class="table table-bordered"
+        style="margin: auto; margin-top: 20px; width: 40%"
+      >
+        <thead>
+          <tr>
+            <th></th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="
+                background-color: #e81d23;
+                color: white;
+                text-align: center;
+                width: 60%;
+              "
+            >
+              Tiempo de vuelo
+            </td>
+            <td
+              contenteditable="true"
+              class="editable-placeholder"
+              id="row-1-1"
+            ></td>
+          </tr>
+        </tbody>
+      </table>
+      <table
+        class="table table-bordered"
+        style="margin: auto; margin-top: 20px; width: 40%"
+      >
+        <thead>
+          <tr>
+            <th></th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="
+                background-color: #e81d23;
+                color: white;
+                text-align: center;
+                width: 60%;
+              "
+            >
+              Tiempo de contacto
+            </td>
+            <td
+              contenteditable="true"
+              class="editable-placeholder"
+              id="row-2-1"
+            ></td>
+          </tr>
+        </tbody>
+      </table>
+      <button
+        id="button"
+        class="btn btn-success"
+        style="width: 20%; margin: 20px auto"
+        onclick="handleRsi()"
+      >
+        Calcular RSI
+      </button>
+      <h2 id="index" style="margin-top: 40px">Tu RSI es:</h2>
+      <h2 id="feedback" style="margin-top: 40px">
+      </h2>`;
+
+      const ecrHtml = `<h1>Testeo de Funcionalidades</h1>
+      <h2>Calculadora de ECR</h2>
+      <table
+          class="table table-bordered"
+          style="margin: auto; margin-top: 20px; width: 70%"
+      >
+          <thead>
+          <tr>
+              <th></th>
+              <th>Test 1</th>
+              <th>Test 2</th>
+              <th>Test 3</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+              <td
+              style="
+                  background-color: #e81d23;
+                  color: white;
+                  text-align: center;
+                  width: 20%;
+              "
+              >
+              SJ
+              </td>
+              <td
+              contenteditable="true"
+              class="editable-placeholder"
+              id="row-1-1"
+              ></td>
+              <td
+              contenteditable="true"
+              class="editable-placeholder"
+              id="row-1-2"
+              ></td>
+              <td
+              contenteditable="true"
+              class="editable-placeholder"
+              id="row-1-3"
+              ></td>
+          </tr>
+          </tbody>
+      </table>
+      <table
+          class="table table-bordered"
+          style="margin: auto; margin-top: 20px; width: 70%"
+      >
+          <thead>
+          <tr>
+              <th></th>
+              <th>Test 1</th>
+              <th>Test 2</th>
+              <th>Test 3</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+              <td
+              style="
+                  background-color: #e81d23;
+                  color: white;
+                  text-align: center;
+                  width: 20%;
+              "
+              >
+              CMJ
+              </td>
+              <td
+              contenteditable="true"
+              class="editable-placeholder"
+              id="row-2-1"
+              ></td>
+              <td
+              contenteditable="true"
+              class="editable-placeholder"
+              id="row-2-2"
+              ></td>
+              <td
+              contenteditable="true"
+              class="editable-placeholder"
+              id="row-2-3"
+              ></td>
+          </tr>
+          </tbody>
+      </table>
+      <button
+          id="button"
+          class="btn btn-success"
+          style="width: 20%; margin: 20px auto"
+          onclick="handleEcr()"
+      >
+          Calcular ECR
+      </button>
+      <h2 id="index" style="margin-top: 40px">Tu ECR es:</h2>
+      <h2 id="feedback" style="margin-top: 40px">
+          Enfocar entrenamiento en &nbsp;
+      </h2>`;
+      const cardHtml = document.getElementById("card");
+      const button = document.getElementById("swapButton");
+
+      let page = "ecr";
       let cmj = [];
       let sj = [];
 
-      const handleClick = () => {
+      const changePage = () => {
+        if (page === "ecr") {
+          page = "rsi";
+          button.innerText = "Calcular RSI";
+          cardHtml.innerHTML = ecrHtml;
+        } else if (page === "rsi") {
+          page = "ecr";
+          cardHtml.innerHTML = rsiHtml;
+          button.innerText = "Calcular ECR";
+        }
+      };
+
+      const handleEcr = () => {
         sj = [
           parseFloat(document.getElementById("row-1-1").innerText),
           parseFloat(document.getElementById("row-1-2").innerText),
@@ -164,14 +343,59 @@
           parseFloat(document.getElementById("row-2-3").innerText),
         ];
 
-        let avgSj = sj.reduce((acc, current) => acc + current, 0);
-        let avgCmj = cmj.reduce((acc, current) => acc + current, 0);
+        let avgSj = sj.reduce((acc, current) => acc + current, 0) / 3;
+        let avgCmj = cmj.reduce((acc, current) => acc + current, 0) / 3;
 
         let ecr = (1 - avgSj / avgCmj) * 100;
+
+        let ecrFeedbackDisplay = document.getElementById("feedback");
+        ecrFeedbackDisplay.innerText = "Enfocar entrenamiento en ";
+
+        if (ecr <= 0.1) {
+          ecrFeedbackDisplay.innerText += " el componente elástico";
+        } else if (ecr <= 0.2) {
+          ecrFeedbackDisplay.innerText += " ambas componentes";
+        } else {
+          ecrFeedbackDisplay.innerText += " el componente contractil";
+        }
 
         document.getElementById("index").innerText = `Tu ECR es: ${
           Math.floor(ecr * 100) / 100
         }`;
+      };
+      const handleRsi = () => {
+        let flightTime = parseFloat(
+          document.getElementById("row-1-1").innerText
+        );
+        let contactTime = parseFloat(
+          document.getElementById("row-2-1").innerText
+        );
+
+        let rsi = Math.floor((flightTime / contactTime) * 100) / 100;
+        document.getElementById("index").innerText = `Tu RSI es ${rsi}`;
+
+        let ecrFeedbackDisplay = document.getElementById("feedback");
+        ecrFeedbackDisplay.innerText = "";
+
+        if (rsi < 1) {
+          ecrFeedbackDisplay.innerText +=
+            "capacidad de fuerza reactiva limitada, priorizar desarrollo de fuerza";
+        } else if (rsi <= 1.5) {
+          ecrFeedbackDisplay.innerText +=
+            "atleta no preparado para pliometría, se recomiendan rebotes cortos y ejercicios a dos piernas con poca fase de vuelo";
+        } else if (rsi <= 2) {
+          ecrFeedbackDisplay.innerText +=
+            "atleta listo para pliometría moderada, se recomiendan saltos chiquitos a un solo pie";
+        } else if (rsi <= 2.5) {
+          ecrFeedbackDisplay.innerText +=
+            "moderada/buena capacidad de fuerza reactiva, se recomienda salto con valla";
+        } else if (rsi <= 3) {
+          ecrFeedbackDisplay.innerText +=
+            "se recomiendan drop jumps y en algunos casos pliometría";
+        } else if (rsi > 3) {
+          ecrFeedbackDisplay.innerText +=
+            "niveles de fuerza reactiva clase mundial, capacidad limitada para mejorar fuerza. Se recomiendan ejercicios de saltabilidad con valla a una pierna";
+        }
       };
     </script>
   </body>
