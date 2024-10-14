@@ -13,6 +13,7 @@ const FormField = ({
   toggleVisibility,
   pickerVisible,
   onChange,
+  maxLength,
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -48,6 +49,8 @@ const FormField = ({
             secureTextEntry={title === "Contraseña" && !showPassword}
             onFocus={toggleVisibility}
             onBlur={toggleVisibility}
+            onChange={onChange}
+            {...(maxLength !== undefined && { maxLength })}
           />
         )}
 

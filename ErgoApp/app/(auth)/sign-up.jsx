@@ -7,7 +7,7 @@ import {
   Platform,
   Pressable,
 } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { Link, router } from "expo-router";
 import FormField from "../../components/FormField";
@@ -25,15 +25,8 @@ const SignUp = () => {
 
   const [date, setDate] = useState(new Date());
   const [pickerVisible, setPickerVisible] = useState(false);
-  const [heightUnit, setHeightUnit] = useState("cm");
 
   const signIn = () => {
-    setUser({
-      fullName: "",
-      sport: "Football",
-      category: "Amateur",
-      birthDate: "01/01/1999",
-    });
     router.replace("sign-in");
   };
 

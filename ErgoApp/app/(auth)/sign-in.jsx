@@ -7,46 +7,61 @@ import {
   Keyboard,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import icons from "../../scripts/icons.js";
 import FormField from "../../components/FormField.jsx";
 import CustomButton from "../../components/CustomButton.jsx";
 import UserContext from "../../contexts/UserContext.jsx";
 import { Link, router } from "expo-router";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { db } from "../../scripts/firebase.js";
+import { app } from "../../scripts/firebase.js";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { isLoading } from "expo-font";
 
 const SignIn = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [passwordError, setPasswordError] = useState(null);
+  const [emailError, setEmailError] = useState(null);
 
   const { user, setUser } = useContext(UserContext);
 
+  const db = getFirestore(app);
   const auth = getAuth();
 
   const handleLogIn = async () => {
-    /*  setLoading(true);
+    if (form.email === "") {
+      setEmailError("Ingrese un email");
+      return;
+    }
+    if (form.password === "") {
+      setPasswordError("Ingrese una contaseña");
+      return;
+    }
+    setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, form.email, form.password)
-        .then(async (userCredential) => {
+      await signInWithEmailAndPassword(auth, form.email, form.password).then(
+        async (userCredential) => {
           const docRef = doc(db, "userdata", userCredential.user.uid);
           const docSnap = await getDoc(docRef);
           const userdata = docSnap.data();
           setUser(userdata);
           console.log(userdata);
-          navigate(userdata.hasData ? "/main" : "/start");
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.error(errorCode, errorMessage);
-        });
+          router.replace("/home");
+        }
+      );
     } catch (error) {
-      console.log(error.message);
+      console.log(error.code);
+      switch (error.code) {
+        case "auth/invalid-email":
+          setEmailError("Email inválido");
+          break;
+        case "auth/invalid-credential":
+          setEmailError("Email y/o contraseña incorrectos");
+        default:
+          break;
+      }
     }
-    setLoading(false); */
-    router.replace("/home");
+    setLoading(false);
   };
 
   return (
@@ -66,18 +81,27 @@ const SignIn = () => {
               handleChangeText={(e) => setForm({ ...form, email: e })}
               otherStyles="mt-8"
               keyboardType="email-address"
+              onChange={() => setEmailError(null)}
             />
+            {emailError && (
+              <Text className="text-secondary mt-2">{emailError}</Text>
+            )}
             <FormField
               title="Contraseña"
               value={form.password}
               handleChangeText={(e) => setForm({ ...form, password: e })}
+              onChange={() => setPasswordError(null)}
               otherStyles="mt-8"
             />
+            {passwordError && (
+              <Text className="text-secondary mt-2">{passwordError}</Text>
+            )}
             <CustomButton
               title="Iniciar Sesión"
               handlePress={handleLogIn}
               containerStyles="w-full mt-8 bg-secondary"
               textStyles="text-white"
+              isLoading={loading}
             ></CustomButton>
 
             <View className="justify-center pt-5 flex-row gap-2">

@@ -22,7 +22,7 @@ export default function Index() {
             className={"w-full}"}
             resizeMode="contain"
           ></Image>
-          <Link href="/sign-in">Link</Link>
+          <Link href="/sign-up">Link</Link>
         </View>
       </ScrollView>
     </LinearGradient>

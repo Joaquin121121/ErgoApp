@@ -9,6 +9,12 @@ export const UserProvider = ({ children }) => {
     sport: "Football",
     category: "Amateur",
     birthDate: "01/01/1999",
+    height: 180,
+    heightUnit: "cm",
+    weight: 70,
+    weightUnit: "kg",
+    email: "",
+    password: "",
   });
 
   // Load the stored user from AsyncStorage when the component mounts
