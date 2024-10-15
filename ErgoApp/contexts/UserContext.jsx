@@ -15,6 +15,11 @@ export const UserProvider = ({ children }) => {
     weightUnit: "kg",
     email: "",
     password: "",
+    gamificationFeatures: {
+      streak: 0,
+      targetProgress: 0,
+      currentLevel: "beginner",
+    },
   });
 
   // Load the stored user from AsyncStorage when the component mounts

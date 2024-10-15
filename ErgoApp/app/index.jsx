@@ -19,10 +19,10 @@ export default function Index() {
         >
           <Image
             source={icons.logo}
-            className={"w-full}"}
+            className="w-full"
             resizeMode="contain"
           ></Image>
-          <Link href="/sign-up">Link</Link>
+          <Link href="/home">Link</Link>
         </View>
       </ScrollView>
     </LinearGradient>

@@ -11,7 +11,9 @@ import check from "../assets/icons/check.png";
 import arrowForward from "../assets/icons/arrow-forward.png";
 import calendar from "../assets/icons/calendar.png";
 import dumbbell from "../assets/icons/dumbbell.png";
+import hand from "../assets/icons/hand.png";
 import secondaryRuler from "../assets/icons/ruler-secondary.png";
+import fire from "../assets/images/fire.gif";
 
 export default {
   home,
@@ -27,4 +29,6 @@ export default {
   arrowForward,
   calendar,
   dumbbell,
+  hand,
+  fire,
 };
