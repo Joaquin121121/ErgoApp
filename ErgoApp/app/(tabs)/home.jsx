@@ -1,33 +1,37 @@
-import { useContext, useEffect, useState, useRef } from "react";
-import { View, Text, Image, FlatList, ScrollView } from "react-native";
+import { useContext } from "react";
+import { View, Text, Image, ScrollView } from "react-native";
 import UserContext from "../../contexts/UserContext";
-import StreakDisplay from "../../components/StreakDisplay";
+import StreakDisplay from "../../components/athlete/home/StreakDisplay";
 import icons from "../../scripts/icons.js";
-import ProgressDisplay from "../../components/ProgressDisplay.jsx";
+import Calendar from "../../components/Calendar.jsx";
+import CustomFlatlist from "../../components/CustomFlatlist.jsx";
+import AthleteProfile from "../../components/athlete/home/AthleteProfile.jsx";
+import { useState } from "react";
+import ProgressToTarget from "../../components/athlete/home/ProgressToTarget.jsx";
 
 const Home = () => {
+  const [currentItem, setCurrentItem] = useState(0);
+
   const { user } = useContext(UserContext);
-  const [itemBeingShown, setItemBeingShown] = useState(0);
-  const viewabilityConfig = { itemVisiblePercentThreshold: 50 };
 
-  const gamificationFeatures = user.gamificationFeatures;
-  const data = Object.keys(gamificationFeatures).map((e, i) => {
-    return { key: i.toString(), data: gamificationFeatures[e] };
-  });
+  const flatlistData = Object.keys(user.gamificationFeatures).map((e, i) => ({
+    key: i.toString(),
+    data: user.gamificationFeatures[e],
+  }));
 
-  const onViewableItemsChanged = ({ viewableItems }) => {
-    if (viewableItems.length > 0) {
-      setItemBeingShown(viewableItems[0].item.key); // Set the key of the first viewable item
-    }
+  const components = [
+    <StreakDisplay gamificationFeatures={user.gamificationFeatures} />,
+    <ProgressToTarget />,
+    <AthleteProfile />,
+  ];
+
+  const names = ["Racha", "Objetivo", "Perfil de Atleta"];
+
+  const renderCarouselItem = (item) => components[item.key];
+
+  const handleItemChange = (index) => {
+    setCurrentItem(index);
   };
-
-  const flatListRef = useRef(null);
-
-  useEffect(() => {
-    setTimeout(() => {
-      flatListRef.current.scrollToOffset({ offset: 12, animated: false });
-    }, 200);
-  }, []);
 
   return (
     <ScrollView>
@@ -40,36 +44,21 @@ const Home = () => {
             source={icons.hand}
           />
         </View>
-        <View className="w-12 h-12 rounded-full bg-gray"></View>
+        <View className="w-12 h-12 rounded-full bg-gray" />
       </View>
-      <Text className="font-pregular text-h3 mt-8  ml-4">Racha</Text>
-      <FlatList
-        ref={flatListRef}
-        contentContainerStyle={{ height: 180, overflow: "hidden" }}
-        data={data}
-        horizontal={true}
-        keyExtractor={(item) => item.key}
-        renderItem={({ item }) => (
-          <StreakDisplay gamificationFeatures={user.gamificationFeatures} />
-        )}
-        snapToAlignment="center"
-        snapToInterval={420}
-        decelerationRate={"fast"}
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig}
-        showsHorizontalScrollIndicator={false}
+      <Text className="font-pregular text-h3 mt-8 ml-4">
+        {names[currentItem]}
+      </Text>
+      <CustomFlatlist
+        data={flatlistData}
+        renderContent={renderCarouselItem}
+        height={180}
+        onItemChange={handleItemChange}
+        activeIndex={currentItem}
+        setActiveIndex={setCurrentItem}
       />
-      <View className="w-22 h-3 self-center gap-2 flex-row mt-2">
-        {data.map((_, i) => (
-          <View
-            className={`h-3 w-3 rounded-full bg-${
-              i === parseInt(itemBeingShown) ? "secondary" : "gray"
-            }`}
-          ></View>
-        ))}
-      </View>
-      <Text className="font-pregular text-h3 mt-8 mb-4 ml-4">Mi Progreso</Text>
-      <ProgressDisplay />
+      <Text className="font-pregular text-h3 mt-8 mb-4 ml-4">Mi Semana</Text>
+      <Calendar />
     </ScrollView>
   );
 };

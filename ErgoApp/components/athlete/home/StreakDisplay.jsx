@@ -1,10 +1,10 @@
 import { View, Text, Image } from "react-native";
 import React from "react";
-import icons from "../scripts/icons";
+import icons from "../../../scripts/icons";
 
 const StreakDisplay = ({ gamificationFeatures }) => {
   return (
-    <View className="shadow-sm w-80 self-center h-40 bg-white rounded-xl flex flex-row items-end pb-8 mr-12 ml-12">
+    <View className="shadow-sm w-[85vw] self-center h-40 bg-white rounded-xl flex flex-row items-end pb-8 ">
       <Image
         resizeMode="stretch"
         source={icons.fire}

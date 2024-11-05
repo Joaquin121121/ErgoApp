@@ -20,6 +20,7 @@ export const UserProvider = ({ children }) => {
       targetProgress: 0,
       currentLevel: "beginner",
     },
+    calendar: [],
   });
 
   // Load the stored user from AsyncStorage when the component mounts

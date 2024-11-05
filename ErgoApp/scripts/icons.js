@@ -14,6 +14,10 @@ import dumbbell from "../assets/icons/dumbbell.png";
 import hand from "../assets/icons/hand.png";
 import secondaryRuler from "../assets/icons/ruler-secondary.png";
 import fire from "../assets/images/fire.gif";
+import rightArrow from "../assets/icons/rightArrow.png";
+import leftArrow from "../assets/icons/leftArrow.png";
+import greenCheck from "../assets/icons/greenCheck.png";
+import close from "../assets/icons/close.png";
 
 export default {
   home,
@@ -31,4 +35,8 @@ export default {
   dumbbell,
   hand,
   fire,
+  rightArrow,
+  leftArrow,
+  greenCheck,
+  close,
 };

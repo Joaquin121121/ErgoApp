@@ -31,6 +31,7 @@ module.exports = {
         streak: 48,
         h2: 28,
         h3: 24,
+        16: 16,
       },
     },
   },
