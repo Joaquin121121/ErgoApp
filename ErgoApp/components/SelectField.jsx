@@ -9,7 +9,7 @@ import { router } from "expo-router";
 const SelectField = ({ title, options, displayTitle }) => {
   const { user, setUser } = useContext(UserContext);
 
-  const handlePress = () => {
+  const onPress = () => {
     router.push({
       pathname: "/choice",
       params: { options: options, title: title },
@@ -20,15 +20,15 @@ const SelectField = ({ title, options, displayTitle }) => {
     <View className={`space-y-2 w-full mt-8`}>
       <TouchableOpacity
         className="w-full h-16 px-4 bg-white rounded-2xl flex-row justify-between pl-4 pr-4 items-center shadow-sm"
-        onPress={handlePress}
+        onPress={onPress}
       >
         <Text className="flex-1 text-black font-pregular text-base ">
           {displayTitle}
         </Text>
         <View className="h-full flex flex-row items-center">
-          <Text className="text-gray mr-4">{user[title]}</Text>
+          <Text className="text-secondary font-plight mr-2">{user[title]}</Text>
           <Image
-            source={icons.arrowForward}
+            source={icons.rightArrow}
             resizeMode="contain"
             className="h-6 w-6"
           ></Image>

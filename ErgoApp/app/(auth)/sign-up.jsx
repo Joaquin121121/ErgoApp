@@ -6,6 +6,7 @@ import {
   ScrollView,
   Platform,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -15,8 +16,7 @@ import CustomButton from "../../components/CustomButton";
 import SelectField from "../../components/SelectField";
 import UserContext from "../../contexts/UserContext";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { RadioButton } from "react-native-paper";
-
+import TonalButton from "../../components/TonalButton";
 const SignUp = () => {
   const sports = ["Football", "Voley"];
   const categories = ["Amateur", "Professional"];
@@ -101,28 +101,28 @@ const SignUp = () => {
                     title={"Guardar"}
                     containerStyles="w-full mt-8 bg-secondary"
                     textStyles="text-white"
-                    handlePress={saveChanges}
+                    onPress={saveChanges}
                   ></CustomButton>
                 )}
               </>
             )}
             {!pickerVisible && (
               <>
-                <CustomButton
+                <TonalButton
                   title="Continuar"
-                  handlePress={() => {
-                    router.push("sign-up-2");
+                  onPress={() => {
+                    router.push("targets");
                   }}
-                  containerStyles="w-full mt-8 bg-secondary"
-                  textStyles="text-white"
-                ></CustomButton>
+                  icon="next"
+                  containerStyles="self-center mt-8"
+                />
                 <View className="justify-center pt-5 flex-row gap-2">
                   <Text className="text-md">Ya tienes cuenta?</Text>
-                  <Pressable onPress={signIn}>
+                  <TouchableOpacity onPress={signIn}>
                     <Text className="text-md text-secondary">
                       Iniciar Sesión
                     </Text>
-                  </Pressable>
+                  </TouchableOpacity>
                 </View>
               </>
             )}

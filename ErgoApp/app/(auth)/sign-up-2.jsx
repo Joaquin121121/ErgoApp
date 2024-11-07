@@ -6,6 +6,7 @@ import {
   ScrollView,
   Platform,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -135,7 +136,7 @@ const SignUp2 = () => {
             <Text className="text-3xl font-regular ">Registrarse</Text>
             {visibility && (
               <>
-                <View className="mt-8 flex flex-row items-end w-full">
+                <View className="mt-8 flex flex-row items-center w-full">
                   <FormField
                     title="Altura"
                     value={user.height.toString()}
@@ -148,33 +149,33 @@ const SignUp2 = () => {
                     maxLength={4}
                   />
                   <CustomButton
-                    containerStyles={`mr-6 w-16 ${
+                    containerStyles={`mr-6 mt-6 w-16 ${
                       user.heightUnit === "cm"
                         ? "bg-lightRed"
                         : "bg-offWhite border border-lightRed"
                     }`}
                     textStyles="text-secondary"
                     title={"cm"}
-                    handlePress={() => {
+                    onPress={() => {
                       setPrevHeightUnit(user.heightUnit);
                       setUser({ ...user, heightUnit: "cm" });
                     }}
                   />
                   <CustomButton
-                    containerStyles={`w-16  ${
+                    containerStyles={`w-16 mt-6 ${
                       user.heightUnit === "ft"
                         ? "bg-lightRed"
                         : "bg-offWhite border border-lightRed"
                     }`}
                     title={"ft"}
                     textStyles="text-secondary"
-                    handlePress={() => {
+                    onPress={() => {
                       setPrevHeightUnit(user.heightUnit);
                       setUser({ ...user, heightUnit: "ft" });
                     }}
                   />
                 </View>
-                <View className="mt-8 flex flex-row items-end w-full">
+                <View className="mt-8 flex flex-row items-center w-full">
                   <FormField
                     title="Peso"
                     value={user.weight.toString()}
@@ -184,27 +185,27 @@ const SignUp2 = () => {
                     maxLength={3}
                   />
                   <CustomButton
-                    containerStyles={`mr-6 w-16 ${
+                    containerStyles={`mr-6 mt-6 w-16 ${
                       user.weightUnit === "kg"
                         ? "bg-lightRed"
                         : "bg-offWhite border border-lightRed"
                     }`}
                     textStyles="text-secondary"
                     title={"kg"}
-                    handlePress={() => {
+                    onPress={() => {
                       setPrevWeightUnit(user.weightUnit);
                       setUser({ ...user, weightUnit: "kg" });
                     }}
                   />
                   <CustomButton
-                    containerStyles={`w-16  ${
+                    containerStyles={`w-16 mt-6 ${
                       user.weightUnit === "lbs"
                         ? "bg-lightRed"
                         : "bg-offWhite border border-lightRed"
                     }`}
                     title={"lbs"}
                     textStyles="text-secondary"
-                    handlePress={() => {
+                    onPress={() => {
                       setPrevWeightUnit(user.weightUnit);
                       setUser({ ...user, weightUnit: "lbs" });
                     }}
@@ -240,15 +241,15 @@ const SignUp2 = () => {
             )}
             <CustomButton
               title="Registrarse"
-              handlePress={handleRegister}
-              containerStyles="w-full mt-8 bg-secondary"
+              onPress={handleRegister}
+              containerStyles="mt-8 bg-secondary"
               textStyles="text-white"
             ></CustomButton>
             <View className="justify-center pt-5 flex-row gap-2">
               <Text className="text-md">Ya tienes cuenta?</Text>
-              <Pressable onPress={signIn}>
+              <TouchableOpacity onPress={signIn}>
                 <Text className="text-md text-secondary">Iniciar Sesión</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>

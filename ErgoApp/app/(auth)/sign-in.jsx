@@ -98,10 +98,11 @@ const SignIn = () => {
             )}
             <CustomButton
               title="Iniciar Sesión"
-              handlePress={handleLogIn}
-              containerStyles="w-full mt-8 bg-secondary"
+              onPress={handleLogIn}
+              containerStyles="mt-8 bg-secondary"
               textStyles="text-white"
               isLoading={loading}
+              icon="next"
             ></CustomButton>
 
             <View className="justify-center pt-5 flex-row gap-2">

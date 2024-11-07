@@ -4,7 +4,7 @@ import IndexDisplay from "./IndexDisplay";
 
 const ProgressDisplay = () => {
   return (
-    <View className="w-80 h-[280] rounded-xl shadow-sm self-center bg-white">
+    <View className="w-80 h-[280] rounded-2xl shadow-sm self-center bg-white">
       <Text className="font-plight text-sm text-darkGray self-center mt-2 mb-4">
         7 de julio 2024 - 7 de agosto 2024
       </Text>

@@ -3,7 +3,7 @@ import React from "react";
 
 const AthleteProfile = () => {
   return (
-    <View className="shadow-sm w-[85vw] self-center h-40 bg-white rounded-xl flex flex-row ">
+    <View className="shadow-sm w-[85vw] self-center h-40 bg-white rounded-2xl flex flex-row ">
       <View className="w-1/2 h-full flex justify-center items-center">
         <Text className="text-secondary font-psemibold text-2xl">Avanzado</Text>
       </View>

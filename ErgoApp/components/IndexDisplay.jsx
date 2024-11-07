@@ -35,7 +35,7 @@ const IndexDisplay = ({ name, currentValue, pastValue }) => {
     },
   });
   return (
-    <View className="w-32 h-14 rounded-xl bg-offWhite pl-6 pr-4 ">
+    <View className="w-32 h-14 rounded-2xl bg-offWhite pl-6 pr-4 ">
       <Text className="text-[12px] text-darkGray font-plight">{name}</Text>
       <View className="flex flex-row items-center justify-between">
         <Text className="font-pmedium text-2xl w-10">{currentValue}</Text>

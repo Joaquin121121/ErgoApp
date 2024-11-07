@@ -2,13 +2,13 @@ import CustomButton from "./CustomButton";
 const FilledButton = ({
   title,
   isLoading,
-  handlePress,
+  onPress,
   containerStyles,
   textStyles,
 }) => {
   return (
     <CustomButton
-      onPress={handlePress}
+      onPress={onPress}
       title={title}
       isLoading={isLoading}
       containerStyles={`bg-secondary ${containerStyles}`}

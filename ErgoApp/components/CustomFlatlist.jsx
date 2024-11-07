@@ -8,12 +8,10 @@ import {
 } from "react-native";
 
 const CustomFlatlist = ({
-  // Required props
   data,
   renderContent = (item) => item,
   activeIndex,
   setActiveIndex,
-  // Optional props with defaults
   itemWidthPercentage = 0.85,
   slideDistance = 8,
   scaleRange = [0.9, 1, 0.9],
@@ -21,27 +19,40 @@ const CustomFlatlist = ({
   containerStyle,
   itemStyle,
   showIndicators = true,
-  indicatorActiveColor = "#E81D23", // Changed to explicit color instead of "secondary"
-  indicatorInactiveColor = "#D9D9D9", // Changed to explicit color instead of "gray"
+  indicatorActiveColor = "#E81D23",
+  indicatorInactiveColor = "#D9D9D9",
   indicatorContainerStyle,
   indicatorStyle,
   height = 180,
+  large = false,
 }) => {
-  // Initialize activeIndex as 0 to highlight first dot
-
   const { width: screenWidth } = useWindowDimensions();
   const flatListRef = useRef(null);
   const scrollX = useRef(new Animated.Value(0)).current;
+  const isScrolling = useRef(false);
 
-  // Calculate dimensions
   const ITEM_WIDTH = screenWidth * itemWidthPercentage;
-  const SIDE_PADDING = (screenWidth - ITEM_WIDTH) / 2;
+  const SIDE_PADDING = large
+    ? (screenWidth - ITEM_WIDTH) / 4
+    : (screenWidth - ITEM_WIDTH) / 2;
   const SLIDE_DISTANCE = ITEM_WIDTH / slideDistance;
 
+  // For large mode, calculate the exact right padding needed
+  const RIGHT_PADDING = large
+    ? screenWidth - (ITEM_WIDTH + SIDE_PADDING)
+    : SIDE_PADDING;
+
   const styles = StyleSheet.create({
+    wrapper: {
+      marginTop: 8,
+      width: screenWidth,
+      alignItems: "center",
+    },
     container: {
       height,
       position: "relative",
+      zIndex: 1,
+      width: "100%",
     },
     flatList: {
       overflow: "visible",
@@ -55,11 +66,14 @@ const CustomFlatlist = ({
       alignItems: "center",
       gap: 8,
       marginTop: 8,
+      position: "relative",
+      zIndex: 2,
+      width: "100%",
     },
     indicator: {
       width: 12,
       height: 12,
-      borderRadius: 6,
+      borderRadius: 75,
     },
   });
 
@@ -67,6 +81,28 @@ const CustomFlatlist = ({
     itemVisiblePercentThreshold: 50,
     minimumViewTime: 0,
   }).current;
+
+  const handleScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+    {
+      useNativeDriver: true,
+      listener: (event) => {
+        const maxOffset = (data.length - 1) * ITEM_WIDTH;
+        const currentOffset = event.nativeEvent.contentOffset.x;
+
+        if (currentOffset > maxOffset && !isScrolling.current) {
+          isScrolling.current = true;
+          flatListRef.current?.scrollToOffset({
+            offset: maxOffset,
+            animated: true,
+          });
+          setTimeout(() => {
+            isScrolling.current = false;
+          }, 100);
+        }
+      },
+    }
+  );
 
   const onViewableItemsChangedRef = useRef(({ viewableItems }) => {
     if (viewableItems?.length > 0) {
@@ -86,7 +122,7 @@ const CustomFlatlist = ({
 
       const opacity = scrollX.interpolate({
         inputRange,
-        outputRange: [0, 1, 0],
+        outputRange: [0.7, 1, 0.7],
         extrapolate: "clamp",
       });
 
@@ -129,7 +165,6 @@ const CustomFlatlist = ({
     [ITEM_WIDTH]
   );
 
-  // Make sure we're showing dots for the correct number of items
   const indicators = data.map((_, index) => (
     <View
       key={index}
@@ -147,15 +182,14 @@ const CustomFlatlist = ({
   ));
 
   return (
-    <>
+    <View style={styles.wrapper}>
       <View style={[styles.container, containerStyle]}>
         <Animated.FlatList
           ref={flatListRef}
           style={styles.flatList}
           contentContainerStyle={{
-            paddingHorizontal: SIDE_PADDING,
-            display: "flex",
-            alignItems: "center",
+            paddingLeft: SIDE_PADDING,
+            paddingRight: RIGHT_PADDING,
           }}
           data={data}
           horizontal
@@ -170,10 +204,7 @@ const CustomFlatlist = ({
           getItemLayout={getItemLayout}
           bounces={false}
           scrollEventThrottle={16}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-            { useNativeDriver: true }
-          )}
+          onScroll={handleScroll}
           initialScrollIndex={0}
           removeClippedSubviews={false}
         />
@@ -183,7 +214,7 @@ const CustomFlatlist = ({
           {indicators}
         </View>
       )}
-    </>
+    </View>
   );
 };
 

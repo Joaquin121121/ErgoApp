@@ -1,4 +1,5 @@
-import { useContext } from "react";
+// home.jsx
+import { useContext, useEffect } from "react";
 import { View, Text, Image, ScrollView } from "react-native";
 import UserContext from "../../contexts/UserContext";
 import StreakDisplay from "../../components/athlete/home/StreakDisplay";
@@ -11,8 +12,7 @@ import ProgressToTarget from "../../components/athlete/home/ProgressToTarget.jsx
 
 const Home = () => {
   const [currentItem, setCurrentItem] = useState(0);
-
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   const flatlistData = Object.keys(user.gamificationFeatures).map((e, i) => ({
     key: i.toString(),
@@ -33,9 +33,13 @@ const Home = () => {
     setCurrentItem(index);
   };
 
+  useEffect(() => {
+    setUser({ ...user, character: "Roger" });
+  }, []);
+
   return (
     <ScrollView>
-      <View className="flex flex-row mt-20 w-full self-center justify-between shadow-lg pl-4 pr-4">
+      <View className="flex flex-row mt-20 w-full self-center justify-start pl-4">
         <View className="flex flex-row gap-4 items-center">
           <Text className="font-pregular text-h2">Hola Aníbal</Text>
           <Image
@@ -44,7 +48,6 @@ const Home = () => {
             source={icons.hand}
           />
         </View>
-        <View className="w-12 h-12 rounded-full bg-gray" />
       </View>
       <Text className="font-pregular text-h3 mt-8 ml-4">
         {names[currentItem]}
@@ -57,7 +60,7 @@ const Home = () => {
         activeIndex={currentItem}
         setActiveIndex={setCurrentItem}
       />
-      <Text className="font-pregular text-h3 mt-8 mb-4 ml-4">Mi Semana</Text>
+      <Text className="font-pregular text-h3 mt-2 mb-4 ml-4">Mi Semana</Text>
       <Calendar />
     </ScrollView>
   );

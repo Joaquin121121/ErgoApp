@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native";
 
 const ProgressToTarget = () => {
   return (
-    <View className="shadow-sm w-[85vw] self-center h-40 bg-white rounded-xl flex flex-row ">
+    <View className="shadow-sm w-[85vw] self-center h-40 bg-white rounded-2xl flex flex-row ">
       <View className="w-[40%] h-full flex justify-center items-end">
         <ProgressDonut progress={75} size={120} strokeWidth={10} />
       </View>

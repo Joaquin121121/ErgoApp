@@ -18,6 +18,31 @@ import rightArrow from "../assets/icons/rightArrow.png";
 import leftArrow from "../assets/icons/leftArrow.png";
 import greenCheck from "../assets/icons/greenCheck.png";
 import close from "../assets/icons/close.png";
+import Roger from "../assets/icons/Roger.png";
+import Emily from "../assets/icons/Emily.png";
+import Luke from "../assets/icons/Luke.png";
+import Sophie from "../assets/icons/Sophie.png";
+import fullRoger from "../assets/icons/fullRoger.png";
+import fullEmily from "../assets/icons/fullEmily.png";
+import fullLuke from "../assets/icons/fullLuke.png";
+import fullSophie from "../assets/icons/fullSophie.png";
+import plan from "../assets/icons/plan.png";
+import dumbbellRed from "../assets/icons/dumbbellRed.png";
+import heart from "../assets/icons/heart.png";
+import stonks from "../assets/icons/stonks.png";
+import veryDissatisfied from "../assets/icons/veryDissatisfied.png";
+import dissatisfied from "../assets/icons/dissatisfied.png";
+import neutral from "../assets/icons/neutral.png";
+import satisfied from "../assets/icons/satisfied.png";
+import verySatisfied from "../assets/icons/verySatisfied.png";
+import veryDissatisfiedRed from "../assets/icons/veryDissatisfiedRed.png";
+import dissatisfiedRed from "../assets/icons/dissatisfiedRed.png";
+import neutralRed from "../assets/icons/neutralRed.png";
+import satisfiedRed from "../assets/icons/satisfiedRed.png";
+import verySatisfiedRed from "../assets/icons/verySatisfiedRed.png";
+import next from "../assets/icons/next.png";
+
+import edit from "../assets/icons/edit.png";
 
 export default {
   home,
@@ -39,4 +64,28 @@ export default {
   leftArrow,
   greenCheck,
   close,
+  Roger,
+  Emily,
+  Luke,
+  Sophie,
+  fullRoger,
+  fullEmily,
+  fullLuke,
+  fullSophie,
+  edit,
+  plan,
+  heart,
+  stonks,
+  dumbbellRed,
+  veryDissatisfied,
+  dissatisfied,
+  neutral,
+  satisfied,
+  verySatisfied,
+  veryDissatisfiedRed,
+  dissatisfiedRed,
+  neutralRed,
+  satisfiedRed,
+  verySatisfiedRed,
+  next,
 };

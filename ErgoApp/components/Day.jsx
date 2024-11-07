@@ -6,7 +6,7 @@ const Day = ({ day, sessionName }) => {
   const isRestDay = sessionName === "restDay";
 
   return (
-    <View className="w-[110px] h-full shadow-sm bg-white rounded-xl flex items-center">
+    <View className="w-[110px] h-full shadow-sm bg-white rounded-2xl flex items-center">
       <Text className="font-plight text-darkGray mt-2">{day}</Text>
       <Text
         className={`text-sm mt-2 ${

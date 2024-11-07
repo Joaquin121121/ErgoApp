@@ -1,3 +1,5 @@
+// app/_layout.jsx
+
 import { StyleSheet, Text, View } from "react-native";
 import { SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
@@ -21,18 +23,42 @@ export default function _layout() {
 
   useEffect(() => {
     if (error) throw error;
-
     if (fontsLoaded) SplashScreen.hideAsync();
-
     if (!fontsLoaded && !error) null;
   }, [fontsLoaded, error]);
+
   return (
     <UserProvider>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        {/*         <Stack.Screen name="(/search/[query])" options={{ headerShown: false }} /> */}
+        <Stack.Screen
+          name="myProfile"
+          options={{
+            headerShown: true,
+            headerTitle: "",
+            headerBackTitle: " ",
+            headerStyle: {
+              backgroundColor: "#F5F5F5",
+            },
+            headerShadowVisible: false,
+            headerBackTitleVisible: false,
+          }}
+        />
+        <Stack.Screen
+          name="prePoll"
+          options={{
+            headerShown: true,
+            headerTitle: "",
+            headerBackTitle: " ",
+            headerStyle: {
+              backgroundColor: "#F5F5F5",
+            },
+            headerShadowVisible: false,
+            headerBackTitleVisible: false,
+          }}
+        />
       </Stack>
     </UserProvider>
   );

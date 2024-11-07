@@ -11,9 +11,48 @@ const AuthLayout = () => {
           name="sign-in"
           options={{ headerShown: false, title: "" }}
         />
-        <Stack.Screen name="sign-up" options={{ title: "" }} />
-        <Stack.Screen name="choice" />
-        <Stack.Screen name="sign-up-2" options={{ title: "" }} />
+        <Stack.Screen
+          name="sign-up"
+          options={{
+            title: "",
+            headerStyle: {
+              backgroundColor: "#F5F5F5",
+            },
+            headerShadowVisible: false,
+            headerBackTitleVisible: false,
+          }}
+        />
+        <Stack.Screen
+          name="choice"
+          options={{
+            title: "",
+            headerShadowVisible: false,
+            headerBackTitleVisible: false,
+          }}
+        />
+        <Stack.Screen
+          name="targets"
+          options={{
+            title: "",
+            headerStyle: {
+              backgroundColor: "#F5F5F5",
+            },
+            headerShadowVisible: false,
+            headerBackTitleVisible: false,
+          }}
+        />
+        <Stack.Screen
+          name="sign-up-2"
+          options={{
+            title: "",
+            headerStyle: {
+              backgroundColor: "#F5F5F5",
+            },
+            headerShadowVisible: false,
+            headerBackTitleVisible: false,
+          }}
+        />
+
         <StatusBar></StatusBar>
       </Stack>
     </>

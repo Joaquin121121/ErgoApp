@@ -1,6 +1,8 @@
-import { View, Text, Image } from "react-native";
-import { Tabs, Redirect } from "expo-router";
-
+// app/(tabs)/_layout.jsx
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import { Tabs, useRouter } from "expo-router";
+import { useContext } from "react";
+import UserContext from "../../contexts/UserContext";
 import icons from "../../scripts/icons.js";
 
 const TabIcon = ({ icon, color, name, focused }) => {
@@ -23,8 +25,26 @@ const TabIcon = ({ icon, color, name, focused }) => {
 };
 
 const TabsLayout = () => {
+  const router = useRouter();
+  const { user } = useContext(UserContext);
+
+  const handleProfilePress = () => {
+    router.push("myProfile"); // Updated navigation path
+  };
+
   return (
-    <>
+    <View style={{ flex: 1 }}>
+      <TouchableOpacity
+        onPress={handleProfilePress}
+        className="absolute right-4 top-16 z-50"
+      >
+        <Image
+          className="w-14 h-14 rounded-full"
+          source={icons[user.character]}
+          resizeMethod="contain"
+        />
+      </TouchableOpacity>
+
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,
@@ -64,7 +84,6 @@ const TabsLayout = () => {
             ),
           }}
         />
-
         <Tabs.Screen
           name="myStats"
           options={{
@@ -96,7 +115,7 @@ const TabsLayout = () => {
           }}
         />
       </Tabs>
-    </>
+    </View>
   );
 };
 

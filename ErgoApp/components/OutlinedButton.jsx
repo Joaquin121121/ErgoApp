@@ -2,17 +2,19 @@ import CustomButton from "./CustomButton";
 const OutlinedButton = ({
   title,
   isLoading,
-  handlePress,
+  onPress,
   containerStyles,
   textStyles,
+  icon,
 }) => {
   return (
     <CustomButton
-      onPress={handlePress}
+      onPress={onPress}
       title={title}
       isLoading={isLoading}
-      containerStyles={`bg-offWhite ${containerStyles}`}
+      containerStyles={`bg-offWhite ${containerStyles} border border-lightRed`}
       textStyles={`text-secondary ${textStyles}`}
+      icon={icon}
     />
   );
 };

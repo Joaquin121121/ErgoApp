@@ -2,17 +2,19 @@ import CustomButton from "./CustomButton";
 const TonalButton = ({
   title,
   isLoading,
-  handlePress,
+  onPress,
   containerStyles,
   textStyles,
+  icon,
 }) => {
   return (
     <CustomButton
-      onPress={handlePress}
+      onPress={onPress}
       title={title}
       isLoading={isLoading}
-      containerStyles={`bg-lightRed ${containerStyles}`}
-      textStyles={`text-secondary ${textStyles}`}
+      containerStyles={`bg-secondary ${containerStyles}`}
+      textStyles={`text-white ${textStyles}`}
+      icon={icon}
     />
   );
 };
