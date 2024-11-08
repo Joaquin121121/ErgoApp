@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React, { useState } from "react";
 import Icon from "../components/Icon";
 import TonalButton from "../components/TonalButton";
+import { router } from "expo-router";
 
 const prePoll = () => {
   const sentiments = [
@@ -73,6 +74,9 @@ const prePoll = () => {
         title="Continuar"
         icon="next"
         containerStyles="self-center mt-4"
+        onPress={() => {
+          router.push("viewPlan?doExercises=true");
+        }}
       />
     </ScrollView>
   );

@@ -6,6 +6,7 @@ const OutlinedButton = ({
   containerStyles,
   textStyles,
   icon,
+  inverse,
 }) => {
   return (
     <CustomButton
@@ -15,6 +16,7 @@ const OutlinedButton = ({
       containerStyles={`bg-offWhite ${containerStyles} border border-lightRed`}
       textStyles={`text-secondary ${textStyles}`}
       icon={icon}
+      inverse={inverse}
     />
   );
 };

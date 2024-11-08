@@ -41,6 +41,14 @@ import neutralRed from "../assets/icons/neutralRed.png";
 import satisfiedRed from "../assets/icons/satisfiedRed.png";
 import verySatisfiedRed from "../assets/icons/verySatisfiedRed.png";
 import next from "../assets/icons/next.png";
+import add from "../assets/icons/add.png";
+import checkWhite from "../assets/icons/checkWhite.png";
+import fastForward from "../assets/icons/fastForward.png";
+import arrowBack from "../assets/icons/arrowBack.png";
+import arrowBackRed from "../assets/icons/arrowBackRed.png";
+import postpone from "../assets/icons/postpone.png";
+import fail from "../assets/icons/fail.png";
+import skipNext from "../assets/icons/skipNext.png";
 
 import edit from "../assets/icons/edit.png";
 
@@ -88,4 +96,12 @@ export default {
   satisfiedRed,
   verySatisfiedRed,
   next,
+  add,
+  checkWhite,
+  fastForward,
+  arrowBack,
+  arrowBackRed,
+  postpone,
+  fail,
+  skipNext,
 };

@@ -6,6 +6,7 @@ const TonalButton = ({
   containerStyles,
   textStyles,
   icon,
+  inverse,
 }) => {
   return (
     <CustomButton
@@ -15,6 +16,7 @@ const TonalButton = ({
       containerStyles={`bg-secondary ${containerStyles}`}
       textStyles={`text-white ${textStyles}`}
       icon={icon}
+      inverse={inverse}
     />
   );
 };

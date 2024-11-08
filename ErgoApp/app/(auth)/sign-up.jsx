@@ -56,9 +56,9 @@ const SignUp = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View className="bg-offWhite mt-10 h-[85vh] w-full flex items-center justify-center">
+      <View className="bg-offWhite h-[85vh] w-full flex items-center justify-center">
         <ScrollView className="w-[80%] ">
-          <View className="w-full flex items-center justify-center ">
+          <View className="w-full flex mt-10 items-center justify-center ">
             <Text className="text-3xl font-regular ">Registrarse</Text>
             {!pickerVisible && (
               <>

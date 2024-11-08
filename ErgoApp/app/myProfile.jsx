@@ -25,7 +25,7 @@ const myProfile = () => {
     <ScrollView className="pl-4">
       <Text className="font-pregular text-h2">Mi Perfil</Text>
 
-      <View className="flex flex-row w-full self-center items-center justify-around pr-4 mt-8">
+      <View className="flex flex-row w-full self-center items-center justify-around pr-4 mt-2">
         <Image
           resizeMode="contain"
           style={{ height: 200, width: 130 }}
@@ -52,7 +52,7 @@ const myProfile = () => {
         icon={"edit"}
       ></OutlinedButton>
       <Text className="font-pregular text-h2 mt-8">Cambiar Personaje</Text>
-      <View style={{ height: 250, marginTop: 10 }}>
+      <View style={{ height: 280, marginTop: 16 }}>
         <FlatList
           horizontal
           data={characters}

@@ -59,6 +59,32 @@ export default function _layout() {
             headerBackTitleVisible: false,
           }}
         />
+        <Stack.Screen
+          name="viewPlan"
+          options={{
+            headerShown: true,
+            headerTitle: "",
+            headerBackTitle: " ",
+            headerStyle: {
+              backgroundColor: "#F5F5F5",
+            },
+            headerShadowVisible: false,
+            headerBackTitleVisible: false,
+          }}
+        />
+        <Stack.Screen
+          name="success"
+          options={{
+            headerShown: true,
+            headerTitle: "",
+            headerBackTitle: " ",
+            headerStyle: {
+              backgroundColor: "#F5F5F5",
+            },
+            headerShadowVisible: false,
+            headerBackTitleVisible: false,
+          }}
+        />
       </Stack>
     </UserProvider>
   );

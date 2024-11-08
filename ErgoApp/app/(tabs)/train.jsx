@@ -36,6 +36,9 @@ const train = () => {
               icon="plan"
               title="Ver Plan"
               containerStyles="w-[40%]"
+              onPress={() => {
+                router.push("viewPlan");
+              }}
             />
             <TonalButton
               icon="dumbbell"

@@ -26,7 +26,7 @@ const TrainingSession = () => {
           <View className="flex flex-row items-center">
             <Icon icon="heart" size={32}></Icon>
             <Text className="font-pregular text-sm text-darkGray ml-2">
-              Prevención de lesiones
+              {"Prevención de\nlesiones"}
             </Text>
           </View>
           <View className="flex flex-row items-center">

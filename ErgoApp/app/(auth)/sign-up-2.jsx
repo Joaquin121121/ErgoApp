@@ -130,9 +130,9 @@ const SignUp2 = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View className="bg-offWhite mt-10 h-[85vh] w-full flex items-center justify-center">
+      <View className="bg-offWhite  h-[85vh] w-full flex items-center justify-center">
         <ScrollView className="w-[80%] ">
-          <View className="w-full flex items-center justify-center ">
+          <View className="w-full mt-10 flex items-center justify-center ">
             <Text className="text-3xl font-regular ">Registrarse</Text>
             {visibility && (
               <>
@@ -244,6 +244,8 @@ const SignUp2 = () => {
               onPress={handleRegister}
               containerStyles="mt-8 bg-secondary"
               textStyles="text-white"
+              icon="add"
+              iconSize={28}
             ></CustomButton>
             <View className="justify-center pt-5 flex-row gap-2">
               <Text className="text-md">Ya tienes cuenta?</Text>
