@@ -23,6 +23,8 @@ export const UserProvider = ({ children }) => {
     calendar: [],
     character: "Roger",
     targets: [],
+    stats: [],
+    registryDate: new Date().toISOString().split("T")[0],
   });
 
   // Load the stored user from AsyncStorage when the component mounts

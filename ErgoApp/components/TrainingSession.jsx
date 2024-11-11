@@ -5,6 +5,7 @@ import OutlinedButton from "./OutlinedButton";
 import TonalButton from "./TonalButton";
 import UserContext from "../contexts/UserContext";
 import icons from "../scripts/icons";
+import { router } from "expo-router";
 
 const TrainingSession = () => {
   const { user } = useContext(UserContext);
@@ -48,11 +49,17 @@ const TrainingSession = () => {
           icon="plan"
           title="Ver Plan"
           containerStyles="w-[40%]"
+          onPress={() => {
+            router.push("viewPlan");
+          }}
         />
         <TonalButton
           icon="dumbbell"
           title="Entrenar"
           containerStyles="w-[40%]"
+          onPress={() => {
+            router.push("prePoll");
+          }}
         />
       </View>
     </View>

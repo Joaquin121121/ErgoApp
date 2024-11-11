@@ -55,12 +55,12 @@ const Home = () => {
       <CustomFlatlist
         data={flatlistData}
         renderContent={renderCarouselItem}
-        height={180}
+        height={160}
         onItemChange={handleItemChange}
         activeIndex={currentItem}
         setActiveIndex={setCurrentItem}
       />
-      <Text className="font-pregular text-h3 mt-2 mb-4 ml-4">Mi Semana</Text>
+      <Text className="font-pregular text-h3 mt-8 ml-4">Mi Semana</Text>
       <Calendar />
     </ScrollView>
   );

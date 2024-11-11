@@ -15,6 +15,7 @@ module.exports = {
         fire: "#FF9501",
         yellow: "#FFD700",
         green: "#00A859",
+        blue: "#0989FF",
       },
       fontFamily: {
         pthin: ["Poppins-Thin", "sans-serif"],

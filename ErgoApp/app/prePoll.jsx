@@ -75,7 +75,7 @@ const prePoll = () => {
         icon="next"
         containerStyles="self-center mt-4"
         onPress={() => {
-          router.push("viewPlan?doExercises=true");
+          router.replace("viewPlan?doExercises=true");
         }}
       />
     </ScrollView>

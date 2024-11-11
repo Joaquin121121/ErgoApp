@@ -49,6 +49,7 @@ import arrowBackRed from "../assets/icons/arrowBackRed.png";
 import postpone from "../assets/icons/postpone.png";
 import fail from "../assets/icons/fail.png";
 import skipNext from "../assets/icons/skipNext.png";
+import confetti from "../assets/icons/confetti.png";
 
 import edit from "../assets/icons/edit.png";
 
@@ -104,4 +105,5 @@ export default {
   postpone,
   fail,
   skipNext,
+  confetti,
 };

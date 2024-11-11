@@ -7,9 +7,11 @@ import TonalButton from "../components/TonalButton";
 import { router, useLocalSearchParams } from "expo-router";
 
 const ViewPlan = () => {
+  const [exercisesN, setExercisesN] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentAction, setCurrentAction] = useState("");
-  const completedExercises = [];
+  const [completedExercises, setCompletedExercises] = useState([]);
+  const [exercisesWithImprovement, setExercisesWithImprovement] = useState([]);
   const { doExercises } = useLocalSearchParams();
 
   const [exercises, setExercises] = useState([
@@ -96,19 +98,20 @@ const ViewPlan = () => {
       setCurrentAction("skip");
       return;
     }
-    if (currentAction === "skip") {
-      setExercises((prevExercises) => {
-        const newExercises = prevExercises
-          .filter((_, i) => i !== activeIndex)
-          .map((exercise, index) => ({
-            ...exercise,
-            key: index.toString(), // Reindex the keys
-          }));
-        if (activeIndex >= newExercises.length) {
-          setActiveIndex(Math.max(0, newExercises.length - 1));
-        }
-        return newExercises;
-      });
+    setExercises((prevExercises) => {
+      const newExercises = prevExercises
+        .filter((_, i) => i !== activeIndex)
+        .map((exercise, index) => ({
+          ...exercise,
+          key: index.toString(), // Reindex the keys
+        }));
+      if (activeIndex >= newExercises.length) {
+        setActiveIndex(Math.max(0, newExercises.length - 1));
+      }
+      return newExercises;
+    });
+    if (currentAction === "next") {
+      setCompletedExercises((prev) => [...prev, exercises[activeIndex]]);
     }
     setCurrentAction("");
   };
@@ -119,7 +122,9 @@ const ViewPlan = () => {
       return;
     }
     if (currentAction === "next") {
-      completedExercises.push(exercises[activeIndex]);
+      setCompletedExercises((prev) => [...prev, exercises[activeIndex]]);
+      setExercisesWithImprovement((prev) => [...prev, exercises[activeIndex]]);
+
       setExercises((prevExercises) => {
         const newExercises = prevExercises
           .filter((_, i) => i !== activeIndex)
@@ -151,7 +156,15 @@ const ViewPlan = () => {
   };
 
   useEffect(() => {
-    exercises.length === 0 && router.replace("success");
+    setExercisesN(exercises.length);
+  }, []);
+
+  useEffect(() => {
+    console.log(exercisesWithImprovement, completedExercises);
+    exercises.length === 0 &&
+      router.replace(
+        `success?completedExercises=${completedExercises.length}/${exercisesN}&improvedExercises=${exercisesWithImprovement.length}/${completedExercises.length}`
+      );
   }, [exercises]);
 
   return (
@@ -179,10 +192,16 @@ const ViewPlan = () => {
           </Text>
         )}
         {currentAction === "skip" && (
-          <Text className="self-center text-sm font-pregular">
+          <Text className="self-center text-sm font-pregular mt-6">
             Desea posponer u omitir {exercises[activeIndex]["name"]}?
           </Text>
         )}
+        {currentAction === "" && (
+          <Text className="self-center text-sm font-pregular text-offWhite mt-6">
+            {" "}
+          </Text>
+        )}
+
         <View className="mt-4 flex flex-row justify-around w-full self-center">
           {doExercises ? (
             <>
@@ -230,6 +249,7 @@ const ViewPlan = () => {
                 title="Entrenar"
                 icon="dumbbell"
                 containerStyles="w-[40%]"
+                onPress={() => router.replace("prePoll")}
               />
             </>
           )}

@@ -10,6 +10,7 @@ import React, { useContext } from "react";
 import icons from "../scripts/icons";
 import OutlinedButton from "../components/OutlinedButton";
 import UserContext from "../contexts/UserContext.jsx";
+import { router } from "expo-router";
 
 const myProfile = () => {
   const characters = [
@@ -39,7 +40,11 @@ const myProfile = () => {
           </Text>
           <Text className="font-16regular text-16 mb-1">- 75 kg</Text>
           <Text className="font-16regular text-16 mb-1">- 178 cm</Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              router.replace("myStats");
+            }}
+          >
             <Text className="text-16 font-pregular text-secondary ">
               Ver estadísticas
             </Text>

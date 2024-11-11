@@ -1,7 +1,9 @@
-import { View, Text, StyleSheet } from "react-native";
-import React from "react";
+import { View, Text, ScrollView } from "react-native";
+import React, { useContext } from "react";
+import UserContext from "../contexts/UserContext";
 
-const IndexDisplay = ({ name, currentValue, pastValue }) => {
+const StatGraph = ({ stat }) => {
+  const { user, setUser } = useContext(UserContext);
   const diffPercentage = Math.round(
     ((currentValue - pastValue) / currentValue) * 100
   );
@@ -35,31 +37,35 @@ const IndexDisplay = ({ name, currentValue, pastValue }) => {
     },
   });
   return (
-    <View className="w-32 h-16 rounded-2xl bg-offWhite pl-6 pr-4 flex justify-evenly">
-      <Text className="text-[12px] text-darkGray font-plight">{name}</Text>
-      <View className="flex flex-row items-center justify-between">
-        <Text className="font-pmedium text-2xl w-10">{currentValue}</Text>
+    <ScrollView>
+      <Text className="self-center text-2xl text-darkGray">{stat}</Text>
+      <Text className="mt-1 self-center text-[32px]">
+        {user["stats"][stat.toLowerCase()]
+          ? user["stats"][stat]["currentValue"]
+          : "No disponible ahora mismo"}
+      </Text>
+      <View className="self-center flex flex-row items-center">
         {diffPercentage < -5 && (
-          <View className="flex flex-row items-center gap-1 w-10">
+          <>
             <View style={styles.triangleDown} />
-            <Text className="ml-1 font-plight text-[12px] text-secondary">{`${diffPercentage}%`}</Text>
-          </View>
+            <Text className="text-secondary font-plight ml-1">{`${diffPercentage}%`}</Text>
+          </>
         )}
-        {diffPercentage >= -5 && diffPercentage <= 5 && (
-          <View className="flex flex-row items-center gap-1 w-10">
+        {diffPercentage > -5 && diffPercentage < 5 && (
+          <>
             <View style={styles.circle} />
-            <Text className="ml-1 font-plight text-[12px] text-yellow">{`${diffPercentage}%`}</Text>
-          </View>
+            <Text className="text-yellow font-plight ml-1">{`${diffPercentage}%`}</Text>
+          </>
         )}
         {diffPercentage > 5 && (
-          <View className="flex flex-row items-center gap-1 w-10">
+          <>
             <View style={styles.triangleUp} />
-            <Text className="ml-1 font-plight text-[12px] text-green">{`${diffPercentage}%`}</Text>
-          </View>
+            <Text className="text-green font-plight ml-1">{`${diffPercentage}%`}</Text>
+          </>
         )}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
-export default IndexDisplay;
+export default StatGraph;
