@@ -1,11 +1,18 @@
-import { View, Text, ScrollView } from "react-native";
-import React, { useContext } from "react";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
+import React, { useContext, useEffect } from "react";
 import UserContext from "../contexts/UserContext";
+import LineGraph from "../components/LineGraph";
+import { useLocalSearchParams } from "expo-router";
 
-const StatGraph = ({ stat }) => {
+const StatGraph = () => {
+  const { stat } = useLocalSearchParams();
   const { user, setUser } = useContext(UserContext);
+
+  const currentValue = user?.stats?.[stat.toLowerCase()]?.currentValue;
+  const pastValue =
+    user?.stats?.[stat.toLowerCase()]?.previousValues?.[0]?.value;
   const diffPercentage = Math.round(
-    ((currentValue - pastValue) / currentValue) * 100
+    ((currentValue - pastValue) / pastValue) * 100
   );
 
   const styles = StyleSheet.create({
@@ -36,34 +43,34 @@ const StatGraph = ({ stat }) => {
       backgroundColor: "#FFD700",
     },
   });
+
   return (
     <ScrollView>
       <Text className="self-center text-2xl text-darkGray">{stat}</Text>
       <Text className="mt-1 self-center text-[32px]">
-        {user["stats"][stat.toLowerCase()]
-          ? user["stats"][stat]["currentValue"]
-          : "No disponible ahora mismo"}
+        {currentValue || "No disponible ahora mismo"}
       </Text>
       <View className="self-center flex flex-row items-center">
-        {diffPercentage < -5 && (
+        {diffPercentage < -3 && (
           <>
             <View style={styles.triangleDown} />
             <Text className="text-secondary font-plight ml-1">{`${diffPercentage}%`}</Text>
           </>
         )}
-        {diffPercentage > -5 && diffPercentage < 5 && (
+        {diffPercentage >= -3 && diffPercentage <= 3 && (
           <>
             <View style={styles.circle} />
             <Text className="text-yellow font-plight ml-1">{`${diffPercentage}%`}</Text>
           </>
         )}
-        {diffPercentage > 5 && (
+        {diffPercentage > 3 && (
           <>
             <View style={styles.triangleUp} />
             <Text className="text-green font-plight ml-1">{`${diffPercentage}%`}</Text>
           </>
         )}
       </View>
+      <LineGraph stat={stat} />
     </ScrollView>
   );
 };

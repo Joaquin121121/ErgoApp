@@ -34,7 +34,84 @@ const Home = () => {
   };
 
   useEffect(() => {
-    setUser({ ...user, character: "Roger" });
+    /*     setUser({
+      ...user,
+      stats: {
+        rsi: {
+          currentValue: 2,
+          previousValues: [
+            { value: 1.5, date: "20/08/2024" },
+            { value: 1.2, date: "07/05/2024" },
+          ],
+          target: 2.4,
+        },
+        dsi: {
+          currentValue: 3.2,
+          previousValues: [
+            { value: 2.8, date: "20/08/2024" },
+            { value: 2.5, date: "07/05/2024" },
+          ],
+          target: 3.5,
+        },
+        cmj: {
+          currentValue: 45.6,
+          previousValues: [
+            { value: 44.2, date: "20/08/2024" },
+            { value: 43.8, date: "07/05/2024" },
+          ],
+          target: 48.0,
+        },
+        explosividad: {
+          currentValue: 82,
+          previousValues: [
+            { value: 78, date: "20/08/2024" },
+            { value: 75, date: "07/05/2024" },
+          ],
+          target: 88,
+        },
+        resistencia: {
+          currentValue: 77,
+          previousValues: [
+            { value: 73, date: "20/08/2024" },
+            { value: 70, date: "07/05/2024" },
+          ],
+          target: 85,
+        },
+        fuerza: {
+          currentValue: 85,
+          previousValues: [
+            { value: 82, date: "20/08/2024" },
+            { value: 79, date: "07/05/2024" },
+          ],
+          target: 90,
+        },
+        agilidad: {
+          currentValue: 88,
+          previousValues: [
+            { value: 85, date: "20/08/2024" },
+            { value: 82, date: "07/05/2024" },
+          ],
+          target: 92,
+        },
+        salto: {
+          currentValue: 79,
+          previousValues: [
+            { value: 75, date: "20/08/2024" },
+            { value: 72, date: "07/05/2024" },
+          ],
+          target: 85,
+        },
+        balance: {
+          currentValue: 83,
+          previousValues: [
+            { value: 80, date: "20/08/2024" },
+            { value: 77, date: "07/05/2024" },
+          ],
+          target: 87,
+        },
+      },
+    }); */
+    console.log(user);
   }, []);
 
   return (
