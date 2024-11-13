@@ -10,7 +10,7 @@ const StatGraph = () => {
 
   const currentValue = user?.stats?.[stat.toLowerCase()]?.currentValue;
   const pastValue =
-    user?.stats?.[stat.toLowerCase()]?.previousValues?.[0]?.value;
+    user?.stats?.[stat.toLowerCase()]?.previousValues?.at(-1)?.value;
   const diffPercentage = Math.round(
     ((currentValue - pastValue) / pastValue) * 100
   );

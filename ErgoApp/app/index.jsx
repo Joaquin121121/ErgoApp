@@ -9,7 +9,11 @@ import UserContext from "../contexts/UserContext.jsx";
 export default function Index() {
   const { user, setUser } = useContext(UserContext);
   useEffect(() => {
+    setTimeout(() => {
+      router.replace("sign-in");
+    }, 2000);
     setUser({
+      ...user,
       fullName: "",
       sport: "Football",
       category: "Amateur",
@@ -31,24 +35,14 @@ export default function Index() {
     });
   }, []);
   return (
-    <LinearGradient
-      colors={["#E81D23", "#821014"]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 2, y: 0 }}
-    >
-      <ScrollView contentContainerStyle={{ height: "100%" }}>
-        <View
-          className="w-full justify-center items-center h-full px-4"
-          style={{ background: "linear-gradient(to bottom, #EC2227, #C62026)" }}
-        >
-          <Image
-            source={icons.logo}
-            className="w-full"
-            resizeMode="contain"
-          ></Image>
-          <Link href="/home">Link</Link>
-        </View>
-      </ScrollView>
-    </LinearGradient>
+    <ScrollView contentContainerStyle={{ height: "100%" }}>
+      <View className="w-full flex justify-center items-center h-full px-4 bg-secondary">
+        <Image
+          source={icons.splash}
+          resizeMode="contain"
+          style={{ width: "100%" }}
+        ></Image>
+      </View>
+    </ScrollView>
   );
 }

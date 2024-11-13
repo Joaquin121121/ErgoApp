@@ -15,7 +15,7 @@ const IndexDisplay = ({
     currentValueParameter ?? user?.stats?.[name.toLowerCase()]?.currentValue;
   const pastValue =
     pastValueParameter ??
-    user?.stats?.[name.toLowerCase()]?.previousValues?.[0]?.value;
+    user?.stats?.[name.toLowerCase()]?.previousValues?.at(-1)?.value;
 
   // Calculate difference percentage only if both values exist
   const diffPercentage =

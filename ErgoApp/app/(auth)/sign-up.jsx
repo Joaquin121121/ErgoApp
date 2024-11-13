@@ -91,6 +91,7 @@ const SignUp = () => {
             {pickerVisible && (
               <>
                 <DateTimePicker
+                  locale="es-ES"
                   mode="date"
                   display="spinner"
                   value={date}

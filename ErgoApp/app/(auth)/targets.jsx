@@ -1,8 +1,9 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import Icon from "../../components/Icon";
 import TonalButton from "../../components/TonalButton";
 import { router } from "expo-router";
+import UserContext from "../../contexts/UserContext";
 
 const Targets = () => {
   const targets = [
@@ -25,6 +26,8 @@ const Targets = () => {
 
   const [selectedIndexes, setSelectedIndexes] = useState([]);
   const [indexBeingShown, setIndexBeingShown] = useState(0);
+
+  const { user, setUser } = useContext(UserContext);
 
   // Helper function to handle circular array access
   const getCircularIndex = useCallback((index, length) => {
@@ -116,6 +119,14 @@ const Targets = () => {
           icon="next"
           containerStyles="self-center mt-8"
           onPress={() => {
+            setUser({
+              ...user,
+              targets: targets
+                .filter((_, i) => selectedIndexes.includes(i))
+                .map((e) => {
+                  return { name: e, current: 20, target: 45 };
+                }),
+            });
             router.push("sign-up-2");
           }}
         />

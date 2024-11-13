@@ -34,7 +34,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    /*     setUser({
+    setUser({
       ...user,
       stats: {
         rsi: {
@@ -102,15 +102,15 @@ const Home = () => {
           target: 85,
         },
         balance: {
-          currentValue: 83,
+          currentValue: 85,
           previousValues: [
-            { value: 80, date: "20/08/2024" },
+            { value: 85, date: "20/08/2024" },
             { value: 77, date: "07/05/2024" },
           ],
           target: 87,
         },
       },
-    }); */
+    });
     console.log(user);
   }, []);
 

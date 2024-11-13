@@ -202,7 +202,7 @@ const SignUp2 = () => {
                       user.weightUnit === "lbs"
                         ? "bg-lightRed"
                         : "bg-offWhite border border-lightRed"
-                    }`}
+                    } z-20`}
                     title={"lbs"}
                     textStyles="text-secondary"
                     onPress={() => {

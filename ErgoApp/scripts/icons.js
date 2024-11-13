@@ -50,6 +50,7 @@ import postpone from "../assets/icons/postpone.png";
 import fail from "../assets/icons/fail.png";
 import skipNext from "../assets/icons/skipNext.png";
 import confetti from "../assets/icons/confetti.png";
+import splash from "../assets/images/splash.gif";
 
 import edit from "../assets/icons/edit.png";
 
@@ -106,4 +107,5 @@ export default {
   fail,
   skipNext,
   confetti,
+  splash,
 };
