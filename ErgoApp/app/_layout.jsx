@@ -5,6 +5,9 @@ import { SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import { UserProvider } from "../contexts/UserContext";
+import { useLocalSearchParams } from "expo-router";
+import ChatHeader from "../components/ChatHeader";
+import { ChatProvider } from "../contexts/ChatContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -29,76 +32,91 @@ export default function _layout() {
 
   return (
     <UserProvider>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="myProfile"
-          options={{
-            headerShown: true,
-            headerTitle: "",
-            headerBackTitle: " ",
-            headerStyle: {
-              backgroundColor: "#F5F5F5",
-            },
-            headerShadowVisible: false,
-            headerBackTitleVisible: false,
-          }}
-        />
-        <Stack.Screen
-          name="prePoll"
-          options={{
-            headerShown: true,
-            headerTitle: "",
-            headerBackTitle: " ",
-            headerStyle: {
-              backgroundColor: "#F5F5F5",
-            },
-            headerShadowVisible: false,
-            headerBackTitleVisible: false,
-          }}
-        />
-        <Stack.Screen
-          name="viewPlan"
-          options={{
-            headerShown: true,
-            headerTitle: "",
-            headerBackTitle: " ",
-            headerStyle: {
-              backgroundColor: "#F5F5F5",
-            },
-            headerShadowVisible: false,
-            headerBackTitleVisible: false,
-          }}
-        />
-        <Stack.Screen
-          name="success"
-          options={{
-            headerShown: true,
-            headerTitle: "",
-            headerBackTitle: " ",
-            headerStyle: {
-              backgroundColor: "#F5F5F5",
-            },
-            headerShadowVisible: false,
-            headerBackTitleVisible: false,
-          }}
-        />
-        <Stack.Screen
-          name="statGraph"
-          options={{
-            headerShown: true,
-            headerTitle: "",
-            headerBackTitle: " ",
-            headerStyle: {
-              backgroundColor: "#F5F5F5",
-            },
-            headerShadowVisible: false,
-            headerBackTitleVisible: false,
-          }}
-        />
-      </Stack>
+      <ChatProvider>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="myProfile"
+            options={{
+              headerShown: true,
+              headerTitle: " ",
+              headerBackTitle: "\n",
+              headerStyle: {
+                backgroundColor: "#F5F5F5",
+              },
+              headerShadowVisible: false,
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="prePoll"
+            options={{
+              headerShown: true,
+              headerTitle: "",
+              headerBackTitle: " ",
+              headerStyle: {
+                backgroundColor: "#F5F5F5",
+              },
+              headerShadowVisible: false,
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="viewPlan"
+            options={{
+              headerShown: true,
+              headerTitle: "",
+              headerBackTitle: " ",
+              headerStyle: {
+                backgroundColor: "#F5F5F5",
+              },
+              headerShadowVisible: false,
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="success"
+            options={{
+              headerShown: true,
+              headerTitle: "",
+              headerBackTitle: "",
+              headerStyle: {
+                backgroundColor: "#F5F5F5",
+              },
+              headerShadowVisible: false,
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="statGraph"
+            options={{
+              headerShown: true,
+              headerTitle: "",
+              headerBackTitle: "",
+              headerStyle: {
+                backgroundColor: "#F5F5F5",
+              },
+              headerShadowVisible: false,
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="chat"
+            options={{
+              headerShown: true,
+              headerTitle: () => <ChatHeader />,
+              headerBackTitle: "\np",
+              headerStyle: {
+                backgroundColor: "white",
+              },
+              headerShadowVisible: false,
+              headerBackTitleVisible: false,
+            }}
+          />
+        </Stack>
+      </ChatProvider>
     </UserProvider>
   );
 }

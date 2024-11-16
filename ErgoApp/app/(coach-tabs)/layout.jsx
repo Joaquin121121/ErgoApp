@@ -55,7 +55,7 @@ const TabsLayout = () => {
         }}
       >
         <Tabs.Screen
-          name="home"
+          name="coachHome"
           options={{
             title: "Home",
             headerShown: false,
@@ -70,9 +70,9 @@ const TabsLayout = () => {
           }}
         />
         <Tabs.Screen
-          name="train"
+          name="coachClasses"
           options={{
-            title: "Entrenar",
+            title: "Mis Clases",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
@@ -85,13 +85,13 @@ const TabsLayout = () => {
           }}
         />
         <Tabs.Screen
-          name="myStats"
+          name="coachAthletes"
           options={{
-            title: "Progreso",
+            title: "Mis Alumnos",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={icons.myStats}
+                icon={icons.person}
                 color={color}
                 name="Progreso"
                 focused={focused}
@@ -100,7 +100,22 @@ const TabsLayout = () => {
           }}
         />
         <Tabs.Screen
-          name="myMessages"
+          name="coachCalendar"
+          options={{
+            title: "Calendario",
+            headerShown: false,
+            tabBarIcon: ({ color, focused }) => (
+              <TabIcon
+                icon={icons.calendar}
+                color={color}
+                name="Mensajes"
+                focused={focused}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="coachMessages"
           options={{
             title: "Mensajes",
             headerShown: false,

@@ -1,9 +1,15 @@
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import React, { useContext, useEffect } from "react";
 import UserContext from "../contexts/UserContext";
 import LineGraph from "../components/LineGraph";
-import { useLocalSearchParams } from "expo-router";
-
+import { router, useLocalSearchParams } from "expo-router";
+import TonalButton from "../components/TonalButton";
 const StatGraph = () => {
   const { stat } = useLocalSearchParams();
   const { user, setUser } = useContext(UserContext);
@@ -50,7 +56,7 @@ const StatGraph = () => {
       <Text className="mt-1 self-center text-[32px]">
         {currentValue || "No disponible ahora mismo"}
       </Text>
-      <View className="self-center flex flex-row items-center">
+      <View className="self-center flex flex-row items-center mb-4">
         {diffPercentage < -3 && (
           <>
             <View style={styles.triangleDown} />
@@ -71,6 +77,29 @@ const StatGraph = () => {
         )}
       </View>
       <LineGraph stat={stat} />
+      <View className="self-center mt-4 bg-white rounded-2xl shadow-sm w-[90vw] pl-2 pr-2">
+        <Text className="font-pregular text-2xl self-center mt-4 mb-2">
+          ¿Qué es {stat}?
+        </Text>
+        <Text className="font-plight text-sm">
+          El RSI, o Índice de Fuerza Reactiva, mide la capacidad de cambiar
+          rápidamente de dirección o moverse explosivamente. Un valor alto
+          indica mejor respuesta y agilidad, algo crucial en muchos deportes.
+        </Text>
+        <TouchableOpacity>
+          <Text className="font-pregular text-secondary text-sm mb-8">
+            Ver más
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <TonalButton
+        containerStyles="self-center mt-8"
+        icon="checkWhite"
+        title="Continuar"
+        onPress={() => {
+          router.back();
+        }}
+      />
     </ScrollView>
   );
 };

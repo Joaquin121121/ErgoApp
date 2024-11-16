@@ -92,6 +92,7 @@ const SignIn = () => {
               handleChangeText={(e) => setForm({ ...form, password: e })}
               onChange={() => setPasswordError(null)}
               otherStyles="mt-8"
+              onEnter={handleLogIn}
             />
             {passwordError && (
               <Text className="text-secondary mt-2">{passwordError}</Text>
@@ -99,7 +100,7 @@ const SignIn = () => {
             <CustomButton
               title="Iniciar Sesión"
               onPress={handleLogIn}
-              containerStyles="mt-8 bg-secondary"
+              containerStyles="mt-8 bg-secondary z-50"
               textStyles="text-white"
               isLoading={loading}
               icon="next"

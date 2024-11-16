@@ -4,13 +4,11 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView,
-  Platform,
-  Pressable,
   TouchableOpacity,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import CustomButton from "../../components/CustomButton";
 import UserContext from "../../contexts/UserContext";
 import FormField from "../../components/FormField";
@@ -68,6 +66,10 @@ const SignUp2 = () => {
           setPasswordError("Tu contraseña es muy débil.");
           break;
         case "auth/email-already-in-use":
+          try {
+            await signInWithEmailAndPassword(auth, user.email, user.password);
+            router.replace("home");
+          } catch (error) {}
           setEmailError("Este email ya se encuentra en uso");
           break;
         case "auth/invalid-email":
@@ -235,6 +237,7 @@ const SignUp2 = () => {
               }}
               toggleVisibility={toggleVisibility}
               otherStyles="mt-6"
+              onEnter={handleRegister}
             />
             {passwordError && (
               <Text className="text-secondary mt-2">{passwordError}</Text>

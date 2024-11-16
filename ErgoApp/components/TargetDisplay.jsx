@@ -3,12 +3,20 @@ import React, { useContext } from "react";
 import UserContext from "../contexts/UserContext";
 import TargetCard from "./TargetCard";
 
-const TargetDisplay = () => {
+const TargetDisplay = ({ start = 0, finish = 3 }) => {
   const { user, setUser } = useContext(UserContext);
   const colors = ["green", "fire", "blue"];
   return (
-    <View className="w-[85vw] h-[300] flex justify-between">
-      {user.targets.map((e, i) => (
+    <View
+      className={`w-[85vw] h-[300] flex justify-${
+        user.targets[finish - 1]
+          ? "between"
+          : user.targets[finish - 2]
+          ? "evenly"
+          : "center"
+      }`}
+    >
+      {user.targets.slice(start, finish).map((e, i) => (
         <TargetCard
           name={e.name}
           target={e.target}

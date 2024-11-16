@@ -23,7 +23,10 @@ const SignUp = () => {
 
   const { user, setUser } = useContext(UserContext);
 
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(
+    new Date(Date.now() - 25 * 365.25 * 24 * 60 * 60 * 1000)
+  );
+  const [displayDate, setDisplayDate] = useState("");
   const [pickerVisible, setPickerVisible] = useState(false);
 
   const signIn = () => {
@@ -47,6 +50,7 @@ const SignUp = () => {
 
   const saveChanges = () => {
     toggleVisibility();
+    setDisplayDate(date.toDateString());
     setUser({ ...user, birthDate: date.toDateString() });
   };
 
@@ -83,7 +87,7 @@ const SignUp = () => {
             )}
             <FormField
               title="Fecha"
-              value={date}
+              value={date.toLocaleDateString("es-ES")}
               toggleVisibility={toggleVisibility}
               pickerVisible={pickerVisible}
               otherStyles="mt-8"
@@ -91,6 +95,7 @@ const SignUp = () => {
             {pickerVisible && (
               <>
                 <DateTimePicker
+                  maximumDate={new Date()}
                   locale="es-ES"
                   mode="date"
                   display="spinner"

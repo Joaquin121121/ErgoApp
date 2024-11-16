@@ -7,6 +7,7 @@ export default {
     icon: "./assets/images/icon.png",
     scheme: "myapp",
     userInterfaceStyle: "automatic",
+    newArchEnabled: true,
     splash: {
       image: "./assets/images/splash.png",
       resizeMode: "contain",
@@ -30,7 +31,11 @@ export default {
       output: "static",
       favicon: "./assets/images/favicon.png",
     },
-    plugins: ["expo-router", "@react-native-google-signin/google-signin"],
+    plugins: [
+      "expo-font",
+      "expo-router",
+      "@react-native-google-signin/google-signin",
+    ],
     experiments: {
       typedRoutes: true,
     },

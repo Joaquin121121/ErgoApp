@@ -14,6 +14,7 @@ const FormField = ({
   pickerVisible,
   onChange,
   maxLength,
+  onEnter,
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +31,7 @@ const FormField = ({
             onPress={toggleVisibility}
           >
             <Text className="flex-1 text-black font-pregular text-base ">
-              {value.toDateString()}
+              {value}
             </Text>
             <Image
               source={icons.calendar}
@@ -50,6 +51,7 @@ const FormField = ({
             onFocus={toggleVisibility}
             onBlur={toggleVisibility}
             onChange={onChange}
+            onSubmitEditing={onEnter}
             {...(maxLength !== undefined && { maxLength })}
           />
         )}

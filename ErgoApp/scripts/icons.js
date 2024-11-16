@@ -45,11 +45,17 @@ import add from "../assets/icons/add.png";
 import checkWhite from "../assets/icons/checkWhite.png";
 import fastForward from "../assets/icons/fastForward.png";
 import arrowBack from "../assets/icons/arrowBack.png";
+import person from "../assets/icons/person.png";
 import arrowBackRed from "../assets/icons/arrowBackRed.png";
 import postpone from "../assets/icons/postpone.png";
 import fail from "../assets/icons/fail.png";
 import skipNext from "../assets/icons/skipNext.png";
 import confetti from "../assets/icons/confetti.png";
+import logout from "../assets/icons/logout.png";
+import chat from "../assets/icons/chat.png";
+import chatWhite from "../assets/icons/chatWhite.png";
+import sports from "../assets/icons/sports.png";
+import send from "../assets/icons/send.png";
 import splash from "../assets/images/splash.gif";
 
 import edit from "../assets/icons/edit.png";
@@ -99,6 +105,7 @@ export default {
   verySatisfiedRed,
   next,
   add,
+  sports,
   checkWhite,
   fastForward,
   arrowBack,
@@ -108,4 +115,9 @@ export default {
   skipNext,
   confetti,
   splash,
+  logout,
+  chat,
+  chatWhite,
+  send,
+  person,
 };

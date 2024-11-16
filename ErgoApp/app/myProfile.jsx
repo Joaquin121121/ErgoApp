@@ -11,6 +11,8 @@ import icons from "../scripts/icons";
 import OutlinedButton from "../components/OutlinedButton";
 import UserContext from "../contexts/UserContext.jsx";
 import { router } from "expo-router";
+import TonalButton from "../components/TonalButton.jsx";
+import { auth } from "../scripts/firebase.js";
 
 const myProfile = () => {
   const characters = [
@@ -21,6 +23,12 @@ const myProfile = () => {
   ];
 
   const { user, setUser } = useContext(UserContext);
+
+  const handleSignOut = async () => {
+    await auth.signOut();
+    router.dismissAll();
+    router.replace("versionChoice");
+  };
 
   return (
     <ScrollView className="pl-4">
@@ -57,7 +65,7 @@ const myProfile = () => {
         icon={"edit"}
       ></OutlinedButton>
       <Text className="font-pregular text-h2 mt-8">Cambiar Personaje</Text>
-      <View style={{ height: 280, marginTop: 16 }}>
+      <View style={{ height: 260, marginTop: 16 }}>
         <FlatList
           horizontal
           data={characters}
@@ -82,6 +90,12 @@ const myProfile = () => {
           )}
         />
       </View>
+      <TonalButton
+        containerStyles="mt-4 self-center"
+        title="Cerrar Sesión"
+        onPress={handleSignOut}
+        icon="logout"
+      />
     </ScrollView>
   );
 };

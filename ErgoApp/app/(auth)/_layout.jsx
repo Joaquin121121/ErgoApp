@@ -19,6 +19,7 @@ const AuthLayout = () => {
               backgroundColor: "#F5F5F5",
             },
             headerShadowVisible: false,
+            headerBackTitle: "\nt",
             headerBackTitleVisible: false,
           }}
         />
@@ -38,6 +39,8 @@ const AuthLayout = () => {
               backgroundColor: "#F5F5F5",
             },
             headerShadowVisible: false,
+            headerBackTitle: "\nt",
+
             headerBackTitleVisible: false,
           }}
         />
@@ -49,7 +52,15 @@ const AuthLayout = () => {
               backgroundColor: "#F5F5F5",
             },
             headerShadowVisible: false,
+            headerBackTitle: "\nt",
+
             headerBackTitleVisible: false,
+          }}
+        />
+        <Stack.Screen
+          name="versionChoice"
+          options={{
+            headerShown: false,
           }}
         />
 

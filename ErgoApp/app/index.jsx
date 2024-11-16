@@ -1,16 +1,22 @@
 import { Text, View, ScrollView, Image } from "react-native";
 import { Link, router } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
 import icons from "../scripts/icons.js";
 import { useEffect, useContext } from "react";
-import { LinearGradient } from "expo-linear-gradient";
 import UserContext from "../contexts/UserContext.jsx";
-
+import { auth } from "../scripts/firebase.js";
 export default function Index() {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, version } = useContext(UserContext);
   useEffect(() => {
     setTimeout(() => {
-      router.replace("sign-in");
+      router.replace(
+        `${
+          auth.currentUser
+            ? version === "athlete"
+              ? "home"
+              : "coach-home"
+            : "versionChoice"
+        }`
+      );
     }, 2000);
     setUser({
       ...user,
