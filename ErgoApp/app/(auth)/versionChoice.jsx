@@ -21,17 +21,8 @@ const versionChoice = () => {
       setError(true);
       return;
     }
-    router.push("sign-in");
+    router.replace(`${selectedVersion === "coach" ? "coachHome" : "home"}`);
   };
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      router.dismissAll();
-      router.replace("/(auth)/sign-in");
-    }, 15000000);
-
-    // Cleanup timer to prevent memory leaks
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     setError(false);
@@ -64,7 +55,7 @@ const versionChoice = () => {
             <Text className="font-pmedium text-xl ">
               Modo <Text className="text-secondary">Coach</Text>
             </Text>
-            <Icon icon="sports" size={40} />
+            <Icon icon="sports" size={60} />
           </View>
         </View>
       </TouchableOpacity>
@@ -84,7 +75,7 @@ const versionChoice = () => {
             <Text className="font-pmedium text-xl ">
               Modo <Text className="text-secondary">Atleta</Text>
             </Text>
-            <Icon icon="sports" size={40} />
+            <Icon icon="dumbbellRed" size={48} />
           </View>
         </View>
       </TouchableOpacity>

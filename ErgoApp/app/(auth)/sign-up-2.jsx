@@ -156,7 +156,9 @@ const SignUp2 = () => {
                         ? "bg-lightRed"
                         : "bg-offWhite border border-lightRed"
                     }`}
-                    textStyles="text-secondary"
+                    textStyles={`text-secondary ${
+                      user.heightUnit === "cm" && "font-psemibold"
+                    }`}
                     title={"cm"}
                     onPress={() => {
                       setPrevHeightUnit(user.heightUnit);
@@ -170,7 +172,9 @@ const SignUp2 = () => {
                         : "bg-offWhite border border-lightRed"
                     }`}
                     title={"ft"}
-                    textStyles="text-secondary"
+                    textStyles={`text-secondary ${
+                      user.heightUnit === "ft" && "font-psemibold"
+                    }`}
                     onPress={() => {
                       setPrevHeightUnit(user.heightUnit);
                       setUser({ ...user, heightUnit: "ft" });

@@ -93,7 +93,7 @@ const TabsLayout = () => {
               <TabIcon
                 icon={icons.person}
                 color={color}
-                name="Progreso"
+                name="Alumnos"
                 focused={focused}
               />
             ),
@@ -108,7 +108,7 @@ const TabsLayout = () => {
               <TabIcon
                 icon={icons.calendar}
                 color={color}
-                name="Mensajes"
+                name="Calendario"
                 focused={focused}
               />
             ),

@@ -37,6 +37,7 @@ export default function _layout() {
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(coach-tabs)" options={{ headerShown: false }} />
           <Stack.Screen
             name="myProfile"
             options={{
@@ -110,6 +111,45 @@ export default function _layout() {
               headerBackTitle: "\np",
               headerStyle: {
                 backgroundColor: "white",
+              },
+              headerShadowVisible: false,
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="addClass"
+            options={{
+              headerShown: true,
+              headerTitle: "",
+              headerBackTitle: "",
+              headerStyle: {
+                backgroundColor: "#F5F5F5",
+              },
+              headerShadowVisible: false,
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="setClassTime"
+            options={{
+              headerShown: true,
+              headerTitle: "",
+              headerBackTitle: "",
+              headerStyle: {
+                backgroundColor: "#F5F5F5",
+              },
+              headerShadowVisible: false,
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="setClassTime2"
+            options={{
+              headerShown: true,
+              headerTitle: "",
+              headerBackTitle: "",
+              headerStyle: {
+                backgroundColor: "#F5F5F5",
               },
               headerShadowVisible: false,
               headerBackTitleVisible: false,

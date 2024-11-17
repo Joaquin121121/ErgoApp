@@ -15,16 +15,21 @@ const FormField = ({
   onChange,
   maxLength,
   onEnter,
+  multiline,
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <View className={`space-y-2 w-full ${otherStyles}`}>
-      <Text className="text-base text-black-100 font-p-medium">
+    <View className={` w-full ${otherStyles}`}>
+      <Text className="text-darkGray font-pregular mb-1 text-16">
         {title === "Fecha" ? "Fecha de Nacimiento" : title}
       </Text>
-      <View className="w-full h-16 px-4 bg-white rounded-2xl shadow-sm flex-row items-center">
+      <View
+        className={`w-full bg-white rounded-2xl shadow-sm flex-row items-center px-4 ${
+          multiline ? "min-h-[120px] py-2" : "h-12"
+        }`}
+      >
         {title === "Fecha" ? (
           <Pressable
             className="w-full h-full flex-row items-center"
@@ -41,7 +46,9 @@ const FormField = ({
           </Pressable>
         ) : (
           <TextInput
-            className="flex-1 text-black font-pregular text-base h-[90%]"
+            className={`flex-1 text-black font-pregular text-base ${
+              multiline ? "h-full text-left" : "h-[90%]"
+            }`}
             value={value}
             placeholder={placeholder}
             placeholderTextColor="#9E9E9E"
@@ -53,6 +60,9 @@ const FormField = ({
             onChange={onChange}
             onSubmitEditing={onEnter}
             {...(maxLength !== undefined && { maxLength })}
+            multiline={multiline}
+            textAlignVertical={multiline ? "top" : "center"}
+            numberOfLines={multiline ? 4 : 1}
           />
         )}
 

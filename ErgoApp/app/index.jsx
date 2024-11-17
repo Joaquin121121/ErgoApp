@@ -13,7 +13,7 @@ export default function Index() {
           auth.currentUser
             ? version === "athlete"
               ? "home"
-              : "coach-home"
+              : "coachHome"
             : "versionChoice"
         }`
       );

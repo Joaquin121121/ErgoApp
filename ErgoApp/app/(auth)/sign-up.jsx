@@ -72,6 +72,7 @@ const SignUp = () => {
                   handleChangeText={(e) => setUser({ ...user, fullName: e })}
                   otherStyles="mt-8"
                   keyboardType="text"
+                  placeholder="Ingrese su nombre..."
                 />
                 <SelectField
                   title="sport"

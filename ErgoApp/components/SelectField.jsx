@@ -6,7 +6,13 @@ import icons from "../scripts/icons.js";
 import UserContext from "../contexts/UserContext.jsx";
 import { router } from "expo-router";
 
-const SelectField = ({ title, options, displayTitle }) => {
+const SelectField = ({
+  title,
+  options,
+  displayTitle,
+  customOnPress,
+  containerStyles,
+}) => {
   const { user, setUser } = useContext(UserContext);
 
   const onPress = () => {
@@ -17,12 +23,14 @@ const SelectField = ({ title, options, displayTitle }) => {
   };
 
   return (
-    <View className={`space-y-2 w-full mt-8`}>
+    <View className={`space-y-2 w-full mt-1`}>
       <TouchableOpacity
-        className="w-full h-16 px-4 bg-white rounded-2xl flex-row justify-between pl-4 pr-4 items-center shadow-sm"
-        onPress={onPress}
+        className={`w-full h-12 px-4 bg-white rounded-2xl flex-row justify-between pl-4 pr-4 items-center shadow-sm ${containerStyles}`}
+        onPress={() => {
+          customOnPress ? customOnPress() : onPress();
+        }}
       >
-        <Text className="flex-1 text-black font-pregular text-base ">
+        <Text className="flex-1 text-darkGray font-plight text-base ">
           {displayTitle}
         </Text>
         <View className="h-full flex flex-row items-center">

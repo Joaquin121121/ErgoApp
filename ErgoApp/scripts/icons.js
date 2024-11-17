@@ -48,6 +48,9 @@ import arrowBack from "../assets/icons/arrowBack.png";
 import person from "../assets/icons/person.png";
 import arrowBackRed from "../assets/icons/arrowBackRed.png";
 import postpone from "../assets/icons/postpone.png";
+import personRed from "../assets/icons/personRed.png";
+import schedule from "../assets/icons/schedule.png";
+import timer from "../assets/icons/timer.png";
 import fail from "../assets/icons/fail.png";
 import skipNext from "../assets/icons/skipNext.png";
 import confetti from "../assets/icons/confetti.png";
@@ -56,7 +59,11 @@ import chat from "../assets/icons/chat.png";
 import chatWhite from "../assets/icons/chatWhite.png";
 import sports from "../assets/icons/sports.png";
 import send from "../assets/icons/send.png";
+import group from "../assets/icons/group.png";
+import location from "../assets/icons/location.png";
+import planWhite from "../assets/icons/planWhite.png";
 import splash from "../assets/images/splash.gif";
+import addRed from "../assets/icons/addRed.png";
 
 import edit from "../assets/icons/edit.png";
 
@@ -106,6 +113,7 @@ export default {
   next,
   add,
   sports,
+  location,
   checkWhite,
   fastForward,
   arrowBack,
@@ -120,4 +128,10 @@ export default {
   chatWhite,
   send,
   person,
+  timer,
+  schedule,
+  personRed,
+  planWhite,
+  addRed,
+  group,
 };
