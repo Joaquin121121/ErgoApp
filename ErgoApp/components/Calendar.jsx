@@ -1,5 +1,5 @@
 import { View, Text, Animated, useWindowDimensions } from "react-native";
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import Day from "./Day";
 import Icon from "./Icon";
 import { TouchableOpacity } from "react-native";
@@ -141,6 +141,9 @@ const Calendar = () => {
     const [start, end] = dateRange.split("-");
     return `${start} - ${end}`;
   };
+  useEffect(() => {
+    console.log(calendarData);
+  }, []);
 
   return (
     <View className="h-[280] w-[85%] self-center flex gap-4 items-center">

@@ -87,7 +87,8 @@ const SignUp = () => {
               </>
             )}
             <FormField
-              title="Fecha"
+              title="Fecha de nacimiento"
+              date
               value={date.toLocaleDateString("es-ES")}
               toggleVisibility={toggleVisibility}
               pickerVisible={pickerVisible}

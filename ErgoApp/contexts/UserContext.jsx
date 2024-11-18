@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../scripts/firebase"; // Asegúrate de que la ruta sea correcta
+import { auth } from "../scripts/firebase";
 
 const UserContext = createContext();
 
@@ -27,28 +27,40 @@ export const UserProvider = ({ children }) => {
     targets: [],
     stats: [],
     registryDate: new Date().toISOString().split("T")[0],
-    version: "athlete",
+    version: "",
   });
 
-  const [version, setVersion] = useState("athlete");
+  const [version, setVersion] = useState("");
 
-  // Primero carga el usuario local
+  // Load both user and version from storage
   useEffect(() => {
-    const loadUser = async () => {
+    const loadData = async () => {
       try {
-        const storedUser = await AsyncStorage.getItem("user");
+        const [storedUser, storedVersion] = await Promise.all([
+          AsyncStorage.getItem("user"),
+          AsyncStorage.getItem("version"),
+        ]);
+
         if (storedUser) {
-          setUser(JSON.parse(storedUser));
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+        }
+
+        if (storedVersion) {
+          setVersion(storedVersion);
+        } else if (storedUser) {
+          // Fallback to user.version if no separate version is stored
+          const parsedUser = JSON.parse(storedUser);
+          setVersion(parsedUser.version || "athlete");
         }
       } catch (error) {
-        console.error("Error loading user:", error);
+        console.error("Error loading data:", error);
       }
     };
-    loadUser();
-    setVersion(user.version || version);
+    loadData();
   }, []);
 
-  // Guarda el usuario cuando cambia
+  // Save user when it changes
   useEffect(() => {
     const storeUser = async () => {
       try {
@@ -62,14 +74,28 @@ export const UserProvider = ({ children }) => {
       }
     };
     storeUser();
-    setVersion(user.version || version);
   }, [user]);
+
+  // Save version when it changes
+  useEffect(() => {
+    const storeVersion = async () => {
+      try {
+        if (version) {
+          await AsyncStorage.setItem("version", version);
+        } else {
+          await AsyncStorage.removeItem("version");
+        }
+      } catch (error) {
+        console.error("Error storing version:", error);
+      }
+    };
+    storeVersion();
+  }, [version]);
 
   const [authUser, setAuthUser] = useState(null);
 
   useEffect(() => {
     if (auth) {
-      // Verifica que auth existe
       const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
         console.log("Auth state changed:", firebaseUser);
         setAuthUser(firebaseUser);
@@ -79,7 +105,6 @@ export const UserProvider = ({ children }) => {
     }
   }, []);
 
-  // Y modifica el Provider para incluir authUser
   return (
     <UserContext.Provider
       value={{

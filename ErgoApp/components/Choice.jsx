@@ -5,10 +5,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import icons from "../scripts/icons";
 import { router } from "expo-router";
 import UserContext from "../contexts/UserContext";
-
-const Choice = ({ options, title }) => {
+import ClassContext from "../contexts/ClassContext";
+const Choice = ({ options, title, context = "user" }) => {
   const { user, setUser } = useContext(UserContext);
-  const [selectedOption, setSelectedOption] = useState(user[title]);
+  const { classInfo, setClassInfo } = useContext(ClassContext);
+
+  const contexts = {
+    user: { get: user, set: setUser },
+    class: { get: classInfo, set: setClassInfo },
+  };
+  const [selectedOption, setSelectedOption] = useState(
+    contexts[context].get[title]
+  );
 
   return (
     <View className="flex items-end justify-center w-full bg-white ">
@@ -19,7 +27,10 @@ const Choice = ({ options, title }) => {
             i === options.length - 1 ? "border-b-0" : ""
           }`}
           onPress={() => {
-            setUser({ ...user, [title]: options[i] });
+            contexts[context].set({
+              ...contexts[context].get,
+              [title]: options[i],
+            });
             router.back();
           }}
         >

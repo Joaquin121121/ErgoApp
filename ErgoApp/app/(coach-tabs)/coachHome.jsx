@@ -5,9 +5,9 @@ import UserContext from "../../contexts/UserContext";
 import icons from "../../scripts/icons";
 import ActivitySummary from "../../components/ActivitySummary";
 import NotificationDisplay from "../../components/NotificationDisplay";
+
 const coachHome = () => {
   const { user, setUser } = useContext(UserContext);
-
   const [activeIndex, setActiveIndex] = useState(0);
   const [activeNotificationIndex, setActiveNotificationIndex] = useState(0);
   const flatlistData = Array.from({ length: 3 }, (_, i) => ({ key: i }));
@@ -18,6 +18,7 @@ const coachHome = () => {
   const renderNotifications = (notification) => (
     <NotificationDisplay index={notification?.key} />
   );
+
   return (
     <ScrollView>
       <View className="mt-20 w-full self-center justify-start pl-4">

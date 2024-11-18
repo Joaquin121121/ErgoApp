@@ -64,6 +64,7 @@ import location from "../assets/icons/location.png";
 import planWhite from "../assets/icons/planWhite.png";
 import splash from "../assets/images/splash.gif";
 import addRed from "../assets/icons/addRed.png";
+import velocimeter from "../assets/icons/velocimeter.png";
 
 import edit from "../assets/icons/edit.png";
 
@@ -134,4 +135,5 @@ export default {
   planWhite,
   addRed,
   group,
+  velocimeter,
 };

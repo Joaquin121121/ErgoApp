@@ -12,10 +12,6 @@ const ActivitySummary = ({ index }) => {
 
   const item = activities[index || 0];
 
-  useEffect(() => {
-    console.log(index);
-  }, []);
-
   return (
     <View className="shadow-sm w-[85vw] self-center h-60 bg-white rounded-2xl ">
       <Text className="self-center text-xl mt-2">{item.name}</Text>

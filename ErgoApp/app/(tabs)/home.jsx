@@ -37,7 +37,7 @@ const Home = () => {
   useEffect(() => {
     setUser({
       ...user,
-      coaches: ["Julio Castillo", "Anibal Bustos", "Jorge Perez"],
+      coaches: ["55", "56", "78"],
       stats: {
         rsi: {
           currentValue: 2,
@@ -113,7 +113,6 @@ const Home = () => {
         },
       },
     });
-    console.log(user);
   }, []);
 
   return (

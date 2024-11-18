@@ -6,15 +6,17 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { router } from "expo-router";
 import icons from "../../scripts/icons";
 import Icon from "../../components/Icon";
 import TonalButton from "../../components/TonalButton";
+import UserContext from "../../contexts/UserContext";
 
 const versionChoice = () => {
   const [selectedVersion, setSelectedVersion] = useState(null);
   const [error, setError] = useState(false);
+  const { setVersion } = useContext(UserContext);
 
   const onPress = () => {
     if (!selectedVersion) {
@@ -26,6 +28,7 @@ const versionChoice = () => {
 
   useEffect(() => {
     setError(false);
+    setVersion(selectedVersion);
   }, [selectedVersion]);
   return (
     <ScrollView className="pt-20">

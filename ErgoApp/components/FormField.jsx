@@ -1,7 +1,6 @@
-import { View, Text, Image, Pressable } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { TextInput } from "react-native";
-import { TouchableOpacity } from "react-native";
 import icons from "../scripts/icons.js";
 
 const FormField = ({
@@ -16,22 +15,21 @@ const FormField = ({
   maxLength,
   onEnter,
   multiline,
+  date,
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <View className={` w-full ${otherStyles}`}>
-      <Text className="text-darkGray font-pregular mb-1 text-16">
-        {title === "Fecha" ? "Fecha de Nacimiento" : title}
-      </Text>
+      <Text className="text-darkGray font-pregular mb-1 text-16">{title}</Text>
       <View
         className={`w-full bg-white rounded-2xl shadow-sm flex-row items-center px-4 ${
           multiline ? "min-h-[120px] py-2" : "h-12"
         }`}
       >
-        {title === "Fecha" ? (
-          <Pressable
+        {date ? (
+          <TouchableOpacity
             className="w-full h-full flex-row items-center"
             onPress={toggleVisibility}
           >
@@ -43,7 +41,7 @@ const FormField = ({
               className="w-6 h-6"
               resizeMode="contain"
             />
-          </Pressable>
+          </TouchableOpacity>
         ) : (
           <TextInput
             className={`flex-1 text-black font-pregular text-base ${

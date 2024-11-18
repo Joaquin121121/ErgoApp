@@ -11,7 +11,7 @@ const CURRENT_COACH_KEY = "current_coach_id";
 export function ChatProvider({ children }) {
   const [currentCoach, setCurrentCoach] = useState(null);
   const [currentCoachId, setCurrentCoachId] = useState(null);
-  const [coaches, setCoaches] = useState([]);
+  const [coaches, setCoaches] = useState({}); // Changed to object instead of array
   const { user } = useContext(UserContext);
   const previousCoaches = useRef([]);
 
@@ -50,15 +50,15 @@ export function ChatProvider({ children }) {
     loadInitialState();
   }, []);
 
-  const updateCurrentCoach = async (coach) => {
-    setCurrentCoach(coach);
-    let currentId;
-    coaches.forEach((e) => {
-      if (e.name === coach) {
-        currentId = e.id;
-      }
-    });
-    setCurrentCoachId(currentId);
+  const updateCurrentCoach = async (coachName) => {
+    setCurrentCoach(coachName);
+    // Find coach ID by name in the coaches object
+    const coachId = Object.entries(coaches).find(
+      ([_, coach]) => coach.name === coachName
+    )?.[0];
+    if (coachId) {
+      setCurrentCoachId(coachId);
+    }
   };
 
   // Fetch coaches when user.coaches changes
@@ -69,9 +69,9 @@ export function ChatProvider({ children }) {
     const fetchCoaches = async () => {
       try {
         if (!user || coachesList.length === 0) {
-          console.log("No coaches to fetch, clearing coaches array");
-          setCoaches([]);
-          await AsyncStorage.setItem(COACHES_STORAGE_KEY, "[]");
+          console.log("No coaches to fetch, clearing coaches object");
+          setCoaches({});
+          await AsyncStorage.setItem(COACHES_STORAGE_KEY, "{}");
           return;
         }
 
@@ -89,9 +89,11 @@ export function ChatProvider({ children }) {
             console.log(`Coach data for ${coachId}:`, coachData);
 
             return {
-              name: coachData.name || coachId, // Use coach's name if available
-              id: coachData.uid || coachId,
-              lastUpdated: Date.now(),
+              id: coachId,
+              data: {
+                name: coachData.name || coachId,
+                lastUpdated: Date.now(),
+              },
             };
           } catch (error) {
             console.error(`Error fetching coach ${coachId}:`, error);
@@ -99,10 +101,16 @@ export function ChatProvider({ children }) {
           }
         });
 
-        const coachesData = (await Promise.all(coachPromises)).filter(Boolean);
+        const coachesData = (await Promise.all(coachPromises))
+          .filter(Boolean)
+          .reduce((acc, coach) => {
+            acc[coach.id] = coach.data;
+            return acc;
+          }, {});
+
         console.log("Fetched coaches data:", coachesData);
 
-        if (coachesData.length > 0) {
+        if (Object.keys(coachesData).length > 0) {
           setCoaches(coachesData);
           await AsyncStorage.setItem(
             COACHES_STORAGE_KEY,

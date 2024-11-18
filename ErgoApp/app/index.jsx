@@ -5,7 +5,7 @@ import { useEffect, useContext } from "react";
 import UserContext from "../contexts/UserContext.jsx";
 import { auth } from "../scripts/firebase.js";
 export default function Index() {
-  const { user, setUser, version } = useContext(UserContext);
+  const { user, setUser, version, setVersion } = useContext(UserContext);
   useEffect(() => {
     setTimeout(() => {
       router.replace(
@@ -14,7 +14,7 @@ export default function Index() {
             ? version === "athlete"
               ? "home"
               : "coachHome"
-            : "versionChoice"
+            : "coachHome"
         }`
       );
     }, 2000);
@@ -41,7 +41,7 @@ export default function Index() {
     });
   }, []);
   return (
-    <ScrollView contentContainerStyle={{ height: "100%" }}>
+    <View contentContainerStyle={{ height: "100%" }}>
       <View className="w-full flex justify-center items-center h-full px-4 bg-secondary">
         <Image
           source={icons.splash}
@@ -49,6 +49,6 @@ export default function Index() {
           style={{ width: "100%" }}
         ></Image>
       </View>
-    </ScrollView>
+    </View>
   );
 }

@@ -1,15 +1,15 @@
 import { View, Text, ScrollView } from "react-native";
 import React, { useContext, useState } from "react";
-import UserContext from "../../contexts/UserContext";
 import CustomFlatlist from "../../components/CustomFlatlist";
 import CoachDisplay from "../../components/CoachDisplay";
+import ChatContext from "../../contexts/ChatContext";
 
 const MyMessages = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { coaches } = useContext(ChatContext);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const flatlistData = user.coaches.map((e, i) => {
-    return { data: e, key: i.toString() };
+  const flatlistData = Object.values(coaches).map((e, i) => {
+    return { data: e.name, key: i.toString() };
   });
 
   const renderItem = (item) => <CoachDisplay name={item.data} />;
