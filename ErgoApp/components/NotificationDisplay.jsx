@@ -1,32 +1,12 @@
 import { View, Text } from "react-native";
-import React, { useEffect } from "react";
+import React, { useContext } from "react";
 import Icon from "./Icon";
 import TonalButton from "./TonalButton";
-
+import CoachContext from "../contexts/CoachContext";
 const NotificationDisplay = ({ index }) => {
-  const notifications = [
-    {
-      type: "message",
-      title: "Joaquín te envió un mensaje",
-      message:
-        "Hola profe, me esguinzé el tobillo anoche, cómo debería entrenar?",
-      imageDisplay: "Roger",
-    },
-    {
-      type: "pendingStudy",
-      title: "Estudio pendiente",
-      message: "16 estudios de asimetrías para el 14/11 (lunes que viene)",
-      imageDisplay: "plan",
-    },
-    {
-      type: "pendingStudy",
-      title: "Estudio pendiente",
-      message: "16 estudios de asimetrías para el 14/11 (lunes que viene)",
-      imageDisplay: "plan",
-    },
-  ];
+  const { coachInfo } = useContext(CoachContext);
 
-  const notification = notifications[index];
+  const notification = coachInfo.notifications[index];
 
   return (
     <View className="shadow-sm w-[85vw] self-center  bg-white rounded-2xl ">

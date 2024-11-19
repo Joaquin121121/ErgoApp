@@ -6,12 +6,16 @@ import CustomFlatlist from "../../components/CustomFlatlist";
 import ActivityDetailed from "../../components/ActivityDetailed";
 import TonalButton from "../../components/TonalButton";
 import { router } from "expo-router";
+import CoachContext from "../../contexts/CoachContext";
 
 const coachClasses = () => {
   const { user, setUser } = useContext(UserContext);
-
+  const { coachInfo } = useContext(CoachContext);
   const [activeIndex, setActiveIndex] = useState(0);
-  const flatlistData = Array.from({ length: 3 }, (_, i) => ({ key: i }));
+
+  const flatlistData = coachInfo.classes
+    ? Array.from({ length: coachInfo.classes.length }, (_, i) => ({ key: i }))
+    : [];
 
   const renderActivities = (activity) => (
     <ActivityDetailed index={activity?.key} />

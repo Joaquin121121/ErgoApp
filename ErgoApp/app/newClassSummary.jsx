@@ -1,14 +1,18 @@
 import { View, Text, ScrollView } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import ClassContext from "../contexts/ClassContext";
 import Icon from "../components/Icon";
 import OutlinedButton from "../components/OutlinedButton";
 import TonalButton from "../components/TonalButton";
 import { router } from "expo-router";
-
+import { db } from "../scripts/firebase";
+import { doc, setDoc, collection } from "firebase/firestore";
+import CoachContext from "../contexts/CoachContext";
 const newClassSummary = () => {
   const { classInfo } = useContext(ClassContext);
+  const { coachInfo, setCoachInfo } = useContext(CoachContext);
 
+  const [loading, setLoading] = useState(false);
   const difficultyColor =
     classInfo.relativeAttendance === "Elevada"
       ? "text-secondary"
@@ -89,6 +93,26 @@ const newClassSummary = () => {
     return `${hours}:${mins.toString().padStart(2, "0")}`;
   };
 
+  const onSaveClass = async () => {
+    const classRef = doc(collection(db, "classes"));
+    try {
+      setLoading(true);
+      await setDoc(classRef, {
+        ...classInfo,
+        id: classRef.id,
+      });
+      setCoachInfo((prev) => ({
+        ...prev,
+        classes: [...prev.classes, classInfo],
+      }));
+      router.replace("coachClasses");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <ScrollView>
       <Text className="text-2xl font-pregular self-center mt-8">Resumen</Text>
@@ -144,10 +168,9 @@ const newClassSummary = () => {
         <TonalButton
           title="Guardar"
           icon="checkWhite"
-          onPress={() => {
-            router.replace("coachClasses");
-          }}
+          onPress={onSaveClass}
           containerStyles="w-[40%]"
+          isLoading={loading}
         />
       </View>
     </ScrollView>

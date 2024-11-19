@@ -5,7 +5,6 @@ const ClassContext = createContext();
 export function ClassProvider({ children }) {
   const [classInfo, setClassInfo] = useState({
     name: "",
-    days: "",
     time: [],
     duration: "",
     attendance: 0,

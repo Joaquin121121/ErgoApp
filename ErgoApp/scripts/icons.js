@@ -65,7 +65,7 @@ import planWhite from "../assets/icons/planWhite.png";
 import splash from "../assets/images/splash.gif";
 import addRed from "../assets/icons/addRed.png";
 import velocimeter from "../assets/icons/velocimeter.png";
-
+import search from "../assets/icons/search.png";
 import edit from "../assets/icons/edit.png";
 
 export default {
@@ -121,6 +121,7 @@ export default {
   arrowBackRed,
   postpone,
   fail,
+  search,
   skipNext,
   confetti,
   splash,

@@ -24,6 +24,11 @@ const ViewPlan = () => {
         "20kg por lado",
         "cerca del fallo muscular",
       ],
+      categories: {
+        reps: "6-8",
+        sets: "3",
+        weight: "20",
+      },
     },
     {
       key: "1",
@@ -34,6 +39,11 @@ const ViewPlan = () => {
         "25kg por lado",
         "profundidad paralela",
       ],
+      categories: {
+        reps: "8-10",
+        sets: "4",
+        weight: "25",
+      },
     },
     {
       key: "2",
@@ -44,6 +54,11 @@ const ViewPlan = () => {
         "30kg por lado",
         "mantener espalda recta",
       ],
+      categories: {
+        reps: "5-6",
+        sets: "3",
+        weight: "30",
+      },
     },
     {
       key: "3",
@@ -54,6 +69,11 @@ const ViewPlan = () => {
         "15kg por lado",
         "codos cerca del cuerpo",
       ],
+      categories: {
+        reps: "8-12",
+        sets: "3",
+        weight: "15",
+      },
     },
     {
       key: "4",
@@ -64,6 +84,11 @@ const ViewPlan = () => {
         "15kg por lado",
         "control en el movimiento",
       ],
+      categories: {
+        reps: "6-8",
+        sets: "4",
+        weight: "15",
+      },
     },
     {
       key: "5",
@@ -74,6 +99,11 @@ const ViewPlan = () => {
         "peso corporal",
         "hasta mentón sobre barra",
       ],
+      categories: {
+        reps: "6-10",
+        sets: "3",
+        weight: "0",
+      },
     },
     {
       key: "6",
@@ -84,6 +114,11 @@ const ViewPlan = () => {
         "peso corporal",
         "90 grados de flexión",
       ],
+      categories: {
+        reps: "8-12",
+        sets: "3",
+        weight: "0",
+      },
     },
   ]);
 

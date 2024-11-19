@@ -105,6 +105,21 @@ export const UserProvider = ({ children }) => {
     }
   }, []);
 
+  useEffect(() => {
+    const updateUserInFirestore = async () => {
+      try {
+        if (auth?.currentUser && user) {
+          const userRef = doc(db, "userdata", auth.currentUser.uid);
+          await setDoc(userRef, user, { merge: true });
+        }
+      } catch (error) {
+        console.error("Error updating user in Firestore:", error);
+      }
+    };
+
+    updateUserInFirestore();
+  }, [user]);
+
   return (
     <UserContext.Provider
       value={{

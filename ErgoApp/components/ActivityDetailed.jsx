@@ -1,22 +1,24 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import OutlinedButton from "./OutlinedButton";
 import Icon from "./Icon";
 import TonalButton from "./TonalButton";
-
+import CoachContext from "../contexts/CoachContext";
+import { router } from "expo-router";
 const ActivityDetailed = ({ index }) => {
-  const isSessionToday = (daysString) => {
+  const { coachInfo } = useContext(CoachContext);
+  const isSessionToday = (timeSlots) => {
     // Spanish day names mapping (0 = Sunday, 1 = Monday, etc.)
     const dayNames = {
-      domingo: 0,
-      lunes: 1,
-      martes: 2,
-      miércoles: 3,
-      miercoles: 3,
-      jueves: 4,
-      viernes: 5,
-      sábado: 6,
-      sabado: 6,
+      Domingo: 0,
+      Lunes: 1,
+      Martes: 2,
+      Miércoles: 3,
+      Miercoles: 3,
+      Jueves: 4,
+      Viernes: 5,
+      Sábado: 6,
+      Sabado: 6,
     };
 
     // Get current day number (0-6)
@@ -24,14 +26,11 @@ const ActivityDetailed = ({ index }) => {
     // Get tomorrow's day number
     const tomorrow = (today + 1) % 7;
 
-    // Convert input string to array of clean day names
-    const activityDays = daysString
-      .toLowerCase()
-      .split(" y ")
-      .map((day) => day.trim());
+    // Get all days from all time slots
+    const allDays = timeSlots.flatMap((slot) => slot.days);
 
-    // Convert activity days to numbers
-    const dayNumbers = activityDays.map((day) => dayNames[day]);
+    // Convert days to numbers
+    const dayNumbers = allDays.map((day) => dayNames[day]);
 
     // Check if any of the days is today
     if (dayNumbers.includes(today)) {
@@ -45,35 +44,46 @@ const ActivityDetailed = ({ index }) => {
     return false;
   };
 
-  const activities = [
-    {
-      name: "HIIT",
-      days: "Lunes y Miércoles",
-      time: "19:45",
-      duration: "1:30",
-      attendance: 25,
-      relativeAttendance: "Elevada",
-      place: "Predio 2",
-    },
-    {
-      name: "Funcional",
-      days: "Martes y Jueves",
-      time: "18:30",
-      duration: "1:00",
-      attendance: 18,
-      relativeAttendance: "Media",
-      place: "Predio 1",
-    },
-    {
-      name: "Yoga",
-      days: "Viernes",
-      time: "09:00",
-      duration: "1:15",
-      attendance: 12,
-      relativeAttendance: "Baja",
-      place: "Sala 3",
-    },
-  ];
+  const getNextSessionDays = (timeSlots) => {
+    const dayNames = {
+      Domingo: 0,
+      Lunes: 1,
+      Martes: 2,
+      Miércoles: 3,
+      Miercoles: 3,
+      Jueves: 4,
+      Viernes: 5,
+      Sábado: 6,
+      Sabado: 6,
+    };
+
+    const today = new Date().getDay();
+    const allDays = timeSlots.flatMap((slot) => slot.days);
+    const dayNumbers = allDays.map((day) => dayNames[day]);
+
+    // Sort days based on proximity to current day
+    dayNumbers.sort((a, b) => {
+      const diffA = (a - today + 7) % 7;
+      const diffB = (b - today + 7) % 7;
+      return diffA - diffB;
+    });
+
+    return dayNumbers;
+  };
+
+  const activities = [...coachInfo.classes].sort((a, b) => {
+    const aDays = getNextSessionDays(a.time);
+    const bDays = getNextSessionDays(b.time);
+
+    const aNextDay = aDays[0];
+    const bNextDay = bDays[0];
+
+    const today = new Date().getDay();
+    const aDiff = (aNextDay - today + 7) % 7;
+    const bDiff = (bNextDay - today + 7) % 7;
+
+    return aDiff - bDiff;
+  });
 
   const activity = activities[index];
 
@@ -83,27 +93,33 @@ const ActivityDetailed = ({ index }) => {
       : activity.relativeAttendance === "Media"
       ? "text-yellow"
       : "text-darkGray";
+
+  const formatDays = (timeSlots) => {
+    const allDays = timeSlots.flatMap((slot) => slot.days);
+    return allDays.join(" y ");
+  };
+
   return (
     <View className="shadow-sm w-[85vw] self-center bg-white rounded-2xl ">
       <Text className="text-h2 font-pregular mt-4 self-center mb-6 ">
         {activity.name}
       </Text>
-      {isSessionToday(activity.days) && (
+      {isSessionToday(activity.time) && (
         <Text className="text-16 text-secondary  font-plight absolute top-2 right-2">
-          {isSessionToday(activity.days)}
+          {isSessionToday(activity.time)}
         </Text>
       )}
 
       <View className="flex-row items-center mb-4 ml-8">
         <Icon icon="calendar" />
         <Text className="text-16 font-pregular ml-4 text-darkGray">
-          {activity.days}
+          {formatDays(activity.time)}
         </Text>
       </View>
       <View className="flex-row items-center mb-4 ml-8">
         <Icon icon="schedule" />
         <Text className="text-16 font-pregular ml-4 text-darkGray">
-          <Text className="font-pregular">{activity.time}</Text> hs
+          <Text className="font-pregular">{activity.time[0].hour}</Text> hs
         </Text>
       </View>
       <View className="flex-row items-center mb-4 ml-8">
@@ -139,11 +155,13 @@ const ActivityDetailed = ({ index }) => {
         title="Ver Plan"
         icon="plan"
         containerStyles="self-center mt-6"
+        onPress={() => router.push("coachViewPlan")}
       />
       <TonalButton
         title="Entrenar"
         containerStyles="self-center mt-4 mb-4"
         icon="dumbbell"
+        onPress={() => router.push(`coachViewPlan?action=doExercises`)}
       />
     </View>
   );

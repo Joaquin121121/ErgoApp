@@ -75,11 +75,13 @@ const SignUp = () => {
                   placeholder="Ingrese su nombre..."
                 />
                 <SelectField
+                  containerStyles="mt-8"
                   title="sport"
                   options={sports}
                   displayTitle="Disciplina"
                 ></SelectField>
                 <SelectField
+                  containerStyles="mt-8"
                   title="category"
                   options={categories}
                   displayTitle="Categoría"

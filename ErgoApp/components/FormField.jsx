@@ -2,7 +2,7 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { TextInput } from "react-native";
 import icons from "../scripts/icons.js";
-
+import Icon from "./Icon";
 const FormField = ({
   title,
   value,
@@ -16,6 +16,7 @@ const FormField = ({
   onEnter,
   multiline,
   date,
+  icon,
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -73,6 +74,7 @@ const FormField = ({
             />
           </TouchableOpacity>
         )}
+        {icon && <Icon icon={icon} />}
       </View>
     </View>
   );
