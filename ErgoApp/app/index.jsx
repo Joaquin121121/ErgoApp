@@ -5,7 +5,7 @@ import { useEffect, useContext } from "react";
 import UserContext from "../contexts/UserContext.jsx";
 import { auth } from "../scripts/firebase.js";
 export default function Index() {
-  const { user, setUser, version, setVersion } = useContext(UserContext);
+  const { user, setUser, version } = useContext(UserContext);
   useEffect(() => {
     setTimeout(() => {
       router.replace(

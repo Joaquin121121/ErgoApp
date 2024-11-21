@@ -201,6 +201,58 @@ export default function _layout() {
                     headerBackTitleVisible: false,
                   }}
                 />
+                <Stack.Screen
+                  name="athleteInfo"
+                  options={{
+                    headerShown: true,
+                    headerTitle: "",
+                    headerBackTitle: "",
+                    headerStyle: {
+                      backgroundColor: "#F5F5F5",
+                    },
+                    headerShadowVisible: false,
+                    headerBackTitleVisible: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="trainingSolution"
+                  options={{
+                    headerShown: true,
+                    headerTitle: "",
+                    headerBackTitle: "",
+                    headerStyle: {
+                      backgroundColor: "#F5F5F5",
+                    },
+                    headerShadowVisible: false,
+                    headerBackTitleVisible: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="studies"
+                  options={{
+                    headerShown: true,
+                    headerTitle: "",
+                    headerBackTitle: "",
+                    headerStyle: {
+                      backgroundColor: "#F5F5F5",
+                    },
+                    headerShadowVisible: false,
+                    headerBackTitleVisible: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="studyDetails"
+                  options={{
+                    headerShown: true,
+                    headerTitle: "",
+                    headerBackTitle: "",
+                    headerStyle: {
+                      backgroundColor: "#F5F5F5",
+                    },
+                    headerShadowVisible: false,
+                    headerBackTitleVisible: false,
+                  }}
+                />
               </Stack>
             </CurrentClassProvider>
           </ClassProvider>

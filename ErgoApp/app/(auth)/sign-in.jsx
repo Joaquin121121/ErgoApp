@@ -15,7 +15,6 @@ import { Link, router } from "expo-router";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { app } from "../../scripts/firebase.js";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
-import { isLoading } from "expo-font";
 
 const SignIn = () => {
   const [form, setForm] = useState({ email: "", password: "" });

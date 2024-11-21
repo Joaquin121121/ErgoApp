@@ -4,6 +4,7 @@ import myStats from "../assets/icons/myStats.png";
 import myProfile from "../assets/icons/myProfile.png";
 import logo from "../assets/images/logo.png";
 import logoRed from "../assets/images/logo-red.png";
+import lightbulb from "../assets/icons/lightbulb.png";
 import eye from "../assets/images/eye.png";
 import eyeHide from "../assets/images/eye-hide.png";
 import google from "../assets/images/google.png";
@@ -49,17 +50,24 @@ import person from "../assets/icons/person.png";
 import arrowBackRed from "../assets/icons/arrowBackRed.png";
 import postpone from "../assets/icons/postpone.png";
 import personRed from "../assets/icons/personRed.png";
+import barChart from "../assets/icons/barChart.png";
 import schedule from "../assets/icons/schedule.png";
 import timer from "../assets/icons/timer.png";
 import fail from "../assets/icons/fail.png";
 import skipNext from "../assets/icons/skipNext.png";
 import confetti from "../assets/icons/confetti.png";
+import document from "../assets/icons/document.png";
 import logout from "../assets/icons/logout.png";
 import chat from "../assets/icons/chat.png";
 import chatWhite from "../assets/icons/chatWhite.png";
+import donut from "../assets/icons/donut.png";
+import target from "../assets/icons/target.png";
 import sports from "../assets/icons/sports.png";
 import send from "../assets/icons/send.png";
+import fat from "../assets/icons/fat.png";
 import group from "../assets/icons/group.png";
+import bone from "../assets/icons/bone.png";
+import measuringTape from "../assets/icons/measuringTape.png";
 import location from "../assets/icons/location.png";
 import planWhite from "../assets/icons/planWhite.png";
 import splash from "../assets/images/splash.gif";
@@ -67,6 +75,8 @@ import addRed from "../assets/icons/addRed.png";
 import velocimeter from "../assets/icons/velocimeter.png";
 import search from "../assets/icons/search.png";
 import edit from "../assets/icons/edit.png";
+import food from "../assets/icons/food.png";
+import sleep from "../assets/icons/sleep.png";
 
 export default {
   home,
@@ -81,19 +91,29 @@ export default {
   check,
   arrowForward,
   calendar,
+  document,
   dumbbell,
   hand,
+  fat,
+  bone,
   fire,
   rightArrow,
+  lightbulb,
+  donut,
   leftArrow,
   greenCheck,
   close,
   Roger,
+  barChart,
+  target,
+  food,
+  sleep,
   Emily,
   Luke,
   Sophie,
   fullRoger,
   fullEmily,
+  measuringTape,
   fullLuke,
   fullSophie,
   edit,

@@ -1,8 +1,12 @@
 Fondo con formas tipo wsp
 
-SIGNIN IMPLEMENTATION --> DID EVERYTHING HERE EXCEPT THE EAS BUILD PARTS AND THE EAS.JSON MOD
-https://www.youtube.com/watch?v=HY3O_wrvDsI&t=650s
-
 Responsividad
 
 Añadir dismissAll cuando hay multiples pantallas en stack
+
+Con Aníbal:
+    Establecer un plan de acción para diseñar el algoritmo de soluciones de entrenamiento.
+    Determinar en detalle que dimensiones deberían tener las soluciones de entrenamiento: Objetivos, zonas a enfocarse, fortalezas y debilidades, etc.
+    Formato de estudios: Como son normalmente? Que estudios tiene pensados para una primera iteración? En que formato están esos estudios?
+
+Reconocimiento de estudios formato pdf: Claude Vision anda bastante bien, precios entre 5-10 USD cada mil estudios.

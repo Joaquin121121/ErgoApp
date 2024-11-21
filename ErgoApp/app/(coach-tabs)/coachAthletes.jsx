@@ -5,22 +5,19 @@ import UserContext from "../../contexts/UserContext";
 import FormField from "../../components/FormField";
 import Icon from "../../components/Icon";
 import CoachContext from "../../contexts/CoachContext";
-
+import { router } from "expo-router";
 const coachAthletes = () => {
   const { user } = useContext(UserContext);
-  const { coachInfo } = useContext(CoachContext);
+  const { coachInfo, setSelectedAthlete } = useContext(CoachContext);
 
   const [search, setSearch] = useState("");
 
   const athletes = coachInfo.athletes;
 
-  useEffect(() => {
-    console.log(athletes);
-  }, [athletes]);
-
-  useEffect(() => {
-    console.log(search);
-  }, [search]);
+  const onPress = (athlete) => {
+    setSelectedAthlete(athlete.name);
+    router.push("/athleteInfo");
+  };
 
   return (
     <ScrollView>
@@ -50,7 +47,7 @@ const coachAthletes = () => {
           athlete.name.toLowerCase().includes(search.toLowerCase())
         )
         .map((e) => (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => onPress(e)}>
             <View className="self-center mb-4 bg-white w-[85vw] rounded-2xl shadow-sm">
               <Text className="font-pregular text-h3 self-center mt-2 mb-4">
                 {e.name}
