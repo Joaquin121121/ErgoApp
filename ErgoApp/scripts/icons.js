@@ -7,6 +7,8 @@ import logoRed from "../assets/images/logo-red.png";
 import lightbulb from "../assets/icons/lightbulb.png";
 import eye from "../assets/images/eye.png";
 import eyeHide from "../assets/images/eye-hide.png";
+import closeWhite from "../assets/icons/closeWhite.png";
+
 import google from "../assets/images/google.png";
 import check from "../assets/icons/check.png";
 import arrowForward from "../assets/icons/arrow-forward.png";
@@ -57,6 +59,7 @@ import fail from "../assets/icons/fail.png";
 import skipNext from "../assets/icons/skipNext.png";
 import confetti from "../assets/icons/confetti.png";
 import document from "../assets/icons/document.png";
+import documentRed from "../assets/icons/documentRed.png";
 import logout from "../assets/icons/logout.png";
 import chat from "../assets/icons/chat.png";
 import chatWhite from "../assets/icons/chatWhite.png";
@@ -75,6 +78,9 @@ import addRed from "../assets/icons/addRed.png";
 import velocimeter from "../assets/icons/velocimeter.png";
 import search from "../assets/icons/search.png";
 import edit from "../assets/icons/edit.png";
+import checkGray from "../assets/icons/checkGray.png";
+import doubleCheckGray from "../assets/icons/doubleCheckGray.png";
+import doubleCheckRed from "../assets/icons/doubleCheckRed.png";
 import food from "../assets/icons/food.png";
 import sleep from "../assets/icons/sleep.png";
 
@@ -84,6 +90,9 @@ export default {
   myStats,
   myProfile,
   logo,
+  checkGray,
+  doubleCheckGray,
+  doubleCheckRed,
   logoRed,
   eye,
   eyeHide,
@@ -96,6 +105,7 @@ export default {
   hand,
   fat,
   bone,
+  documentRed,
   fire,
   rightArrow,
   lightbulb,
@@ -157,4 +167,5 @@ export default {
   addRed,
   group,
   velocimeter,
+  closeWhite,
 };

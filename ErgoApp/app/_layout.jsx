@@ -253,6 +253,19 @@ export default function _layout() {
                     headerBackTitleVisible: false,
                   }}
                 />
+                <Stack.Screen
+                  name="dayInfo"
+                  options={{
+                    headerShown: true,
+                    headerTitle: "",
+                    headerBackTitle: "",
+                    headerStyle: {
+                      backgroundColor: "#F5F5F5",
+                    },
+                    headerShadowVisible: false,
+                    headerBackTitleVisible: false,
+                  }}
+                />
               </Stack>
             </CurrentClassProvider>
           </ClassProvider>

@@ -209,7 +209,7 @@ const CustomFlatlist = ({
           removeClippedSubviews={false}
         />
       </View>
-      {showIndicators && indicators.length > 0 && (
+      {showIndicators && indicators.length > 0 && data.length > 1 && (
         <View style={[styles.indicatorsContainer, indicatorContainerStyle]}>
           {indicators}
         </View>

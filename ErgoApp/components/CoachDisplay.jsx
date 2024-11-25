@@ -1,18 +1,20 @@
 import { View, Text } from "react-native";
-import React, { useContext } from "react";
-
+import React, { useContext, useEffect } from "react";
+import { auth } from "../scripts/firebase";
 import TonalButton from "../components/TonalButton";
 import { router } from "expo-router";
 import ChatContext from "../contexts/ChatContext";
 
 const CoachDisplay = ({ name }) => {
-  const { currentCoach, setCurrentCoach, coaches } = useContext(ChatContext);
-
+  const { coaches, setcurrentRecipient } = useContext(ChatContext);
   const handlePress = () => {
-    console.log(coaches);
-    setCurrentCoach(name);
-    router.push("chat");
+    setcurrentRecipient(name);
+    const coachId = Object.entries(coaches).find(
+      ([_, coach]) => coach.name === name
+    )?.[0];
+    router.push(`/chat?senderId=${auth.currentUser.uid}&receiverId=${coachId}`);
   };
+
   return (
     <View className="rounded-2xl bg-white shadow-sm w-[85vw] self-center">
       <View className="absolute top-2 right-2 rounded-full bg-darkGray h-8 w-8" />

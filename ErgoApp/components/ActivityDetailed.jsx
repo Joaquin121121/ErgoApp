@@ -6,7 +6,7 @@ import TonalButton from "./TonalButton";
 import CoachContext from "../contexts/CoachContext";
 import { router } from "expo-router";
 import { calendarData } from "../scripts/calendarData";
-const ActivityDetailed = ({ week, day, index }) => {
+const ActivityDetailed = ({ week, day, index, studies }) => {
   const { coachInfo } = useContext(CoachContext);
   const isSessionToday = (timeSlots) => {
     // Spanish day names mapping (0 = Sunday, 1 = Monday, etc.)
@@ -96,7 +96,7 @@ const ActivityDetailed = ({ week, day, index }) => {
       : activities[index];
 
   const relativeAttendanceColor =
-    activity.relativeAttendance === "Elevada"
+    activity.relativeAttendance === "Alta"
       ? "text-green"
       : activity.relativeAttendance === "Media"
       ? "text-yellow"
@@ -117,13 +117,14 @@ const ActivityDetailed = ({ week, day, index }) => {
           {!week && isSessionToday(activity.time)}
         </Text>
       )}
-
-      <View className="flex-row items-center mb-4 ml-8">
-        <Icon icon="calendar" />
-        <Text className="text-16 font-pregular ml-4 text-darkGray">
-          {formatDays(activity.time)}
-        </Text>
-      </View>
+      {!studies && (
+        <View className="flex-row items-center mb-4 ml-8">
+          <Icon icon="calendar" />
+          <Text className="text-16 font-pregular ml-4 text-darkGray">
+            {formatDays(activity.time)}
+          </Text>
+        </View>
+      )}
       <View className="flex-row items-center mb-4 ml-8">
         <Icon icon="schedule" />
         <Text className="text-16 font-pregular ml-4 text-darkGray">
@@ -144,15 +145,17 @@ const ActivityDetailed = ({ week, day, index }) => {
           participantes
         </Text>
       </View>
-      <View className="flex-row items-center mb-4 ml-8">
-        <Icon icon="group" />
-        <Text className="text-16 font-pregular ml-4 text-darkGray">
-          Asistencia:{" "}
-          <Text className={relativeAttendanceColor + " font-pregular"}>
-            {activity.relativeAttendance}
+      {!studies && (
+        <View className="flex-row items-center mb-4 ml-8">
+          <Icon icon="group" />
+          <Text className="text-16 font-pregular ml-4 text-darkGray">
+            Asistencia:{" "}
+            <Text className={relativeAttendanceColor + " font-pregular"}>
+              {activity.relativeAttendance}
+            </Text>
           </Text>
-        </Text>
-      </View>
+        </View>
+      )}
       <View className="flex-row items-center mb-4 ml-8">
         <Icon icon="location" />
         <Text className="text-16 font-pregular ml-4 text-secondary">

@@ -6,10 +6,10 @@ const CoachContext = createContext();
 export function CoachProvider({ children }) {
   const [coachInfo, setCoachInfo] = useState({
     name: "",
-    classes: [],
 
     athletes: [
       {
+        uid: "a1",
         name: "Joaquín Berrini",
         age: 28,
         sport: "Football",
@@ -32,6 +32,7 @@ export function CoachProvider({ children }) {
         },
       },
       {
+        uid: "a2",
         name: "Maria Garcia",
         age: 24,
         sport: "Basketball",
@@ -51,6 +52,7 @@ export function CoachProvider({ children }) {
         },
       },
       {
+        uid: "a3",
         name: "John Smith",
         age: 19,
         sport: "Soccer",
@@ -73,6 +75,7 @@ export function CoachProvider({ children }) {
         },
       },
       {
+        uid: "a4",
         name: "Sarah Wilson",
         age: 22,
         sport: "Tennis",
@@ -95,6 +98,7 @@ export function CoachProvider({ children }) {
         },
       },
       {
+        uid: "a5",
         name: "David Lee",
         age: 25,
         sport: "Swimming",
@@ -117,6 +121,7 @@ export function CoachProvider({ children }) {
         },
       },
       {
+        uid: "a6",
         name: "Ana Martinez",
         age: 21,
         sport: "Volleyball",
@@ -139,6 +144,7 @@ export function CoachProvider({ children }) {
         },
       },
       {
+        uid: "a7",
         name: "James Brown",
         age: 27,
         sport: "Rugby",
@@ -158,6 +164,7 @@ export function CoachProvider({ children }) {
         },
       },
       {
+        uid: "a8",
         name: "Emma Davis",
         age: 23,
         sport: "Athletics",
@@ -180,6 +187,7 @@ export function CoachProvider({ children }) {
         },
       },
       {
+        uid: "a9",
         name: "Lucas Wang",
         age: 20,
         sport: "Baseball",
@@ -202,6 +210,7 @@ export function CoachProvider({ children }) {
         },
       },
       {
+        uid: "a10",
         name: "Sofia Costa",
         age: 26,
         sport: "Hockey",
@@ -224,7 +233,122 @@ export function CoachProvider({ children }) {
         },
       },
     ],
-    notifications: [],
+    notifications: [
+      {
+        type: "message",
+        title: "Joaquín te envió un mensaje",
+        message:
+          "Hola profe, me esguinzé el tobillo anoche, cómo debería entrenar?",
+        imageDisplay: "Roger",
+        uid: "a1",
+      },
+      {
+        type: "pendingStudy",
+        title: "Estudio pendiente",
+        message: "16 estudios de asimetrías para el 14/11 (lunes que viene)",
+        imageDisplay: "plan",
+        date: "14/11/2024",
+      },
+      {
+        type: "pendingStudy",
+        title: "Estudio pendiente",
+        message: "16 estudios de asimetrías para el 14/11 (lunes que viene)",
+        imageDisplay: "plan",
+        date: "14/11/2024",
+      },
+    ],
+    classes: [
+      {
+        name: "Yoga",
+        time: [
+          {
+            days: ["Lunes", "Miércoles", "Viernes"],
+            hour: "09:00",
+          },
+        ],
+        duration: "1:15",
+        attendance: 12,
+        relativeAttendance: "Baja",
+        place: "Sala 3",
+        difficulty: "Baja",
+        description: "Clase de yoga para mejorar flexibilidad y equilibrio",
+      },
+      {
+        name: "HIIT",
+        time: [
+          {
+            days: ["Lunes", "Jueves"],
+            hour: "10:30",
+          },
+        ],
+        duration: "0:45",
+        attendance: 24,
+        relativeAttendance: "Alta",
+        place: "Sala 1",
+        difficulty: "Elevada",
+        description: "Entrenamiento intervalado de alta intensidad",
+      },
+      {
+        name: "Pilates",
+        time: [
+          {
+            days: ["Martes", "Viernes"],
+            hour: "17:00",
+          },
+        ],
+        duration: "1:00",
+        attendance: 18,
+        relativeAttendance: "Media",
+        place: "Sala 2",
+        difficulty: "Media",
+        description: "Ejercicios de control postural y fortalecimiento",
+      },
+      {
+        name: "Spinning",
+        time: [
+          {
+            days: ["Miércoles", "Sábado"],
+            hour: "19:30",
+          },
+        ],
+        duration: "0:45",
+        attendance: 30,
+        relativeAttendance: "Alta",
+        place: "Sala Spinning",
+        difficulty: "Elevada",
+        description: "Clase de ciclismo indoor de alta intensidad",
+      },
+      {
+        name: "Funcional",
+        time: [
+          {
+            days: ["Martes", "Jueves", "Sábado"],
+            hour: "08:00",
+          },
+        ],
+        duration: "1:00",
+        attendance: 15,
+        relativeAttendance: "Media",
+        place: "Sala 1",
+        difficulty: "Media",
+        description: "Entrenamiento funcional con ejercicios variados",
+      },
+      {
+        name: "Musculación",
+        time: [
+          {
+            days: ["Lunes", "Miércoles", "Viernes"],
+            hour: "11:00",
+          },
+        ],
+        duration: "1:30",
+        attendance: 20,
+        relativeAttendance: "Media",
+        place: "Sala de Pesas",
+        difficulty: "Media",
+        description: "Entrenamiento de fuerza con pesas y máquinas",
+      },
+    ],
   });
 
   const [selectedAthlete, setSelectedAthlete] = useState("");

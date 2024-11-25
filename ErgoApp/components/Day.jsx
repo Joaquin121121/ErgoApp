@@ -19,6 +19,7 @@ const Day = ({ day, sessions, coach, currentWeekIndex }) => {
       );
     }
   };
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View className="w-[110px] h-full shadow-sm bg-white rounded-2xl flex items-center">

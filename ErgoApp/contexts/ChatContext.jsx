@@ -9,9 +9,8 @@ const COACHES_STORAGE_KEY = "cached_coaches";
 const CURRENT_COACH_KEY = "current_coach_id";
 
 export function ChatProvider({ children }) {
-  const [currentCoach, setCurrentCoach] = useState(null);
-  const [currentCoachId, setCurrentCoachId] = useState(null);
   const [coaches, setCoaches] = useState({}); // Changed to object instead of array
+  const [currentRecipient, setCurrentRecipient] = useState("");
   const { user } = useContext(UserContext);
   const previousCoaches = useRef([]);
 
@@ -39,7 +38,7 @@ export function ChatProvider({ children }) {
         }
 
         if (savedCoachId) {
-          setCurrentCoachId(savedCoachId);
+          setcurrentRecipientId(savedCoachId);
           console.log("Set saved coach ID:", savedCoachId);
         }
       } catch (error) {
@@ -49,17 +48,6 @@ export function ChatProvider({ children }) {
 
     loadInitialState();
   }, []);
-
-  const updateCurrentCoach = async (coachName) => {
-    setCurrentCoach(coachName);
-    // Find coach ID by name in the coaches object
-    const coachId = Object.entries(coaches).find(
-      ([_, coach]) => coach.name === coachName
-    )?.[0];
-    if (coachId) {
-      setCurrentCoachId(coachId);
-    }
-  };
 
   // Fetch coaches when user.coaches changes
   useEffect(() => {
@@ -134,10 +122,9 @@ export function ChatProvider({ children }) {
   }, [user?.coaches]);
 
   const contextValue = {
-    currentCoach,
-    setCurrentCoach: updateCurrentCoach,
-    currentCoachId,
     coaches,
+    currentRecipient,
+    setCurrentRecipient,
   };
 
   return (

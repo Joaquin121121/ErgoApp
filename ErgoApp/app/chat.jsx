@@ -8,8 +8,7 @@ import {
   onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -22,18 +21,17 @@ import {
   Keyboard,
 } from "react-native";
 import { db, auth } from "../scripts/firebase";
-import ChatContext from "../contexts/ChatContext";
 import Icon from "../components/Icon";
+import { useLocalSearchParams } from "expo-router";
 
 const ChatScreen = () => {
+  const { senderId, receiverId } = useLocalSearchParams();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
-  const { currentCoachId } = useContext(ChatContext);
-
-  const currentUserId = auth.currentUser.uid;
-  const otherUserId = currentCoachId;
+  const currentUserId = senderId;
+  const otherUserId = receiverId;
 
   useEffect(() => {
     const keyboardWillShow = Keyboard.addListener(
@@ -132,7 +130,7 @@ const ChatScreen = () => {
   };
 
   useEffect(() => {
-    console.log(auth.currentUser.uid, otherUserId);
+    console.log(senderId);
     const chatId = getChatId(currentUserId, otherUserId);
     const chatRef = collection(db, `chats/${chatId}/messages`);
 

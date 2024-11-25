@@ -13,86 +13,105 @@ const Calendar = ({ coach }) => {
     return parseInt(dayA) - parseInt(dayB);
   });
 
+  // Find the current week index
+  const getCurrentWeekIndex = () => {
+    const today = new Date();
+    return sortedWeeks.findIndex((weekRange) => {
+      const [startDate] = weekRange.split("-");
+      const [day, month, year] = startDate.split("/").map(Number);
+      const weekStart = new Date(year, month - 1, day);
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekEnd.getDate() + 6);
+
+      return today >= weekStart && today <= weekEnd;
+    });
+  };
+
+  const initialWeekIndex = getCurrentWeekIndex();
   const [currentWeekIndex, setCurrentWeekIndex] = useState(
-    sortedWeeks.length - 1
+    initialWeekIndex !== -1 ? initialWeekIndex : sortedWeeks.length - 1
   );
+
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef(null);
   const { width: screenWidth } = useWindowDimensions();
   const CONTAINER_WIDTH = screenWidth * 0.85;
 
-  const renderWeek = useCallback(({ item, index }) => {
-    const inputRange = [
-      (index - 1) * CONTAINER_WIDTH,
-      index * CONTAINER_WIDTH,
-      (index + 1) * CONTAINER_WIDTH,
-    ];
+  const renderWeek = useCallback(
+    ({ item, index }) => {
+      const inputRange = [
+        (index - 1) * CONTAINER_WIDTH,
+        index * CONTAINER_WIDTH,
+        (index + 1) * CONTAINER_WIDTH,
+      ];
 
-    const opacity = scrollX.interpolate({
-      inputRange,
-      outputRange: [0, 1, 0],
-      extrapolate: "clamp",
-    });
+      const opacity = scrollX.interpolate({
+        inputRange,
+        outputRange: [0, 1, 0],
+        extrapolate: "clamp",
+      });
 
-    const scale = scrollX.interpolate({
-      inputRange,
-      outputRange: [0.9, 1, 0.9],
-      extrapolate: "clamp",
-    });
+      const scale = scrollX.interpolate({
+        inputRange,
+        outputRange: [0.9, 1, 0.9],
+        extrapolate: "clamp",
+      });
 
-    return (
-      <Animated.View
-        style={{
-          width: CONTAINER_WIDTH,
-          opacity,
-          transform: [{ scale }],
-        }}
-        className="py-2" // Added padding to prevent cropping
-      >
-        <View className="gap-4">
-          {/* First row - Monday to Wednesday */}
-          <View className="w-full h-[110px] flex flex-row justify-between">
-            {item.days.slice(0, 3).map((day) => {
-              const dayData = item.data[day];
-              const hasActivity = dayData.scheduledActivities.length > 0;
+      return (
+        <Animated.View
+          style={{
+            width: CONTAINER_WIDTH,
+            opacity,
+            transform: [{ scale }],
+          }}
+          className="py-2"
+        >
+          <View className="gap-4">
+            {/* First row - Monday to Wednesday */}
+            <View className="w-full h-[110px] flex flex-row justify-between">
+              {item.days.slice(0, 3).map((day) => {
+                const dayData = item.data[day];
+                const hasActivity = dayData.scheduledActivities.length > 0;
 
-              return (
-                <Day
-                  key={day}
-                  day={dayTranslations[day]}
-                  sessions={
-                    hasActivity ? dayData.scheduledActivities : "restDay"
-                  }
-                  coach={coach}
-                  currentWeekIndex={currentWeekIndex}
-                />
-              );
-            })}
+                return (
+                  <Day
+                    key={day}
+                    day={dayTranslations[day]}
+                    sessions={
+                      hasActivity ? dayData.scheduledActivities : "restDay"
+                    }
+                    coach={coach}
+                    currentWeekIndex={currentWeekIndex}
+                  />
+                );
+              })}
+            </View>
+
+            {/* Second row - Thursday to Saturday */}
+            <View className="w-full h-[110px] flex flex-row justify-between">
+              {item.days.slice(3, 6).map((day) => {
+                const dayData = item.data[day];
+                const hasActivity = dayData.scheduledActivities.length > 0;
+
+                return (
+                  <Day
+                    key={day}
+                    day={dayTranslations[day]}
+                    sessions={
+                      hasActivity ? dayData.scheduledActivities : "restDay"
+                    }
+                    coach={coach}
+                    currentWeekIndex={currentWeekIndex}
+                  />
+                );
+              })}
+            </View>
           </View>
-
-          {/* Second row - Thursday to Saturday */}
-          <View className="w-full h-[110px] flex flex-row justify-between">
-            {item.days.slice(3, 6).map((day) => {
-              const dayData = item.data[day];
-              const hasActivity = dayData.scheduledActivities.length > 0;
-
-              return (
-                <Day
-                  key={day}
-                  day={dayTranslations[day]}
-                  sessions={
-                    hasActivity ? dayData.scheduledActivities : "restDay"
-                  }
-                  coach={coach}
-                  currentWeekIndex={currentWeekIndex}
-                />
-              );
-            })}
-          </View>
-        </View>
-      </Animated.View>
-    );
-  }, []);
+        </Animated.View>
+      );
+    },
+    [CONTAINER_WIDTH, currentWeekIndex, coach]
+  );
 
   const handleScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { x: scrollX } } }],
@@ -142,12 +161,26 @@ const Calendar = ({ coach }) => {
     return `${start} - ${end}`;
   };
 
+  // Set initial scroll position after component mount
+  useEffect(() => {
+    if (flatListRef.current && initialWeekIndex !== -1) {
+      flatListRef.current.scrollToOffset({
+        offset: initialWeekIndex * CONTAINER_WIDTH,
+        animated: false,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log(currentWeekIndex);
+  }, [currentWeekIndex]);
+
   return (
     <View className="h-[280] w-[85%] self-center flex gap-4 items-center">
       <View
         style={{
-          height: 250, // Increased height to prevent cropping
-          overflow: "visible", // Allow content to overflow
+          height: 250,
+          overflow: "visible",
         }}
         className="w-full"
       >
@@ -163,7 +196,6 @@ const Calendar = ({ coach }) => {
           snapToInterval={CONTAINER_WIDTH}
           decelerationRate="fast"
           bounces={false}
-          initialScrollIndex={sortedWeeks.length - 1}
           getItemLayout={useCallback(
             (_, index) => ({
               length: CONTAINER_WIDTH,
@@ -176,7 +208,7 @@ const Calendar = ({ coach }) => {
             alignItems: "center",
           }}
           style={{
-            overflow: "visible", // Allow FlatList content to overflow
+            overflow: "visible",
           }}
         />
       </View>

@@ -21,9 +21,24 @@ const generateWeeks = () => {
   const weeks = {};
   const activities = ["Yoga", "HIIT", "Musculación"];
   const times = ["09:00", "10:00", "11:00"];
+  const durations = ["01:00", "00:45", "01:30"];
+  const places = ["Sala Principal", "Gimnasio Central", "Sala de Pesas"];
 
-  // Start from the first date in original data
-  let currentDate = new Date(2024, 9, 16); // Month is 0-based, so 9 is October
+  // Study session data
+  const studySession = {
+    name: "Antropometría",
+    time: "14:00",
+    place: "Consultorio Médico",
+    athletes: [
+      "Juan Pérez",
+      "María García",
+      "Carlos Rodríguez",
+      "Ana Martínez",
+    ],
+  };
+
+  // Start from October 16, 2024
+  let currentDate = new Date(2024, 9, 16);
 
   for (let week = 0; week < 8; week++) {
     const startDate = `${currentDate.getDate()}/${
@@ -42,15 +57,21 @@ const generateWeeks = () => {
           {
             name: activities[week % 3],
             time: times[week % 3],
+            duration: durations[week % 3],
+            attendance: Math.floor(Math.random() * 6) + 15, // Random attendance between 15-20
+            place: places[week % 3],
           },
         ],
-        scheduledStudies: [],
+        scheduledStudies: week % 4 === 0 ? [studySession] : [], // Add study session every 4th week
       },
       Tuesday: {
         scheduledActivities: [
           {
             name: activities[(week + 1) % 3],
             time: times[(week + 1) % 3],
+            duration: durations[(week + 1) % 3],
+            attendance: Math.floor(Math.random() * 6) + 15,
+            place: places[(week + 1) % 3],
           },
         ],
         scheduledStudies: [],
@@ -60,6 +81,9 @@ const generateWeeks = () => {
           {
             name: activities[(week + 2) % 3],
             time: times[(week + 2) % 3],
+            duration: durations[(week + 2) % 3],
+            attendance: Math.floor(Math.random() * 6) + 15,
+            place: places[(week + 2) % 3],
           },
         ],
         scheduledStudies: [],
@@ -69,6 +93,9 @@ const generateWeeks = () => {
           {
             name: activities[week % 3],
             time: times[week % 3],
+            duration: durations[week % 3],
+            attendance: Math.floor(Math.random() * 6) + 15,
+            place: places[week % 3],
           },
         ],
         scheduledStudies: [],
@@ -78,6 +105,9 @@ const generateWeeks = () => {
           {
             name: activities[(week + 1) % 3],
             time: times[(week + 1) % 3],
+            duration: durations[(week + 1) % 3],
+            attendance: Math.floor(Math.random() * 6) + 15,
+            place: places[(week + 1) % 3],
           },
         ],
         scheduledStudies: [],
@@ -87,6 +117,9 @@ const generateWeeks = () => {
           {
             name: activities[(week + 2) % 3],
             time: times[(week + 2) % 3],
+            duration: durations[(week + 2) % 3],
+            attendance: Math.floor(Math.random() * 6) + 15,
+            place: places[(week + 2) % 3],
           },
         ],
         scheduledStudies: [],

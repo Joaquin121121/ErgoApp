@@ -6,6 +6,8 @@ import ActivityDetailed from "../components/ActivityDetailed";
 import CustomFlatlist from "../components/CustomFlatlist";
 import TonalButton from "../components/TonalButton";
 import OutlinedButton from "../components/OutlinedButton";
+import PendingStudy from "../components/PendingStudy";
+
 import { router } from "expo-router";
 const dayInfo = () => {
   const { currentWeekIndex, day } = useLocalSearchParams();
@@ -38,7 +40,6 @@ const dayInfo = () => {
 
     const formattedDay = date.getDate().toString().padStart(2, "0");
     const formattedMonth = (date.getMonth() + 1).toString().padStart(2, "0");
-    const formattedYear = date.getFullYear();
 
     return `${dayTranslations[day]} ${formattedDay}/${formattedMonth}`;
   };
@@ -48,7 +49,20 @@ const dayInfo = () => {
   const scheduledActivities =
     calendarData[currentWeekIndex][day].scheduledActivities;
 
+  const studies = calendarData[currentWeekIndex][day].scheduledStudies;
+
+  const studiesFlatlistData = studies
+    ? Array.from({ length: studies.length }, (_, i) => ({
+        key: i,
+      }))
+    : [];
+
+  const renderStudies = (study) => (
+    <PendingStudy studies={studies} studyKey={study.key} />
+  );
+
   const [activeIndex, setActiveIndex] = useState(0);
+  const [activeStudyIndex, setActiveStudyIndex] = useState(0);
 
   const flatlistData = scheduledActivities
     ? Array.from({ length: scheduledActivities.length }, (_, i) => ({
@@ -57,7 +71,12 @@ const dayInfo = () => {
     : [];
 
   const renderActivities = (activity) => (
-    <ActivityDetailed index={activity?.key} day={day} week={currentWeekIndex} />
+    <ActivityDetailed
+      index={activity?.key}
+      day={day}
+      week={currentWeekIndex}
+      studies={studies.length}
+    />
   );
 
   return (
@@ -70,8 +89,18 @@ const dayInfo = () => {
         renderContent={renderActivities}
         activeIndex={activeIndex}
         setActiveIndex={setActiveIndex}
-        height={460}
+        height={studies.length ? 380 : 460}
       />
+      <View className="mt-4" />
+      {studies.length && (
+        <CustomFlatlist
+          data={studiesFlatlistData}
+          renderContent={renderStudies}
+          activeIndex={activeStudyIndex}
+          setActiveIndex={setActiveStudyIndex}
+          height={180}
+        />
+      )}
       <OutlinedButton
         inverse
         icon="arrowBackRed"
