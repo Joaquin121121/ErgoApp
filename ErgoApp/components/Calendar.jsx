@@ -5,7 +5,7 @@ import Icon from "./Icon";
 import { TouchableOpacity } from "react-native";
 import { calendarData, dayTranslations } from "../scripts/calendarData";
 
-const Calendar = () => {
+const Calendar = ({ coach }) => {
   // Sort weeks in chronological order
   const sortedWeeks = Object.keys(calendarData).sort((a, b) => {
     const [dayA] = a.split("-")[0].split("/").reverse();
@@ -60,11 +60,11 @@ const Calendar = () => {
                 <Day
                   key={day}
                   day={dayTranslations[day]}
-                  sessionName={
-                    hasActivity
-                      ? dayData.scheduledActivities[0].name
-                      : "restDay"
+                  sessions={
+                    hasActivity ? dayData.scheduledActivities : "restDay"
                   }
+                  coach={coach}
+                  currentWeekIndex={currentWeekIndex}
                 />
               );
             })}
@@ -80,11 +80,11 @@ const Calendar = () => {
                 <Day
                   key={day}
                   day={dayTranslations[day]}
-                  sessionName={
-                    hasActivity
-                      ? dayData.scheduledActivities[0].name
-                      : "restDay"
+                  sessions={
+                    hasActivity ? dayData.scheduledActivities : "restDay"
                   }
+                  coach={coach}
+                  currentWeekIndex={currentWeekIndex}
                 />
               );
             })}
@@ -141,9 +141,6 @@ const Calendar = () => {
     const [start, end] = dateRange.split("-");
     return `${start} - ${end}`;
   };
-  useEffect(() => {
-    console.log(calendarData);
-  }, []);
 
   return (
     <View className="h-[280] w-[85%] self-center flex gap-4 items-center">

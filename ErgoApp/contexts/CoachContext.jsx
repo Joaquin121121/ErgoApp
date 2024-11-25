@@ -277,7 +277,12 @@ export function CoachProvider({ children }) {
 
   return (
     <CoachContext.Provider
-      value={{ coachInfo, setCoachInfo, selectedAthlete, setSelectedAthlete }}
+      value={{
+        coachInfo,
+        setCoachInfo,
+        selectedAthlete,
+        setSelectedAthlete,
+      }}
     >
       {children}
     </CoachContext.Provider>

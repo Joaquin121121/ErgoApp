@@ -136,6 +136,21 @@ const coachHome = () => {
           difficulty: "Media",
           description: "Entrenamiento funcional con ejercicios variados",
         },
+        {
+          name: "Musculación",
+          time: [
+            {
+              days: ["Lunes", "Miércoles", "Viernes"],
+              hour: "11:00",
+            },
+          ],
+          duration: "1:30",
+          attendance: 20,
+          relativeAttendance: "Media",
+          place: "Sala de Pesas",
+          difficulty: "Media",
+          description: "Entrenamiento de fuerza con pesas y máquinas",
+        },
       ],
     });
   }, []);
@@ -155,14 +170,22 @@ const coachHome = () => {
       <Text className="text-2xl font-pregular mt-8 ml-4">
         Actividades de Hoy
       </Text>
+      {activitiesToday.length === 0 ? (
+        <View className="shadow-sm w-[85vw] self-center h-40 flex items-center justify-center p-4 bg-white rounded-2xl mt-4">
+          <Text className="text-16 font-plight  ">
+            No tienes actividades programadas para hoy
+          </Text>
+        </View>
+      ) : (
+        <CustomFlatlist
+          data={flatlistData}
+          renderContent={renderActivities}
+          activeIndex={activeIndex}
+          setActiveIndex={setActiveIndex}
+          height={240}
+        />
+      )}
 
-      <CustomFlatlist
-        data={flatlistData}
-        renderContent={renderActivities}
-        activeIndex={activeIndex}
-        setActiveIndex={setActiveIndex}
-        height={240}
-      />
       <Text className="font-pregular text-h3 mt-4 ml-4">Notificaciones</Text>
       <CustomFlatlist
         data={notificationsFlatlistData}

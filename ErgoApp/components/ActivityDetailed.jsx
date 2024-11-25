@@ -1,11 +1,12 @@
 import { View, Text } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import OutlinedButton from "./OutlinedButton";
 import Icon from "./Icon";
 import TonalButton from "./TonalButton";
 import CoachContext from "../contexts/CoachContext";
 import { router } from "expo-router";
-const ActivityDetailed = ({ index }) => {
+import { calendarData } from "../scripts/calendarData";
+const ActivityDetailed = ({ week, day, index }) => {
   const { coachInfo } = useContext(CoachContext);
   const isSessionToday = (timeSlots) => {
     // Spanish day names mapping (0 = Sunday, 1 = Monday, etc.)
@@ -85,7 +86,14 @@ const ActivityDetailed = ({ index }) => {
     return aDiff - bDiff;
   });
 
-  const activity = activities[index];
+  const activity =
+    week && day
+      ? coachInfo.classes.find(
+          (activity) =>
+            activity.name ===
+            calendarData[week][day].scheduledActivities[index].name
+        )
+      : activities[index];
 
   const relativeAttendanceColor =
     activity.relativeAttendance === "Elevada"
@@ -106,7 +114,7 @@ const ActivityDetailed = ({ index }) => {
       </Text>
       {isSessionToday(activity.time) && (
         <Text className="text-16 text-secondary  font-plight absolute top-2 right-2">
-          {isSessionToday(activity.time)}
+          {!week && isSessionToday(activity.time)}
         </Text>
       )}
 

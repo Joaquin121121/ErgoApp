@@ -7,6 +7,15 @@ export const dayTranslations = {
   Saturday: "Sábado",
 };
 
+export const inverseDayTranslations = {
+  Lunes: "Monday",
+  Martes: "Tuesday",
+  Miércoles: "Wednesday",
+  Jueves: "Thursday",
+  Viernes: "Friday",
+  Sábado: "Saturday",
+};
+
 // Helper function to generate dates for 8 weeks
 const generateWeeks = () => {
   const weeks = {};
