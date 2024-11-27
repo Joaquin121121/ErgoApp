@@ -6,13 +6,16 @@ import icons from "../scripts/icons";
 import { router } from "expo-router";
 import UserContext from "../contexts/UserContext";
 import ClassContext from "../contexts/ClassContext";
+import CoachContext from "../contexts/CoachContext";
 const Choice = ({ options, title, context = "user" }) => {
   const { user, setUser } = useContext(UserContext);
   const { classInfo, setClassInfo } = useContext(ClassContext);
+  const { coachInfo, setCoachInfo } = useContext(CoachContext);
 
   const contexts = {
     user: { get: user, set: setUser },
     class: { get: classInfo, set: setClassInfo },
+    coach: { get: coachInfo, set: setCoachInfo },
   };
   const [selectedOption, setSelectedOption] = useState(
     contexts[context].get[title]

@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
+  TouchableOpacity,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import icons from "../../scripts/icons.js";
@@ -15,6 +16,7 @@ import { Link, router } from "expo-router";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { app } from "../../scripts/firebase.js";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { useLocalSearchParams } from "expo-router";
 
 const SignIn = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -22,7 +24,8 @@ const SignIn = () => {
   const [passwordError, setPasswordError] = useState(null);
   const [emailError, setEmailError] = useState(null);
 
-  const { user, setUser } = useContext(UserContext);
+  const { selectedVersion } = useLocalSearchParams();
+  const { setUser, setVersion } = useContext(UserContext);
 
   const db = getFirestore(app);
   const auth = getAuth();
@@ -40,12 +43,19 @@ const SignIn = () => {
     try {
       await signInWithEmailAndPassword(auth, form.email, form.password).then(
         async (userCredential) => {
-          const docRef = doc(db, "userdata", userCredential.user.uid);
+          const docRef = doc(
+            db,
+            `${selectedVersion === "coach" ? "coaches" : "userdata"}`,
+            userCredential.user.uid
+          );
           const docSnap = await getDoc(docRef);
           const userdata = docSnap.data();
           setUser(userdata);
+          setVersion(selectedVersion);
           console.log(userdata);
-          router.replace("/home");
+          router.replace(
+            `${selectedVersion === "coach" ? "coachHome" : "home"}`
+          );
         }
       );
     } catch (error) {
@@ -107,9 +117,17 @@ const SignIn = () => {
 
             <View className="justify-center pt-5 flex-row gap-2">
               <Text className="text-md">No tienes cuenta?</Text>
-              <Link href="/sign-up" className="text-md text-secondary">
-                Registrarse
-              </Link>
+              <TouchableOpacity
+                onPress={() =>
+                  router.push(
+                    `${
+                      selectedVersion === "coach" ? "coach-sign-up" : "sign-up"
+                    }`
+                  )
+                }
+              >
+                <Text className="text-secondary">Registrarse</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>

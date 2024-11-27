@@ -7,8 +7,8 @@ import Icon from "../../components/Icon";
 import CoachContext from "../../contexts/CoachContext";
 import { router } from "expo-router";
 const coachAthletes = () => {
-  const { user } = useContext(UserContext);
-  const { coachInfo, setSelectedAthlete } = useContext(CoachContext);
+  const { coachInfo, setSelectedAthlete, setCoachInfo } =
+    useContext(CoachContext);
 
   const [search, setSearch] = useState("");
 
@@ -23,7 +23,9 @@ const coachAthletes = () => {
     <ScrollView>
       <View className="mt-20 w-full self-center justify-start pl-4">
         <View className="flex flex-row gap-4 items-center">
-          <Text className="font-pregular text-h2">Hola {user.fullName}!</Text>
+          <Text className="font-pregular text-h2">
+            Hola {coachInfo.fullName}!
+          </Text>
           <Image
             resizeMode="contain"
             className="h-10 w-10"

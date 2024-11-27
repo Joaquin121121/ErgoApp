@@ -36,11 +36,6 @@ export function ChatProvider({ children }) {
           setCoaches(parsedCoaches);
           console.log("Set cached coaches:", parsedCoaches);
         }
-
-        if (savedCoachId) {
-          setcurrentRecipientId(savedCoachId);
-          console.log("Set saved coach ID:", savedCoachId);
-        }
       } catch (error) {
         console.error("Error loading cached data:", error);
       }

@@ -16,19 +16,17 @@ import UserContext from "../../contexts/UserContext";
 const versionChoice = () => {
   const [selectedVersion, setSelectedVersion] = useState(null);
   const [error, setError] = useState(false);
-  const { setVersion } = useContext(UserContext);
 
   const onPress = () => {
     if (!selectedVersion) {
       setError(true);
       return;
     }
-    router.replace(`${selectedVersion === "coach" ? "coachHome" : "home"}`);
+    router.replace(`sign-in?selectedVersion=${selectedVersion}`);
   };
 
   useEffect(() => {
     setError(false);
-    setVersion(selectedVersion);
   }, [selectedVersion]);
   return (
     <ScrollView className="pt-20">

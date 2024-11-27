@@ -9,7 +9,7 @@ import CustomFlatlist from "../../components/CustomFlatlist.jsx";
 import AthleteProfile from "../../components/athlete/home/AthleteProfile.jsx";
 import { useState } from "react";
 import ProgressToTarget from "../../components/athlete/home/ProgressToTarget.jsx";
-import { db } from "../../scripts/firebase.js";
+import { auth, db } from "../../scripts/firebase.js";
 
 const Home = () => {
   const [currentItem, setCurrentItem] = useState(0);
@@ -35,6 +35,8 @@ const Home = () => {
   };
 
   useEffect(() => {
+    console.log("uid:", auth.currentUser.uid);
+    console.log("nombre: ", user);
     setUser({
       ...user,
       coaches: ["55", "56", "78"],

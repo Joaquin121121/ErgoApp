@@ -6,9 +6,9 @@ import { router } from "expo-router";
 import ChatContext from "../contexts/ChatContext";
 
 const CoachDisplay = ({ name }) => {
-  const { coaches, setcurrentRecipient } = useContext(ChatContext);
+  const { coaches, setCurrentRecipient } = useContext(ChatContext);
   const handlePress = () => {
-    setcurrentRecipient(name);
+    setCurrentRecipient(name);
     const coachId = Object.entries(coaches).find(
       ([_, coach]) => coach.name === name
     )?.[0];

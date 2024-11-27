@@ -82,7 +82,7 @@ const SignUp2 = () => {
   };
 
   const toggleVisibility = () => {
-    setVisibility(!visibility);
+    setVisibility(true);
   };
 
   useEffect(() => {

@@ -6,6 +6,7 @@ import icons from "../scripts/icons.js";
 import UserContext from "../contexts/UserContext.jsx";
 import { router } from "expo-router";
 import ClassContext from "../contexts/ClassContext";
+import CoachContext from "../contexts/CoachContext";
 
 const SelectField = ({
   title,
@@ -16,10 +17,12 @@ const SelectField = ({
 }) => {
   const { user, setUser } = useContext(UserContext);
   const { classInfo, setClassInfo } = useContext(ClassContext);
+  const { coachInfo, setCoachInfo } = useContext(CoachContext);
 
   const contexts = {
     user: { get: user, set: setUser },
     class: { get: classInfo, set: setClassInfo },
+    coach: { get: coachInfo, set: setCoachInfo },
   };
 
   const onPress = () => {

@@ -122,7 +122,7 @@ const addClass = () => {
         )}
 
         <FormField
-          toggleVisibility={() => setDescribing(!describing)}
+          toggleVisibility={() => setDescribing(true)}
           title="Descripción"
           placeholder="Describa la clase..."
           value={classInfo.description}

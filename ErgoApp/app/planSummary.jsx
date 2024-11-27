@@ -36,6 +36,15 @@ const planSummary = () => {
     return color;
   };
 
+  const translateCategory = (category) => {
+    switch (category) {
+      case "weight":
+        return "peso";
+      default:
+        return category;
+    }
+  };
+
   useEffect(() => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
   }, []);
@@ -57,8 +66,8 @@ const planSummary = () => {
             </Text>
             <View className="flex flex-row">
               {displayCategories.map((category) => (
-                <Text className="font-plight text-sm mr-4 text-darkGray">
-                  {category}
+                <Text className="font-plight text-sm mr-5 text-darkGray">
+                  {translateCategory(category)}
                 </Text>
               ))}
             </View>

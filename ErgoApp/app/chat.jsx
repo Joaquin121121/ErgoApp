@@ -1,4 +1,3 @@
-import { initializeApp } from "firebase/app";
 import {
   getFirestore,
   collection,
@@ -7,6 +6,10 @@ import {
   orderBy,
   onSnapshot,
   serverTimestamp,
+  updateDoc,
+  doc,
+  where,
+  getDocs,
 } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
 import {
@@ -53,13 +56,44 @@ const ChatScreen = () => {
     return [uid1, uid2].sort().join("_");
   };
 
+  // Update read status when user opens the chat
+  useEffect(() => {
+    const markMessagesAsRead = async () => {
+      const chatId = getChatId(currentUserId, otherUserId);
+      const chatRef = collection(db, `chats/${chatId}/messages`);
+
+      // Query for unread messages sent to current user
+      const q = query(
+        chatRef,
+        where("receiverId", "==", currentUserId),
+        where("readAt", "==", null)
+      );
+
+      const querySnapshot = await getDocs(q);
+      const batch = [];
+
+      querySnapshot.forEach((document) => {
+        const messageRef = doc(db, `chats/${chatId}/messages`, document.id);
+        batch.push(
+          updateDoc(messageRef, {
+            readAt: serverTimestamp(),
+          })
+        );
+      });
+
+      // Execute all updates
+      await Promise.all(batch);
+    };
+
+    markMessagesAsRead();
+  }, [currentUserId, otherUserId]);
+
   const formatDate = (timestamp) => {
     if (!timestamp) return "";
 
     const date = timestamp.toDate();
     const now = new Date();
 
-    // Set both dates to midnight for comparison
     const dateAtMidnight = new Date(
       date.getFullYear(),
       date.getMonth(),
@@ -71,17 +105,15 @@ const ChatScreen = () => {
       now.getDate()
     );
 
-    // Check if message is from today
     if (dateAtMidnight.getTime() === nowAtMidnight.getTime()) {
       return "Hoy";
     }
 
     const startOfWeek = new Date(now);
     startOfWeek.setHours(0, 0, 0, 0);
-    startOfWeek.setDate(now.getDate() - now.getDay()); // Start of current week
+    startOfWeek.setDate(now.getDate() - now.getDay());
 
     if (date >= startOfWeek) {
-      // If message is from current week, show day name in Spanish
       const days = [
         "Domingo",
         "Lunes",
@@ -93,7 +125,6 @@ const ChatScreen = () => {
       ];
       return days[date.getDay()];
     } else {
-      // Otherwise show date in European format (DD/MM/YYYY)
       return date.toLocaleDateString("en-GB", {
         day: "2-digit",
         month: "2-digit",
@@ -130,7 +161,6 @@ const ChatScreen = () => {
   };
 
   useEffect(() => {
-    console.log(senderId);
     const chatId = getChatId(currentUserId, otherUserId);
     const chatRef = collection(db, `chats/${chatId}/messages`);
 
@@ -160,11 +190,21 @@ const ChatScreen = () => {
         senderId: currentUserId,
         receiverId: otherUserId,
         timestamp: serverTimestamp(),
+        readAt: null,
       });
       setNewMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
     }
+  };
+
+  const getReadStatus = (message) => {
+    if (message.senderId !== currentUserId) return null;
+    return message.readAt ? (
+      <Icon size={16} icon="doubleCheckGray" />
+    ) : (
+      <Icon size={16} icon="checkWhite" />
+    );
   };
 
   const renderItem = ({ item }) => {
@@ -190,6 +230,9 @@ const ChatScreen = () => {
         >
           {item.text}
         </Text>
+        {isMyMessage && (
+          <View style={styles.statusContainer}>{getReadStatus(item)}</View>
+        )}
       </View>
     );
   };
@@ -274,6 +317,11 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 16,
   },
+  statusContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: 4,
+  },
   inputContainer: {
     flexDirection: "row",
     padding: 10,
@@ -294,7 +342,7 @@ const styles = StyleSheet.create({
   sendButton: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#007AFF",
+    backgroundColor: "#E81D23",
     borderRadius: 20,
     paddingHorizontal: 20,
   },

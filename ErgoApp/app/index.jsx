@@ -10,11 +10,11 @@ export default function Index() {
     setTimeout(() => {
       router.replace(
         `${
-          auth.currentUser
-            ? version === "athlete"
-              ? "home"
-              : "coachHome"
-            : "coachHome"
+          version === "coach"
+            ? "coachHome"
+            : version === "athlete"
+            ? "home"
+            : "versionChoice"
         }`
       );
     }, 2000);

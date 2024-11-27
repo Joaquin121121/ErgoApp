@@ -5,9 +5,36 @@ const CoachContext = createContext();
 
 export function CoachProvider({ children }) {
   const [coachInfo, setCoachInfo] = useState({
-    name: "",
-
+    fullName: "",
+    info: "",
+    specialty: "",
+    image: "",
+    email: "",
+    password: "",
     athletes: [
+      {
+        uid: "FvXhb7WwHzbfkVQBCKG4nG9xAPy1",
+        name: "Joaquín Del Río",
+        age: 28,
+        sport: "Football",
+        category: "Amateur",
+        character: "Roger",
+        feelings: {
+          feeding: 3,
+          sleep: 4,
+          fatigue: 2,
+        },
+        trainingSolutions: {
+          target: [
+            "Mejorar la resistencia cardiovascular",
+            "Mantener un alto rendimiento durante todo el partido",
+          ],
+          additionals: [
+            "Incorporar ejercicios de agilidad con cambios rápidos de dirección",
+            "Realizar entrenamiento de fuerza específico para prevenir lesiones",
+          ],
+        },
+      },
       {
         uid: "a1",
         name: "Joaquín Berrini",

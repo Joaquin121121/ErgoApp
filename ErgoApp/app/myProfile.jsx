@@ -22,11 +22,12 @@ const myProfile = () => {
     { name: "Sophie", key: 3 },
   ];
 
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, setVersion } = useContext(UserContext);
 
   const handleSignOut = async () => {
     await auth.signOut();
     router.dismissAll();
+    setVersion("");
     router.replace("versionChoice");
   };
 

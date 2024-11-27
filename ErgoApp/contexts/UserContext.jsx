@@ -28,7 +28,6 @@ export const UserProvider = ({ children }) => {
     targets: [],
     stats: [],
     registryDate: new Date().toISOString().split("T")[0],
-    version: "",
   });
 
   const [version, setVersion] = useState("");
