@@ -13,7 +13,7 @@ import UserContext from "../contexts/UserContext.jsx";
 import { router } from "expo-router";
 import TonalButton from "../components/TonalButton.jsx";
 import { auth } from "../scripts/firebase.js";
-
+import CoachContext from "../contexts/CoachContext.jsx";
 const myProfile = () => {
   const characters = [
     { name: "Roger", key: 0 },
@@ -22,12 +22,15 @@ const myProfile = () => {
     { name: "Sophie", key: 3 },
   ];
 
-  const { user, setUser, setVersion } = useContext(UserContext);
+  const { user, setUser, setVersion, resetUser } = useContext(UserContext);
+  const { resetCoachInfo } = useContext(CoachContext);
 
   const handleSignOut = async () => {
     await auth.signOut();
-    router.dismissAll();
     setVersion("");
+    resetUser();
+    resetCoachInfo();
+    router.dismissAll();
     router.replace("versionChoice");
   };
 

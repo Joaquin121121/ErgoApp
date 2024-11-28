@@ -7,7 +7,7 @@ import { doc, setDoc } from "firebase/firestore";
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState({
+  const initialUser = {
     fullName: "",
     sport: "Football",
     category: "Amateur",
@@ -27,10 +27,18 @@ export const UserProvider = ({ children }) => {
     character: "Roger",
     targets: [],
     stats: [],
+    notifications: [],
+    coaches: {},
     registryDate: new Date().toISOString().split("T")[0],
-  });
+  };
+
+  const [user, setUser] = useState(initialUser);
 
   const [version, setVersion] = useState("");
+
+  const resetUser = () => {
+    setUser(initialUser);
+  };
 
   // Load both user and version from storage
   useEffect(() => {
@@ -129,6 +137,7 @@ export const UserProvider = ({ children }) => {
         isAuthenticated: !!authUser,
         version,
         setVersion,
+        resetUser,
       }}
     >
       {children}

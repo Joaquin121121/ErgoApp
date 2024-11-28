@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const CoachContext = createContext();
 
 export function CoachProvider({ children }) {
-  const [coachInfo, setCoachInfo] = useState({
+  const initialCoachInfo = {
     fullName: "",
     info: "",
     specialty: "",
@@ -376,7 +376,13 @@ export function CoachProvider({ children }) {
         description: "Entrenamiento de fuerza con pesas y máquinas",
       },
     ],
-  });
+  };
+
+  const [coachInfo, setCoachInfo] = useState(initialCoachInfo);
+
+  const resetCoachInfo = () => {
+    setCoachInfo(initialCoachInfo);
+  };
 
   const [selectedAthlete, setSelectedAthlete] = useState("");
 
@@ -433,6 +439,7 @@ export function CoachProvider({ children }) {
         setCoachInfo,
         selectedAthlete,
         setSelectedAthlete,
+        resetCoachInfo,
       }}
     >
       {children}
