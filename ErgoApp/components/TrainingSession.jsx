@@ -12,7 +12,7 @@ const TrainingSession = () => {
 
   return (
     <View className="shadow-sm w-[90vw] bg-white rounded-2xl mt-2">
-      <Text className="text-xl font-pregular self-center mt-2 mb-2">
+      <Text className="text-xl font-pregular self-center mt-4 mb-2">
         Musculación
       </Text>
       <View className="w-[95%] flex flex-row justify-between items-center mt-4">

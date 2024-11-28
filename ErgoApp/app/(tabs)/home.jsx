@@ -35,7 +35,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    console.log("uid:", auth.currentUser.uid);
+    console.log("uid:", auth?.currentUser?.uid);
     console.log("nombre: ", user);
     setUser({
       ...user,
