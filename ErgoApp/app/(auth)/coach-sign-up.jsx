@@ -115,9 +115,10 @@ const coachSignUp = () => {
             )}
             <SelectField
               containerStyles="mt-8"
-              title="speciality"
+              title="specialty"
               options={specialities}
               displayTitle="Especialidad"
+              context="coach"
             />
             {specialityError && (
               <Text className="text-secondary font-pregular text-16 mt-2 self-center">

@@ -10,10 +10,12 @@ import AthleteProfile from "../../components/athlete/home/AthleteProfile.jsx";
 import { useState } from "react";
 import ProgressToTarget from "../../components/athlete/home/ProgressToTarget.jsx";
 import { auth, db } from "../../scripts/firebase.js";
+import ChatContext from "../../contexts/ChatContext.jsx";
 
 const Home = () => {
   const [currentItem, setCurrentItem] = useState(0);
   const { user, setUser } = useContext(UserContext);
+  const { coaches } = useContext(ChatContext);
 
   const flatlistData = Object.keys(user.gamificationFeatures).map((e, i) => ({
     key: i.toString(),
@@ -39,7 +41,11 @@ const Home = () => {
     console.log("nombre: ", user);
     setUser({
       ...user,
-      coaches: ["55", "56", "78"],
+      coaches: [
+        "98wr7eNv0XNTV6B9Dr6pl8ZsexA3",
+        "9vMZiq6qd3ZdUPH6m5VkDvEi4L42",
+        "ca4WWSdGEzQHmvVC3oGYILzwvM52",
+      ],
       stats: {
         rsi: {
           currentValue: 2,

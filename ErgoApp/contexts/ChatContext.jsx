@@ -74,7 +74,9 @@ export function ChatProvider({ children }) {
             return {
               id: coachId,
               data: {
-                name: coachData.name || coachId,
+                name: coachData.fullName || coachId,
+                info: coachData.info || "",
+                specialty: coachData.specialty || "",
                 lastUpdated: Date.now(),
               },
             };
@@ -102,7 +104,7 @@ export function ChatProvider({ children }) {
           console.log("Updated coaches in state and storage:", coachesData);
         }
       } catch (error) {
-        console.error("Error fetching coaches:", error);
+        console.log("Error fetching coaches:", error);
       }
     };
 

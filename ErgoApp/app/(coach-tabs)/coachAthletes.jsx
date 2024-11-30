@@ -24,7 +24,7 @@ const coachAthletes = () => {
       <View className="mt-20 w-full self-center justify-start pl-4">
         <View className="flex flex-row gap-4 items-center">
           <Text className="font-pregular text-h2">
-            Hola {coachInfo.fullName}!
+            Hola {coachInfo.fullName.split(" ")[0]}!
           </Text>
           <Image
             resizeMode="contain"

@@ -21,6 +21,10 @@ const Choice = ({ options, title, context = "user" }) => {
     contexts[context].get[title]
   );
 
+  useEffect(() => {
+    console.log("title:", title);
+  }, [title]);
+
   return (
     <View className="flex items-end justify-center w-full bg-white ">
       {options.map((e, i) => (

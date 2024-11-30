@@ -50,7 +50,11 @@ const SignIn = () => {
           );
           const docSnap = await getDoc(docRef);
           const userdata = docSnap.data();
-          setUser(userdata);
+          if (selectedVersion === "coach") {
+            setCoachInfo(userdata);
+          } else {
+            setUser(userdata);
+          }
           setVersion(selectedVersion);
           console.log(userdata);
           router.replace(
