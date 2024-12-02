@@ -1,13 +1,13 @@
 Fondo con formas tipo wsp
 
-Responsividad
+Tests de responsividad
 
 Añadir dismissAll cuando hay multiples pantallas en stack
 
 Con Aníbal:
-    Establecer un plan de acción para diseñar el algoritmo de soluciones de entrenamiento.
-    Determinar en detalle que dimensiones deberían tener las soluciones de entrenamiento: Objetivos, zonas a enfocarse, fortalezas y debilidades, etc.
-    Formato de estudios: Como son normalmente? Que estudios tiene pensados para una primera iteración? En que formato están esos estudios?
+Establecer un plan de acción para diseñar el algoritmo de soluciones de entrenamiento.
+Determinar en detalle que dimensiones deberían tener las soluciones de entrenamiento: Objetivos, zonas a enfocarse, fortalezas y debilidades, etc.
+Formato de estudios: Como son normalmente? Que estudios tiene pensados para una primera iteración? En que formato están esos estudios?
 
 Reconocimiento de estudios formato pdf: Claude Vision anda bastante bien, precios entre 5-10 USD cada mil estudios.
 
@@ -20,3 +20,7 @@ Cambiar color de fondo del perfil
 Barra de progreso con % para sacar los porcentajes
 
 Establecer notificaciones de antropometrías
+
+Definir e implementar logica de asociacion. A priori: Que los atletas eligan coaches, y que los coaches deban subir imagen. QR de coach a atleta para asociarse.
+
+Almacenar en localstorage las imagenes de perfil

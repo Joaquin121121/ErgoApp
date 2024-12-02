@@ -22,7 +22,7 @@ const versionChoice = () => {
       setError(true);
       return;
     }
-    router.replace(`sign-in?selectedVersion=${selectedVersion}`);
+    router.push(`sign-in?selectedVersion=${selectedVersion}`);
   };
 
   useEffect(() => {

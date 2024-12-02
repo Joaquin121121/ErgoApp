@@ -15,7 +15,6 @@ const CoachDisplay = ({ name }) => {
   const coach = coaches[coachId];
   const handlePress = () => {
     setCurrentRecipient(name);
-
     router.push(`/chat?senderId=${auth.currentUser.uid}&receiverId=${coachId}`);
   };
 
@@ -33,7 +32,7 @@ const CoachDisplay = ({ name }) => {
         <Text className="font-pregular text-16 self-center">{coach.info}</Text>
       </View>
       <TonalButton
-        containerStyles="mt-8 mb-4 self-center"
+        containerStyles="absolute bottom-4 left-[22%]"
         title="Ver Mensajes"
         icon="chatWhite"
         onPress={handlePress}

@@ -9,7 +9,6 @@ import { router } from "expo-router";
 import CoachContext from "../../contexts/CoachContext";
 
 const coachClasses = () => {
-  const { user, setUser } = useContext(UserContext);
   const { coachInfo } = useContext(CoachContext);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -24,7 +23,9 @@ const coachClasses = () => {
     <ScrollView>
       <View className="mt-20 w-full self-center justify-start pl-4">
         <View className="flex flex-row gap-4 items-center">
-          <Text className="font-pregular text-h2">Hola {user.fullName}!</Text>
+          <Text className="font-pregular text-h2">
+            Hola {coachInfo.fullName.split(" ")[0]}!
+          </Text>
           <Image
             resizeMode="contain"
             className="h-10 w-10"

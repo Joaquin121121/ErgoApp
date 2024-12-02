@@ -33,14 +33,15 @@ export const UserProvider = ({ children }) => {
   };
 
   const [user, setUser] = useState(initialUser);
-
-  const [version, setVersion] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [version, setVersion] = useState(null);
+  const [authUser, setAuthUser] = useState(null);
 
   const resetUser = () => {
     setUser(initialUser);
   };
 
-  // Load both user and version from storage
+  // Load data from storage
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -55,14 +56,13 @@ export const UserProvider = ({ children }) => {
         }
 
         if (storedVersion) {
+          console.log("Loaded version from storage:", storedVersion);
           setVersion(storedVersion);
-        } else if (storedUser) {
-          // Fallback to user.version if no separate version is stored
-          const parsedUser = JSON.parse(storedUser);
-          setVersion(parsedUser.version || "athlete");
         }
       } catch (error) {
         console.error("Error loading data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     loadData();
@@ -74,8 +74,10 @@ export const UserProvider = ({ children }) => {
       try {
         if (user) {
           await AsyncStorage.setItem("user", JSON.stringify(user));
+          console.log("User data stored successfully");
         } else {
           await AsyncStorage.removeItem("user");
+          console.log("User data removed from storage");
         }
       } catch (error) {
         console.error("Error storing user:", error);
@@ -88,20 +90,25 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const storeVersion = async () => {
       try {
+        console.log("Attempting to store version:", version);
         if (version) {
           await AsyncStorage.setItem("version", version);
+          console.log("Version stored successfully:", version);
         } else {
           await AsyncStorage.removeItem("version");
+          console.log("Version removed from storage");
         }
       } catch (error) {
         console.error("Error storing version:", error);
       }
     };
-    storeVersion();
+
+    if (version !== null) {
+      storeVersion();
+    }
   }, [version]);
 
-  const [authUser, setAuthUser] = useState(null);
-
+  // Handle Firebase auth state changes
   useEffect(() => {
     if (auth) {
       const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -113,12 +120,14 @@ export const UserProvider = ({ children }) => {
     }
   }, []);
 
+  // Sync user data with Firestore
   useEffect(() => {
     const updateUserInFirestore = async () => {
       try {
         if (auth?.currentUser && user) {
           const userRef = doc(db, "userdata", auth.currentUser.uid);
           await setDoc(userRef, user, { merge: true });
+          console.log("User data synced with Firestore");
         }
       } catch (error) {
         console.error("Error updating user in Firestore:", error);
@@ -128,6 +137,19 @@ export const UserProvider = ({ children }) => {
     updateUserInFirestore();
   }, [user]);
 
+  // Custom method to update version with storage handling
+  const updateVersion = async (newVersion) => {
+    try {
+      await AsyncStorage.setItem("version", newVersion);
+      setVersion(newVersion);
+      console.log("Version updated successfully:", newVersion);
+      return true;
+    } catch (error) {
+      console.error("Error updating version:", error);
+      return false;
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -136,8 +158,9 @@ export const UserProvider = ({ children }) => {
         authUser,
         isAuthenticated: !!authUser,
         version,
-        setVersion,
+        setVersion: updateVersion,
         resetUser,
+        isLoading,
       }}
     >
       {children}

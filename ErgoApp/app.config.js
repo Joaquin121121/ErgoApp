@@ -35,6 +35,13 @@ export default {
       "expo-font",
       "expo-router",
       "@react-native-google-signin/google-signin",
+      [
+        "expo-image-picker",
+        {
+          photosPermission:
+            "The app accesses your photos to let you share them.",
+        },
+      ],
     ],
     experiments: {
       typedRoutes: true,

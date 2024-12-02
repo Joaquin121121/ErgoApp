@@ -4,6 +4,7 @@ import { Tabs, useRouter } from "expo-router";
 import { useContext } from "react";
 import UserContext from "../../contexts/UserContext";
 import icons from "../../scripts/icons.js";
+import CoachContext from "../../contexts/CoachContext.jsx";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
@@ -26,8 +27,8 @@ const TabIcon = ({ icon, color, name, focused }) => {
 
 const TabsLayout = () => {
   const router = useRouter();
-  const { user } = useContext(UserContext);
-
+  const { user, version } = useContext(UserContext);
+  const { coachInfo } = useContext(CoachContext);
   const handleProfilePress = () => {
     router.push("myProfile"); // Updated navigation path
   };
@@ -36,13 +37,21 @@ const TabsLayout = () => {
     <View style={{ flex: 1 }}>
       <TouchableOpacity
         onPress={handleProfilePress}
-        className="absolute right-4 top-16 z-50"
+        className="absolute right-4 top-16 z-50 "
       >
-        <Image
-          className="w-14 h-14 rounded-full"
-          source={icons[user.character]}
-          resizeMethod="contain"
-        />
+        {!(version === "coach" && !coachInfo.image?.length) ? (
+          <Image
+            className="w-14 h-14 rounded-full"
+            source={
+              version === "athlete"
+                ? icons[user.character]
+                : { uri: coachInfo.image }
+            }
+            resizeMethod="contain"
+          />
+        ) : (
+          <View className="w-14 h-14 rounded-full bg-darkGray" />
+        )}
       </TouchableOpacity>
 
       <Tabs

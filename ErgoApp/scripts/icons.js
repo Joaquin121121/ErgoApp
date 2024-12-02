@@ -45,6 +45,7 @@ import satisfiedRed from "../assets/icons/satisfiedRed.png";
 import verySatisfiedRed from "../assets/icons/verySatisfiedRed.png";
 import next from "../assets/icons/next.png";
 import add from "../assets/icons/add.png";
+import loading from "../assets/icons/loading.gif";
 import checkWhite from "../assets/icons/checkWhite.png";
 import fastForward from "../assets/icons/fastForward.png";
 import arrowBack from "../assets/icons/arrowBack.png";
@@ -61,6 +62,7 @@ import confetti from "../assets/icons/confetti.png";
 import document from "../assets/icons/document.png";
 import documentRed from "../assets/icons/documentRed.png";
 import logout from "../assets/icons/logout.png";
+import upload from "../assets/icons/upload.png";
 import chat from "../assets/icons/chat.png";
 import chatWhite from "../assets/icons/chatWhite.png";
 import donut from "../assets/icons/donut.png";
@@ -75,6 +77,7 @@ import location from "../assets/icons/location.png";
 import planWhite from "../assets/icons/planWhite.png";
 import splash from "../assets/images/splash.gif";
 import addRed from "../assets/icons/addRed.png";
+import photo from "../assets/icons/photo.png";
 import velocimeter from "../assets/icons/velocimeter.png";
 import search from "../assets/icons/search.png";
 import edit from "../assets/icons/edit.png";
@@ -88,6 +91,7 @@ export default {
   home,
   myStudies,
   myStats,
+  photo,
   myProfile,
   logo,
   checkGray,
@@ -101,9 +105,11 @@ export default {
   arrowForward,
   calendar,
   document,
+  loading,
   dumbbell,
   hand,
   fat,
+  upload,
   bone,
   documentRed,
   fire,

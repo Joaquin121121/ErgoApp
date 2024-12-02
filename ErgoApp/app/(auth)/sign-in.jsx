@@ -14,9 +14,10 @@ import CustomButton from "../../components/CustomButton.jsx";
 import UserContext from "../../contexts/UserContext.jsx";
 import { Link, router } from "expo-router";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { app } from "../../scripts/firebase.js";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { db, auth } from "../../scripts/firebase.js";
+import { doc, getDoc } from "firebase/firestore";
 import { useLocalSearchParams } from "expo-router";
+import CoachContext from "../../contexts/CoachContext.jsx";
 
 const SignIn = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -26,9 +27,7 @@ const SignIn = () => {
 
   const { selectedVersion } = useLocalSearchParams();
   const { setUser, setVersion } = useContext(UserContext);
-
-  const db = getFirestore(app);
-  const auth = getAuth();
+  const { setCoachInfo } = useContext(CoachContext);
 
   const handleLogIn = async () => {
     if (form.email === "") {
@@ -48,22 +47,23 @@ const SignIn = () => {
             `${selectedVersion === "coach" ? "coaches" : "userdata"}`,
             userCredential.user.uid
           );
+          console.log(userCredential.user.uid);
           const docSnap = await getDoc(docRef);
           const userdata = docSnap.data();
           if (selectedVersion === "coach") {
-            setCoachInfo(userdata);
+            await setCoachInfo(userdata);
           } else {
-            setUser(userdata);
+            await setUser(userdata);
           }
-          setVersion(selectedVersion);
-          console.log(userdata);
+          await setVersion(selectedVersion);
+          console.log("UserData: ", userdata);
           router.replace(
             `${selectedVersion === "coach" ? "coachHome" : "home"}`
           );
         }
       );
     } catch (error) {
-      console.log(error.code);
+      console.log("Error:", error.code);
       switch (error.code) {
         case "auth/invalid-email":
           setEmailError("Email inválido");

@@ -7,7 +7,7 @@ import ActivitySummary from "../../components/ActivitySummary";
 import NotificationDisplay from "../../components/NotificationDisplay";
 import CoachContext from "../../contexts/CoachContext";
 const coachHome = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, version } = useContext(UserContext);
   const { coachInfo, setCoachInfo } = useContext(CoachContext);
   const [activeIndex, setActiveIndex] = useState(0);
   const [activeNotificationIndex, setActiveNotificationIndex] = useState(0);
@@ -36,6 +36,9 @@ const coachHome = () => {
     <NotificationDisplay index={notification?.key} />
   );
 
+  useEffect(() => {
+    console.log(coachInfo.image);
+  }, []);
   return (
     <ScrollView>
       <View className="mt-20 w-full self-center justify-start pl-4">

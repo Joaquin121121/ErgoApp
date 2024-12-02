@@ -10,8 +10,11 @@ import {
   doc,
   where,
   getDocs,
+  getDoc,
+  arrayUnion,
+  writeBatch,
 } from "firebase/firestore";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   TextInput,
@@ -22,16 +25,20 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
+  Alert,
 } from "react-native";
 import { db, auth } from "../scripts/firebase";
 import Icon from "../components/Icon";
 import { useLocalSearchParams } from "expo-router";
+import UserContext from "../contexts/UserContext";
 
 const ChatScreen = () => {
   const { senderId, receiverId } = useLocalSearchParams();
+  const { version } = useContext(UserContext);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [isSending, setIsSending] = useState(false);
 
   const currentUserId = senderId;
   const otherUserId = receiverId;
@@ -178,26 +185,83 @@ const ChatScreen = () => {
     return () => unsubscribe();
   }, [currentUserId, otherUserId]);
 
-  const sendMessage = async () => {
-    if (newMessage.trim() === "") return;
+  const handleError = (error, customMessage) => {
+    console.error(customMessage, error);
+    Alert.alert(
+      "Error",
+      "Ha ocurrido un error al enviar el mensaje. Por favor, inténtalo de nuevo."
+    );
+    setIsSending(false);
+  };
 
+  const sendMessage = async () => {
+    if (newMessage.trim() === "" || isSending) return;
+
+    setIsSending(true);
     const chatId = getChatId(currentUserId, otherUserId);
-    const chatRef = collection(db, `chats/${chatId}/messages`);
+    const batch = writeBatch(db);
 
     try {
-      await addDoc(chatRef, {
+      let senderRef, receiverRef, senderData;
+      const isAthlete = version === "athlete";
+
+      if (isAthlete) {
+        senderRef = doc(db, "userdata", currentUserId);
+        receiverRef = doc(db, "coaches", otherUserId);
+      } else {
+        senderRef = doc(db, "coaches", currentUserId);
+        receiverRef = doc(db, "userdata", otherUserId);
+      }
+
+      const senderDoc = await getDoc(senderRef);
+      if (!senderDoc.exists()) {
+        throw new Error("Sender document not found");
+      }
+      senderData = senderDoc.data();
+
+      const receiverDoc = await getDoc(receiverRef);
+      if (!receiverDoc.exists()) {
+        throw new Error("Receiver document not found");
+      }
+
+      // Create the message
+      const messageRef = doc(collection(db, `chats/${chatId}/messages`));
+      batch.set(messageRef, {
         text: newMessage,
         senderId: currentUserId,
         receiverId: otherUserId,
         timestamp: serverTimestamp(),
         readAt: null,
       });
+
+      // Create notification with regular Date object
+      const notification = {
+        type: "message",
+        title: `${senderData.fullName} te envió un mensaje`,
+        message: newMessage,
+        imageDisplay: isAthlete ? senderData.character : senderData.image,
+        uid: currentUserId,
+        timestamp: new Date().toISOString(), // Using ISO string instead of serverTimestamp
+      };
+
+      // Update the notifications array (plural)
+      batch.update(receiverRef, {
+        notifications: arrayUnion(notification), // Changed from notification to notifications
+      });
+
+      await batch.commit();
       setNewMessage("");
+      setIsSending(false);
     } catch (error) {
-      console.error("Error sending message:", error);
+      if (error.message === "Sender document not found") {
+        handleError(error, "Error: Sender profile not found");
+      } else if (error.message === "Receiver document not found") {
+        handleError(error, "Error: Receiver profile not found");
+      } else {
+        handleError(error, "Error sending message and notification");
+      }
     }
   };
-
   const getReadStatus = (message) => {
     if (message.senderId !== currentUserId) return null;
     return message.readAt ? (
@@ -262,8 +326,13 @@ const ChatScreen = () => {
           onChangeText={setNewMessage}
           placeholder="Escriba su mensaje"
           multiline
+          editable={!isSending}
         />
-        <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
+        <TouchableOpacity
+          onPress={sendMessage}
+          style={[styles.sendButton, isSending && styles.sendButtonDisabled]}
+          disabled={isSending}
+        >
           <Icon icon="send" />
         </TouchableOpacity>
       </View>
@@ -345,6 +414,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#E81D23",
     borderRadius: 20,
     paddingHorizontal: 20,
+  },
+  sendButtonDisabled: {
+    backgroundColor: "#cccccc",
   },
   sendButtonText: {
     color: "#fff",

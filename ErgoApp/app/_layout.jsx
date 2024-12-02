@@ -49,7 +49,7 @@ export default function _layout() {
                   name="myProfile"
                   options={{
                     headerShown: true,
-                    headerTitle: " ",
+                    headerTitle: "\n ",
                     headerBackTitle: "\n",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
