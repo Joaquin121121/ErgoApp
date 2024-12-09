@@ -22,6 +22,7 @@ const getTailwindColor = (colorClass) => {
 };
 
 const ProgressBar = ({
+  onLayout,
   progress = 0,
   color = "bg-emerald-600", // Default Tailwind green color if none provided
   height = 8, // Default height in pixels
@@ -51,6 +52,7 @@ const ProgressBar = ({
           height: "100%",
           borderRadius: 4,
         }}
+        onLayout={onLayout}
       />
     </View>
   );

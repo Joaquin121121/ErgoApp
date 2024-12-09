@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { UserProvider } from "../contexts/UserContext";
 import { CoachProvider } from "../contexts/CoachContext";
 import ChatHeader from "../components/ChatHeader";
+import EmptyHeader from "../components/EmptyHeader";
 import { ChatProvider } from "../contexts/ChatContext";
 import { ClassProvider } from "../contexts/ClassContext";
 import { CurrentClassProvider } from "../contexts/CurrentClassContext";
@@ -48,14 +49,14 @@ export default function _layout() {
                 <Stack.Screen
                   name="myProfile"
                   options={{
+                    headerTitle: "",
                     headerShown: true,
-                    headerTitle: "\n ",
-                    headerBackTitle: "\n",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
+                      opactity: 0,
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -89,7 +90,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: "",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },
@@ -102,7 +103,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: "",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },
@@ -128,7 +129,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: "",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },
@@ -141,7 +142,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: "",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },
@@ -154,7 +155,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: "",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },
@@ -167,7 +168,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: "",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },
@@ -180,7 +181,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: "",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },
@@ -193,7 +194,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: "",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },
@@ -206,7 +207,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: "",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },
@@ -219,7 +220,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: "",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },
@@ -232,7 +233,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: "",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },
@@ -245,7 +246,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: "",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },
@@ -258,7 +259,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: "",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },

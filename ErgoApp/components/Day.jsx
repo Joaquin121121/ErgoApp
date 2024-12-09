@@ -1,9 +1,9 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Icon from "./Icon";
 import { router } from "expo-router";
 import { calendarData, inverseDayTranslations } from "../scripts/calendarData";
-const Day = ({ day, sessions, coach, currentWeekIndex }) => {
+const Day = ({ day, sessions, coach, currentWeekIndex, studies }) => {
   const isRestDay = sessions?.[0]?.name === "restDay";
 
   const sortedWeeks = Object.keys(calendarData).sort((a, b) => {
@@ -20,6 +20,10 @@ const Day = ({ day, sessions, coach, currentWeekIndex }) => {
     }
   };
 
+  useEffect(() => {
+    console.log(studies);
+  }, []);
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View className="w-[110px] h-full shadow-sm bg-white rounded-2xl flex items-center">
@@ -32,14 +36,20 @@ const Day = ({ day, sessions, coach, currentWeekIndex }) => {
           }`}
         >
           {coach
-            ? `${sessions.length} ${sessions.length > 1 ? "clases" : "clase"}`
+            ? `${sessions.length} ${sessions.length > 1 ? "clases" : "clase"}${
+                studies && studies.length
+                  ? `\n${studies.length} ${
+                      studies.length > 1 ? "estudios" : "estudio"
+                    }`
+                  : ""
+              }`
             : isRestDay
             ? "Descanso"
             : sessions[0].name}
         </Text>
 
         {coach ? (
-          <Text className="text-sm mt-6 text-secondary font-pmedium">
+          <Text className="text-sm absolute bottom-2 text-secondary font-pmedium">
             Ver Detalles
           </Text>
         ) : (

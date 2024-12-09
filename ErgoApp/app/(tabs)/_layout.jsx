@@ -36,10 +36,10 @@ const TabsLayout = () => {
     <View style={{ flex: 1 }}>
       <TouchableOpacity
         onPress={handleProfilePress}
-        className="absolute right-4 top-16 z-50"
+        className="absolute right-4 top-16 z-50 rounded-full overflow-hidden bg-white"
       >
         <Image
-          className="w-14 h-14 rounded-full"
+          className="w-14 h-14"
           source={icons[user.character]}
           resizeMethod="contain"
         />

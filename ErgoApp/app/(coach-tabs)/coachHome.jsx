@@ -36,9 +36,6 @@ const coachHome = () => {
     <NotificationDisplay index={notification?.key} />
   );
 
-  useEffect(() => {
-    console.log(coachInfo.image);
-  }, []);
   return (
     <ScrollView>
       <View className="mt-20 w-full self-center justify-start pl-4">

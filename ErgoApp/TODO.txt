@@ -1,0 +1,23 @@
+PENDIENTE DE MÍ
+    Establecer notificaciones de antropometrías
+    Definir e implementar logica de asociacion. A priori: Que los atletas eligan coaches, y que los coaches deban subir imagen. QR de coach a atleta para asociarse.
+    Botón de editar información
+    
+PENDIENTE DE SARA
+    Fondo con formas tipo wsp
+    Animaciones de personajes
+
+POST DESKTOP
+    Implementar tab de explorar clases: anotarse a clases por unica vez vs todos los dias x
+    Definir e implementar versiones personal trainer, gym, club
+    Tests de responsividad
+    Almacenar en localstorage las imagenes de perfil (a hacer más adelante debido a que usar expo-file-system es mejor que asyncstorage, pero solo se puede usar con production build)
+    
+NOTAS:
+    Reconocimiento de estudios formato pdf: Claude Vision anda bastante bien, precios entre 5-10 USD cada mil estudios.
+
+
+
+
+
+

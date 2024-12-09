@@ -1,8 +1,8 @@
 import { View, Text, Modal, ScrollView } from "react-native";
 import React, { useState } from "react";
-import Icon from "./Icon";
 import { TouchableOpacity } from "react-native";
 import TonalButton from "./TonalButton";
+import Icon from "./Icon";
 
 const PendingStudy = ({ studies, studyKey }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -40,9 +40,15 @@ const PendingStudy = ({ studies, studyKey }) => {
               {studies[studyKey].athletes?.map((athlete, index) => (
                 <View
                   key={index}
-                  className="py-2.5 border-b border-darkGray border-opacity-0"
+                  className="py-2.5 border-b border-darkGray border-opacity-0  justify-around"
                 >
                   <Text className="text-16 font-plight ">{athlete}</Text>
+                  <View className="absolute right-5 top-2 flex flex-row">
+                    <Icon icon="timer" />
+                    <Text className="text-16 font-plight ml-2 ">
+                      {studies[studyKey].time}
+                    </Text>
+                  </View>
                 </View>
               ))}
             </ScrollView>

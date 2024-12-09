@@ -72,6 +72,7 @@ const Calendar = ({ coach }) => {
               {item.days.slice(0, 3).map((day) => {
                 const dayData = item.data[day];
                 const hasActivity = dayData.scheduledActivities.length > 0;
+                const studies = dayData.scheduledStudies;
 
                 return (
                   <Day
@@ -82,6 +83,7 @@ const Calendar = ({ coach }) => {
                     }
                     coach={coach}
                     currentWeekIndex={currentWeekIndex}
+                    studies={studies}
                   />
                 );
               })}
