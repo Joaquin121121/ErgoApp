@@ -64,7 +64,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: " ",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },
@@ -77,7 +77,7 @@ export default function _layout() {
                   options={{
                     headerShown: true,
                     headerTitle: "",
-                    headerBackTitle: " ",
+                    headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
                     },
@@ -256,6 +256,19 @@ export default function _layout() {
                 />
                 <Stack.Screen
                   name="dayInfo"
+                  options={{
+                    headerShown: true,
+                    headerTitle: "",
+                    headerBackTitle: "\np",
+                    headerStyle: {
+                      backgroundColor: "#F5F5F5",
+                    },
+                    headerShadowVisible: false,
+                    headerBackTitleVisible: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="loadStudy"
                   options={{
                     headerShown: true,
                     headerTitle: "",

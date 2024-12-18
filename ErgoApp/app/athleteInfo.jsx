@@ -142,6 +142,9 @@ export default function AthleteInfo() {
         containerStyles="self-center mt-4"
         title="Realizar Estudio"
         icon="add"
+        onPress={() => {
+          router.push("loadStudy");
+        }}
       />
     </ScrollView>
   );

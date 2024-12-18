@@ -4,9 +4,8 @@ import Choice from "../../components/Choice";
 import { router, useLocalSearchParams } from "expo-router";
 
 const choice = () => {
-  const { options, title, context } = useLocalSearchParams();
-  const parsedOptions = options.split(",");
-  return <Choice options={parsedOptions} title={title} context={context} />;
+  const { category, title, context } = useLocalSearchParams();
+  return <Choice category={category} title={title} context={context} />;
 };
 
 export default choice;

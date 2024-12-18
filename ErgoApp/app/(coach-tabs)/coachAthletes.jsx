@@ -6,6 +6,7 @@ import FormField from "../../components/FormField";
 import Icon from "../../components/Icon";
 import CoachContext from "../../contexts/CoachContext";
 import { router } from "expo-router";
+import { containsText } from "../../scripts/utils";
 const coachAthletes = () => {
   const { coachInfo, setSelectedAthlete, setCoachInfo } =
     useContext(CoachContext);
@@ -45,9 +46,7 @@ const coachAthletes = () => {
         Toca para ver información
       </Text>
       {athletes
-        .filter((athlete) =>
-          athlete.name.toLowerCase().includes(search.toLowerCase())
-        )
+        .filter((athlete) => containsText(athlete.name, search))
         .map((e) => (
           <TouchableOpacity onPress={() => onPress(e)}>
             <View className="self-center mb-4 bg-white w-[85vw] rounded-2xl shadow-sm">

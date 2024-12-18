@@ -18,9 +18,6 @@ import UserContext from "../../contexts/UserContext";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import TonalButton from "../../components/TonalButton";
 const SignUp = () => {
-  const sports = ["Football", "Voley"];
-  const categories = ["Amateur", "Professional"];
-
   const { user, setUser } = useContext(UserContext);
 
   const [date, setDate] = useState(
@@ -28,7 +25,10 @@ const SignUp = () => {
   );
   const [displayDate, setDisplayDate] = useState("");
   const [pickerVisible, setPickerVisible] = useState(false);
+  const [nameError, setNameError] = useState(false);
+  const [experienceLevel, setExperienceLevel] = useState(1);
 
+  const numbers = Array.from({ length: 5 }, (_, i) => i + 1);
   const signIn = () => {
     router.replace("sign-in");
   };
@@ -54,16 +54,24 @@ const SignUp = () => {
     setUser({ ...user, birthDate: date.toDateString() });
   };
 
-  const handleLogIn = async () => {
-    await createUserWithEmailAndPassword(auth);
+  const onContinue = () => {
+    if (!user.fullName) {
+      setNameError(true);
+      return;
+    }
+    router.push("targets");
   };
+
+  useEffect(() => {
+    setNameError(false);
+  }, [user.fullName]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View className="bg-offWhite h-[85vh] w-full flex items-center justify-center">
         <ScrollView className="w-[80%] ">
-          <View className="w-full flex mt-10 items-center justify-center ">
-            <Text className="text-3xl font-regular ">Registrarse</Text>
+          <View className="w-full flex items-center justify-center ">
+            <Text className="text-2xl font-regular ">Registrarse</Text>
             {!pickerVisible && (
               <>
                 <FormField
@@ -74,18 +82,11 @@ const SignUp = () => {
                   keyboardType="text"
                   placeholder="Ingrese su nombre..."
                 />
-                <SelectField
-                  containerStyles="mt-8"
-                  title="sport"
-                  options={sports}
-                  displayTitle="Disciplina"
-                ></SelectField>
-                <SelectField
-                  containerStyles="mt-8"
-                  title="category"
-                  options={categories}
-                  displayTitle="Categoría"
-                ></SelectField>
+                {nameError && (
+                  <Text className="text-secondary font-pregular text-16 mt-2 self-center">
+                    Por favor ingrese su nombre
+                  </Text>
+                )}
               </>
             )}
             <FormField
@@ -116,13 +117,47 @@ const SignUp = () => {
                 )}
               </>
             )}
+
             {!pickerVisible && (
               <>
+                <SelectField
+                  containerStyles="mt-8"
+                  title="sport"
+                  category="sports"
+                  displayTitle="Disciplina"
+                  action="search"
+                ></SelectField>
+                <SelectField
+                  containerStyles="mt-8"
+                  category="competitionLevels"
+                  displayTitle="Categoría"
+                  title="category"
+                ></SelectField>
+                <Text className="mt-12 font-pregular text-16 self-center">
+                  Nivel de experiencia
+                </Text>
+                <Text className="self-center font-plight text-16 text-darkGray">
+                  Seleccione un número del 1-5
+                </Text>
+                <View className="mt-6 w-[95%] h-10 self-center flex flex-row items-center justify-between rounded-2xl border border-secondary overflow-hidden">
+                  {numbers.map((e) => (
+                    <View
+                      className={`flex flex-1 justify-center border-r border-lightRed h-full ${
+                        e === experienceLevel && "bg-lightRed"
+                      } ${e === 5 && "border-0"}`}
+                    >
+                      <TouchableOpacity onPress={() => setExperienceLevel(e)}>
+                        <Text className="self-center font-pregular text-16 text-secondary">
+                          {e}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </View>
+
                 <TonalButton
                   title="Continuar"
-                  onPress={() => {
-                    router.push("targets");
-                  }}
+                  onPress={onContinue}
                   icon="next"
                   containerStyles="self-center mt-8"
                 />

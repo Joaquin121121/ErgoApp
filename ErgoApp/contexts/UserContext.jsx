@@ -30,6 +30,8 @@ export const UserProvider = ({ children }) => {
     notifications: [],
     coaches: {},
     registryDate: new Date().toISOString().split("T")[0],
+    experienceLevel: 5,
+    injuryHistory: [],
   };
 
   const [user, setUser] = useState(initialUser);

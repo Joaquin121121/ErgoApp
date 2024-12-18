@@ -94,7 +94,7 @@ const coachSignUp = () => {
       }}
     >
       <View className="w-[80vw] self-center flex mt-10 items-center justify-center ">
-        <Text className="text-3xl font-regular ">Registrarse</Text>
+        <Text className="text-2xl font-regular ">Registrarse</Text>
         {!describing && !settingCredentials && (
           <>
             <FormField

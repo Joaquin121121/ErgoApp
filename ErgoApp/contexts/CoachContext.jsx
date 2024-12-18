@@ -13,7 +13,7 @@ export function CoachProvider({ children }) {
     password: "",
     athletes: [
       {
-        uid: "FvXhb7WwHzbfkVQBCKG4nG9xAPy1",
+        uid: "tylP0jTz5gSFwtkpnQwLvD5d7TP2",
         name: "Joaquín Del Río",
         age: 28,
         sport: "Football",

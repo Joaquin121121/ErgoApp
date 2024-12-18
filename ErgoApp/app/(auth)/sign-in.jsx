@@ -35,7 +35,7 @@ const SignIn = () => {
       return;
     }
     if (form.password === "") {
-      setPasswordError("Ingrese una contaseña");
+      setPasswordError("Ingrese una contraseña");
       return;
     }
     setLoading(true);
@@ -47,8 +47,13 @@ const SignIn = () => {
             `${selectedVersion === "coach" ? "coaches" : "userdata"}`,
             userCredential.user.uid
           );
-          console.log(userCredential.user.uid);
           const docSnap = await getDoc(docRef);
+          if (!docSnap.exists()) {
+            await auth.signOut();
+            setPasswordError("Email y/o contraseña incorrectos");
+            setLoading(false);
+            return;
+          }
           const userdata = docSnap.data();
           if (selectedVersion === "coach") {
             await setCoachInfo(userdata);
@@ -87,7 +92,7 @@ const SignIn = () => {
               resizeMode="contain"
               className="w-[80%]"
             />
-            <Text className="text-3xl font-regular ">Iniciar Sesión</Text>
+            <Text className="text-2xl font-regular ">Iniciar Sesión</Text>
             <FormField
               title="Email"
               value={form.email}
@@ -113,7 +118,7 @@ const SignIn = () => {
             <CustomButton
               title="Iniciar Sesión"
               onPress={handleLogIn}
-              containerStyles="mt-8 bg-secondary z-50"
+              containerStyles="mt-16 bg-secondary z-50"
               textStyles="text-white"
               isLoading={loading}
               icon="next"

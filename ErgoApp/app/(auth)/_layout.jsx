@@ -45,6 +45,19 @@ const AuthLayout = () => {
           }}
         />
         <Stack.Screen
+          name="injury-history"
+          options={{
+            title: "",
+            headerStyle: {
+              backgroundColor: "#F5F5F5",
+            },
+            headerShadowVisible: false,
+            headerBackTitle: "\nt",
+
+            headerBackTitleVisible: false,
+          }}
+        />
+        <Stack.Screen
           name="sign-up-2"
           options={{
             title: "",

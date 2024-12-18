@@ -1,76 +1,85 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useState, useCallback, useContext } from "react";
+import React, { useState, useCallback, useContext, useEffect } from "react";
 import Icon from "../../components/Icon";
 import TonalButton from "../../components/TonalButton";
 import { router } from "expo-router";
 import UserContext from "../../contexts/UserContext";
+import { categories } from "../../scripts/categories";
+import { set } from "date-fns";
+import { tr } from "date-fns/locale";
 
-const Targets = () => {
-  const targets = [
-    "Ganar músculo",
-    "Más fuerza",
-    "Bajar peso",
-    "Saltar alto",
-    "Resistencia",
-    "Flexibilidad",
-    "Mejor postura",
-    "Equilibrio",
-    "Velocidad",
-    "Explosividad",
-    "Coordinación",
-    "Agilidad",
-    "Cardio",
-    "Movilidad",
-    "Potencia",
-  ];
-
+const targets = () => {
   const [selectedIndexes, setSelectedIndexes] = useState([]);
   const [indexBeingShown, setIndexBeingShown] = useState(0);
+  const [targetError, setTargetError] = useState(null);
 
   const { user, setUser } = useContext(UserContext);
+
+  const trainingTargets = categories["trainingTargets"];
 
   // Helper function to handle circular array access
   const getCircularIndex = useCallback((index, length) => {
     return ((index % length) + length) % length;
   }, []);
 
-  // Get 5 items starting from current index, wrapping around if necessary
+  // Get up to 5 items starting from current index, without wrapping
   const getCurrentItems = useCallback(() => {
     const items = [];
-    for (let i = 0; i < 5; i++) {
-      const wrappedIndex = getCircularIndex(
-        indexBeingShown + i,
-        targets.length
-      );
+    const remainingItems = trainingTargets.length - indexBeingShown;
+    const itemsToShow = Math.min(5, remainingItems);
+
+    for (let i = 0; i < itemsToShow; i++) {
+      const currentIndex = indexBeingShown + i;
       items.push({
-        text: targets[wrappedIndex],
-        originalIndex: wrappedIndex,
+        text: trainingTargets[currentIndex],
+        originalIndex: currentIndex,
       });
     }
     return items;
-  }, [indexBeingShown, targets.length]);
+  }, [indexBeingShown, trainingTargets.length]);
 
-  // Handle navigation with infinite scrolling
+  // Handle navigation with bounds checking
   const handleNavigation = useCallback(
     (direction) => {
       setIndexBeingShown((prev) => {
         if (direction === "next") {
-          return getCircularIndex(prev + 5, targets.length);
+          const nextIndex = prev + 5;
+          return nextIndex < trainingTargets.length ? nextIndex : prev;
         } else {
-          return getCircularIndex(prev - 5, targets.length);
+          const prevIndex = prev - 5;
+          return prevIndex >= 0 ? prevIndex : 0;
         }
       });
     },
-    [targets.length]
+    [trainingTargets.length]
   );
 
   // Calculate display range for the counter text
   const getDisplayRange = useCallback(() => {
-    const start = getCircularIndex(indexBeingShown, targets.length) + 1;
-    const rawEnd = start + 4;
-    const end = rawEnd > targets.length ? targets.length : rawEnd;
-    return `Mostrando ${start} - ${end} de ${targets.length} objetivos`;
-  }, [indexBeingShown, targets.length]);
+    const start = indexBeingShown + 1;
+    const end = Math.min(indexBeingShown + 5, trainingTargets.length);
+    return `Mostrando ${start} - ${end} de ${trainingTargets.length} objetivos`;
+  }, [indexBeingShown, trainingTargets.length]);
+
+  const onContinue = () => {
+    if (!selectedIndexes.length) {
+      setTargetError(true);
+      return;
+    }
+    setUser({
+      ...user,
+      targets: trainingTargets
+        .filter((_, i) => selectedIndexes.includes(i))
+        .map((e) => {
+          return { name: e, current: 20, target: 45 };
+        }),
+    });
+    router.push("injury-history");
+  };
+
+  useEffect(() => {
+    setTargetError(false);
+  }, [selectedIndexes.length]);
 
   return (
     <View className="w-full">
@@ -78,7 +87,7 @@ const Targets = () => {
       <Text className="self-center font-plight text-16 text-darkGray">
         Selecciona al menos un objetivo
       </Text>
-      <View className="self-center mt-8 w-full">
+      <View className="self-center mt-8 w-full h-[70vh] relative">
         {getCurrentItems().map(({ text, originalIndex }) => (
           <TouchableOpacity
             key={`${originalIndex}-${indexBeingShown}`}
@@ -97,7 +106,12 @@ const Targets = () => {
             <Text className="font-pregular text-16 pl-4">{text}</Text>
           </TouchableOpacity>
         ))}
-        <View className="flex flex-row items-center w-[85%] self-center">
+        {targetError && (
+          <Text className="text-secondary font-pregular text-16 mt-2 self-center absolute bottom-44">
+            Seleccione al menos un objetivo
+          </Text>
+        )}
+        <View className="flex flex-row items-center w-[85%] absolute bottom-32 mt-8 left-[10%]">
           <TouchableOpacity
             className="flex flex-1"
             onPress={() => handleNavigation("prev")}
@@ -117,22 +131,12 @@ const Targets = () => {
         <TonalButton
           title="Continuar"
           icon="next"
-          containerStyles="self-center mt-8"
-          onPress={() => {
-            setUser({
-              ...user,
-              targets: targets
-                .filter((_, i) => selectedIndexes.includes(i))
-                .map((e) => {
-                  return { name: e, current: 20, target: 45 };
-                }),
-            });
-            router.push("sign-up-2");
-          }}
+          containerStyles="absolute bottom-16 mt-8 left-[25%]"
+          onPress={onContinue}
         />
       </View>
     </View>
   );
 };
 
-export default Targets;
+export default targets;

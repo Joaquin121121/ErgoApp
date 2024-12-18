@@ -41,7 +41,7 @@ const SignUp2 = () => {
   const handleRegister = async () => {
     console.log("eyouu", user.email, user.password);
     if (user.password === "") {
-      setPasswordError("Ingrese una contaseña");
+      setPasswordError("Ingrese una contraseña");
       return;
     }
     if (user.email === "") {
@@ -123,22 +123,15 @@ const SignUp2 = () => {
     }
   }, [user.weightUnit]);
 
-  useEffect(() => {
-    console.log(passwordError);
-  }, [passwordError]);
-  useEffect(() => {
-    console.log(emailError);
-  }, [emailError]);
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View className="bg-offWhite  h-[85vh] w-full flex items-center justify-center">
         <ScrollView className="w-[80%] ">
-          <View className="w-full mt-10 flex items-center justify-center ">
-            <Text className="text-3xl font-regular ">Registrarse</Text>
+          <View className="w-full flex items-center justify-center ">
+            <Text className="text-2xl font-regular mb-8">Registrarse</Text>
             {visibility && (
               <>
-                <View className="mt-8 flex flex-row items-center w-full">
+                <View className="flex flex-row items-center w-full">
                   <FormField
                     title="Altura"
                     value={user.height.toString()}

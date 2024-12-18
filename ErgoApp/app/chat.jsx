@@ -15,6 +15,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import React, { useState, useEffect, useContext } from "react";
+import chatBackground from "../assets/images/chatBackground.png";
 import {
   View,
   TextInput,
@@ -26,6 +27,7 @@ import {
   Platform,
   Keyboard,
   Alert,
+  ImageBackground,
 } from "react-native";
 import { db, auth } from "../scripts/firebase";
 import Icon from "../components/Icon";
@@ -196,70 +198,66 @@ const ChatScreen = () => {
 
   const sendMessage = async () => {
     if (newMessage.trim() === "" || isSending) return;
-
     setIsSending(true);
+
     const chatId = getChatId(currentUserId, otherUserId);
     const batch = writeBatch(db);
 
     try {
-      let senderRef, receiverRef, senderData;
+      // 1. First verify the chat ID matches the security rule pattern
+      if (!chatId.includes(currentUserId)) {
+        throw new Error("Invalid chat ID formation");
+      }
+
+      // 2. Set up refs based on version
       const isAthlete = version === "athlete";
+      const [senderRef, receiverRef] = isAthlete
+        ? [doc(db, "userdata", currentUserId), doc(db, "coaches", otherUserId)]
+        : [doc(db, "coaches", currentUserId), doc(db, "userdata", otherUserId)];
 
-      if (isAthlete) {
-        senderRef = doc(db, "userdata", currentUserId);
-        receiverRef = doc(db, "coaches", otherUserId);
-      } else {
-        senderRef = doc(db, "coaches", currentUserId);
-        receiverRef = doc(db, "userdata", otherUserId);
+      // 3. Verify documents exist
+      const [senderDoc, receiverDoc] = await Promise.all([
+        getDoc(senderRef),
+        getDoc(receiverRef),
+      ]);
+
+      if (!senderDoc.exists() || !receiverDoc.exists()) {
+        throw new Error("User documents not found");
       }
 
-      const senderDoc = await getDoc(senderRef);
-      if (!senderDoc.exists()) {
-        throw new Error("Sender document not found");
-      }
-      senderData = senderDoc.data();
-
-      const receiverDoc = await getDoc(receiverRef);
-      if (!receiverDoc.exists()) {
-        throw new Error("Receiver document not found");
-      }
-
-      // Create the message
+      // 4. Create message with explicit sender verification
       const messageRef = doc(collection(db, `chats/${chatId}/messages`));
-      batch.set(messageRef, {
+      const messageData = {
         text: newMessage,
-        senderId: currentUserId,
+        senderId: currentUserId, // Must match auth.uid in rules
         receiverId: otherUserId,
         timestamp: serverTimestamp(),
         readAt: null,
-      });
+      };
+      batch.set(messageRef, messageData);
 
-      // Create notification with regular Date object
+      // 5. Update notifications with minimal data
       const notification = {
         type: "message",
-        title: `${senderData.fullName} te envió un mensaje`,
+        title: `${senderDoc.data().fullName} te envió un mensaje`,
         message: newMessage,
-        imageDisplay: isAthlete ? senderData.character : senderData.image,
+        imageDisplay: isAthlete
+          ? senderDoc.data().character
+          : senderDoc.data().image,
         uid: currentUserId,
-        timestamp: new Date().toISOString(), // Using ISO string instead of serverTimestamp
+        timestamp: new Date().toISOString(),
       };
 
-      // Update the notifications array (plural)
+      // Only update the notifications field
       batch.update(receiverRef, {
-        notifications: arrayUnion(notification), // Changed from notification to notifications
+        notifications: arrayUnion(notification),
       });
 
       await batch.commit();
       setNewMessage("");
       setIsSending(false);
     } catch (error) {
-      if (error.message === "Sender document not found") {
-        handleError(error, "Error: Sender profile not found");
-      } else if (error.message === "Receiver document not found") {
-        handleError(error, "Error: Receiver profile not found");
-      } else {
-        handleError(error, "Error sending message and notification");
-      }
+      handleError(error, "Error sending message and notification");
     }
   };
   const getReadStatus = (message) => {
@@ -302,48 +300,55 @@ const ChatScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
-    >
-      <FlatList
-        data={messages}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        style={styles.messagesList}
-        contentContainerStyle={{ paddingBottom: 10 }}
-      />
-      <View
-        style={[
-          styles.inputContainer,
-          { marginBottom: Platform.OS === "android" ? keyboardHeight : 0 },
-        ]}
+    <ImageBackground source={chatBackground} style={styles.background}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
       >
-        <TextInput
-          style={styles.input}
-          value={newMessage}
-          onChangeText={setNewMessage}
-          placeholder="Escriba su mensaje"
-          multiline
-          editable={!isSending}
+        <FlatList
+          data={messages}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          style={styles.messagesList}
+          contentContainerStyle={{ paddingBottom: 10 }}
         />
-        <TouchableOpacity
-          onPress={sendMessage}
-          style={[styles.sendButton, isSending && styles.sendButtonDisabled]}
-          disabled={isSending}
+        <View
+          style={[
+            styles.inputContainer,
+            { marginBottom: Platform.OS === "android" ? keyboardHeight : 0 },
+          ]}
         >
-          <Icon icon="send" />
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+          <TextInput
+            style={styles.input}
+            value={newMessage}
+            onChangeText={setNewMessage}
+            placeholder="Escriba su mensaje"
+            multiline
+            editable={!isSending}
+          />
+          <TouchableOpacity
+            onPress={sendMessage}
+            style={[styles.sendButton, isSending && styles.sendButtonDisabled]}
+            disabled={isSending}
+          >
+            <Icon icon="send" />
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    opacity: 1,
   },
   messagesList: {
     flex: 1,
@@ -372,7 +377,7 @@ const styles = StyleSheet.create({
   },
   myMessage: {
     alignSelf: "flex-end",
-    backgroundColor: "#E81D23",
+    backgroundColor: "#EE464B",
   },
   theirMessage: {
     alignSelf: "flex-start",
@@ -397,7 +402,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     borderTopWidth: 1,
     borderTopColor: "#E5E5EA",
-    backgroundColor: "#fff",
+    backgroundColor: "#f5f5f5",
   },
   input: {
     flex: 1,

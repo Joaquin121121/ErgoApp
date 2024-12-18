@@ -10,10 +10,11 @@ import CoachContext from "../contexts/CoachContext";
 
 const SelectField = ({
   title,
-  options,
+  category,
   displayTitle,
   context = "user",
   containerStyles,
+  action = "choice",
 }) => {
   const { user, setUser } = useContext(UserContext);
   const { classInfo, setClassInfo } = useContext(ClassContext);
@@ -27,8 +28,8 @@ const SelectField = ({
 
   const onPress = () => {
     router.push({
-      pathname: "/choice",
-      params: { options: options, title: title, context: context },
+      pathname: `/${action}`,
+      params: { category: category, title: title, context: context },
     });
   };
 

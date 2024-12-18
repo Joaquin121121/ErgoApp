@@ -7,7 +7,8 @@ import { router } from "expo-router";
 import UserContext from "../contexts/UserContext";
 import ClassContext from "../contexts/ClassContext";
 import CoachContext from "../contexts/CoachContext";
-const Choice = ({ options, title, context = "user" }) => {
+import { categories } from "../scripts/categories";
+const Choice = ({ category, title, context = "user" }) => {
   const { user, setUser } = useContext(UserContext);
   const { classInfo, setClassInfo } = useContext(ClassContext);
   const { coachInfo, setCoachInfo } = useContext(CoachContext);
@@ -21,9 +22,7 @@ const Choice = ({ options, title, context = "user" }) => {
     contexts[context].get[title]
   );
 
-  useEffect(() => {
-    console.log("title:", title);
-  }, [title]);
+  const options = categories[category];
 
   return (
     <View className="flex items-end justify-center w-full bg-white ">

@@ -57,6 +57,7 @@ import barChart from "../assets/icons/barChart.png";
 import schedule from "../assets/icons/schedule.png";
 import timer from "../assets/icons/timer.png";
 import fail from "../assets/icons/fail.png";
+import screening from "../assets/icons/screening.png";
 import skipNext from "../assets/icons/skipNext.png";
 import confetti from "../assets/icons/confetti.png";
 import document from "../assets/icons/document.png";
@@ -86,14 +87,19 @@ import doubleCheckGray from "../assets/icons/doubleCheckGray.png";
 import doubleCheckRed from "../assets/icons/doubleCheckRed.png";
 import food from "../assets/icons/food.png";
 import sleep from "../assets/icons/sleep.png";
+import antropometry from "../assets/icons/antropometry.png";
+import tools from "../assets/icons/tools.png";
 
 export default {
   home,
   myStudies,
   myStats,
+  antropometry,
+  tools,
   photo,
   myProfile,
   logo,
+  screening,
   checkGray,
   doubleCheckGray,
   doubleCheckRed,

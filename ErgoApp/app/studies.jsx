@@ -4,6 +4,7 @@ import CustomFlatlist from "../components/CustomFlatlist";
 import CoachContext from "../contexts/CoachContext";
 import StudySummary from "../components/StudySummary";
 import TonalButton from "../components/TonalButton";
+import router from "expo-router";
 
 const studies = () => {
   const { selectedAthlete } = useContext(CoachContext);
@@ -16,6 +17,9 @@ const studies = () => {
         title="Realizar Estudio"
         icon="add"
         containerStyles="mt-8 self-center"
+        onPress={() => {
+          router.push("loadStudy");
+        }}
       />
     </ScrollView>
   );

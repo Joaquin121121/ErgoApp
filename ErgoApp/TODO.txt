@@ -1,19 +1,24 @@
 PENDIENTE DE MÍ
-    Establecer notificaciones de antropometrías
-    Definir e implementar logica de asociacion. A priori: Que los atletas eligan coaches, y que los coaches deban subir imagen. QR de coach a atleta para asociarse.
+    Implementar Screening
     Botón de editar información
+    Establecer notificaciones de antropometrías
+    Login con auth provider
+    Arreglar target cards
     
 PENDIENTE DE SARA
-    Fondo con formas tipo wsp
     Animaciones de personajes
 
 POST DESKTOP
-    Implementar tab de explorar clases: anotarse a clases por unica vez vs todos los dias x
-    Definir e implementar versiones personal trainer, gym, club
     Tests de responsividad
+
+POST BUILD
+    Implementar envíos de solicitudes de vinculación mediante redes sociales. Links y QRs. (Prompt: How to allow users on my expo app which uses firebase auth to send themselves friend requests. I want a code or a qr code to be generated and be sendable through social media apps like instagram, whatsapp, facebook)
     Almacenar en localstorage las imagenes de perfil (a hacer más adelante debido a que usar expo-file-system es mejor que asyncstorage, pero solo se puede usar con production build)
     
-NOTAS:
+VERSION GYM
+    Implementar tab de explorar clases: anotarse a clases por unica vez vs todos los dias x
+
+NOTAS
     Reconocimiento de estudios formato pdf: Claude Vision anda bastante bien, precios entre 5-10 USD cada mil estudios.
 
 
