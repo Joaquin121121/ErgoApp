@@ -5,7 +5,6 @@ import FormField from "../components/FormField";
 import TonalButton from "../components/TonalButton";
 import { router } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import ClassContext from "../contexts/ClassContext";
 const SetClassTime2 = () => {
   const daysOfTheWeek = [
     "Lunes",

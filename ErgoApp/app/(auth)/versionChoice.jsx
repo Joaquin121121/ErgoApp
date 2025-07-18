@@ -11,7 +11,6 @@ import { router } from "expo-router";
 import icons from "../../scripts/icons";
 import Icon from "../../components/Icon";
 import TonalButton from "../../components/TonalButton";
-import UserContext from "../../contexts/UserContext";
 
 const versionChoice = () => {
   const [selectedVersion, setSelectedVersion] = useState(null);
@@ -31,9 +30,10 @@ const versionChoice = () => {
   return (
     <ScrollView className="pt-20">
       <Image
-        source={icons.logoRed}
+        source={icons.logoSimplified}
         resizeMode="contain"
-        className="w-[80vw] self-center"
+        className="w-[150px] h-[150px] self-center"
+        style={{ backgroundColor: "transparent" }}
       />
       <Text className=" font-pregular text-[32px] self-center">
         Bienvenido!
@@ -88,7 +88,7 @@ const versionChoice = () => {
         Debe elegir una opción
       </Text>
       <TonalButton
-        containerStyles="self-center"
+        containerStyles="self-center mt-0"
         icon="checkWhite"
         title="Continuar"
         onPress={onPress}

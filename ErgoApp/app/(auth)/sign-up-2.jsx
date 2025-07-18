@@ -11,16 +11,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { router } from "expo-router";
 import CustomButton from "../../components/CustomButton";
 import SelectField from "../../components/SelectField";
-import UserContext from "../../contexts/UserContext";
+
 import FormField from "../../components/FormField";
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  signInWithCredential,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { app } from "../../scripts/firebase.js";
-import { doc, getFirestore, setDoc } from "firebase/firestore";
 
 const SignUp2 = () => {
   const { user, setUser } = useContext(UserContext);

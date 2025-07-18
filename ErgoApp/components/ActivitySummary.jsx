@@ -3,7 +3,6 @@ import React, { useContext } from "react";
 import Icon from "./Icon";
 import OutlinedButton from "./OutlinedButton";
 import TonalButton from "./TonalButton";
-import CoachContext from "../contexts/CoachContext";
 import { router } from "expo-router";
 const ActivitySummary = ({ index }) => {
   const { coachInfo } = useContext(CoachContext);

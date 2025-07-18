@@ -1,7 +1,6 @@
 import { View, Text, ScrollView } from "react-native";
 import React, { useContext } from "react";
 import CustomFlatlist from "../components/CustomFlatlist";
-import CoachContext from "../contexts/CoachContext";
 import StudySummary from "../components/StudySummary";
 import TonalButton from "../components/TonalButton";
 import router from "expo-router";

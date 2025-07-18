@@ -1,7 +1,7 @@
 // home.jsx
 import { useContext, useEffect } from "react";
 import { View, Text, Image, ScrollView } from "react-native";
-import UserContext from "../../contexts/UserContext";
+
 import StreakDisplay from "../../components/athlete/home/StreakDisplay";
 import icons from "../../scripts/icons.js";
 import Calendar from "../../components/Calendar.jsx";
@@ -9,8 +9,6 @@ import CustomFlatlist from "../../components/CustomFlatlist.jsx";
 import AthleteProfile from "../../components/athlete/home/AthleteProfile.jsx";
 import { useState } from "react";
 import ProgressToTarget from "../../components/athlete/home/ProgressToTarget.jsx";
-import { auth, db } from "../../scripts/firebase.js";
-import ChatContext from "../../contexts/ChatContext.jsx";
 
 const Home = () => {
   const [currentItem, setCurrentItem] = useState(0);

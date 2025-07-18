@@ -1,10 +1,10 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import React, { useContext, useState, useEffect } from "react";
 import icons from "../../scripts/icons";
-import UserContext from "../../contexts/UserContext";
+
 import FormField from "../../components/FormField";
 import Icon from "../../components/Icon";
-import CoachContext from "../../contexts/CoachContext";
+
 import { router } from "expo-router";
 import { containsText } from "../../scripts/utils";
 const coachAthletes = () => {

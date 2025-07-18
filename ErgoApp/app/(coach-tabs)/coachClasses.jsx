@@ -1,12 +1,11 @@
 import { View, Text, ScrollView, Image } from "react-native";
 import React, { useContext, useState } from "react";
-import UserContext from "../../contexts/UserContext";
+
 import icons from "../../scripts/icons";
 import CustomFlatlist from "../../components/CustomFlatlist";
 import ActivityDetailed from "../../components/ActivityDetailed";
 import TonalButton from "../../components/TonalButton";
 import { router } from "expo-router";
-import CoachContext from "../../contexts/CoachContext";
 
 const coachClasses = () => {
   const { coachInfo } = useContext(CoachContext);

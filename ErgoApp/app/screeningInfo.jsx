@@ -5,7 +5,6 @@ import Icon from "../components/Icon";
 import TonalButton from "../components/TonalButton";
 import { router } from "expo-router";
 import { useContext } from "react";
-import CoachContext from "../contexts/CoachContext";
 const ScreeningInfo = () => {
   const studyInfo = categories.studies.find(
     (study) => study.name === "Screening"

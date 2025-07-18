@@ -1,19 +1,3 @@
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  query,
-  orderBy,
-  onSnapshot,
-  serverTimestamp,
-  updateDoc,
-  doc,
-  where,
-  getDocs,
-  getDoc,
-  arrayUnion,
-  writeBatch,
-} from "firebase/firestore";
 import React, { useState, useEffect, useContext } from "react";
 import chatBackground from "../assets/images/chatBackground.png";
 import {
@@ -29,10 +13,8 @@ import {
   Alert,
   ImageBackground,
 } from "react-native";
-import { db, auth } from "../scripts/firebase";
 import Icon from "../components/Icon";
 import { useLocalSearchParams } from "expo-router";
-import UserContext from "../contexts/UserContext";
 
 const ChatScreen = () => {
   const { senderId, receiverId } = useLocalSearchParams();

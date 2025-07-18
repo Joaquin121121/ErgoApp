@@ -10,7 +10,6 @@ import Svg, {
   Stop,
 } from "react-native-svg";
 import { useContext } from "react";
-import UserContext from "../contexts/UserContext";
 
 const LineGraph = ({ stat, maxValues }) => {
   const { user } = useContext(UserContext);

@@ -4,39 +4,55 @@ import { TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import icons from "../scripts/icons";
 import { router } from "expo-router";
-import UserContext from "../contexts/UserContext";
-import ClassContext from "../contexts/ClassContext";
-import CoachContext from "../contexts/CoachContext";
-import { categories } from "../scripts/categories";
-const Choice = ({ category, title, context = "user" }) => {
-  const { user, setUser } = useContext(UserContext);
-  const { classInfo, setClassInfo } = useContext(ClassContext);
-  const { coachInfo, setCoachInfo } = useContext(CoachContext);
 
-  const contexts = {
-    user: { get: user, set: setUser },
-    class: { get: classInfo, set: setClassInfo },
-    coach: { get: coachInfo, set: setCoachInfo },
+import { categories } from "../scripts/categories";
+import { useUser } from "../contexts/UserContext";
+import { Athlete } from "../types/Athletes.js";
+import { Coach } from "../types/Coach.js";
+import { getPropertyValue } from "../utils/utils";
+
+const Choice = ({
+  category,
+  title,
+  context = "user",
+}: {
+  category: string;
+  title: string;
+  context?: string;
+}) => {
+  const { userData, setUserData } = useUser();
+  const contexts: Record<
+    string,
+    {
+      get: Athlete | Coach | null;
+      set: React.Dispatch<React.SetStateAction<Athlete | Coach | null>>;
+    }
+  > = {
+    user: { get: userData, set: setUserData },
   };
+
   const [selectedOption, setSelectedOption] = useState(
-    contexts[context].get[title]
+    getPropertyValue(contexts[context].get, title)
   );
 
-  const options = categories[category];
+  const options = (categories as any)[category] || [];
 
   return (
     <View className="flex items-end justify-center w-full bg-white ">
-      {options.map((e, i) => (
+      {options.map((e: any, i: number) => (
         <TouchableOpacity
           key={i}
           className={`border border-gray border-r-0 border-l-0 border-t-0 w-[95%] h-12 border-opacity-20 flex justify-center ${
             i === options.length - 1 ? "border-b-0" : ""
           }`}
           onPress={() => {
-            contexts[context].set({
-              ...contexts[context].get,
-              [title]: options[i],
-            });
+            const currentData = contexts[context].get;
+            if (currentData) {
+              contexts[context].set({
+                ...currentData,
+                [title]: options[i],
+              } as Athlete | Coach);
+            }
             router.back();
           }}
         >

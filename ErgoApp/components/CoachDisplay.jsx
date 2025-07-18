@@ -1,9 +1,7 @@
 import { View, Text } from "react-native";
 import React, { useContext, useEffect } from "react";
-import { auth } from "../scripts/firebase";
 import TonalButton from "../components/TonalButton";
 import { router } from "expo-router";
-import ChatContext from "../contexts/ChatContext";
 
 const CoachDisplay = ({ name }) => {
   const { coaches, setCurrentRecipient } = useContext(ChatContext);

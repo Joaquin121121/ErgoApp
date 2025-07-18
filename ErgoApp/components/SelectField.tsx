@@ -3,10 +3,12 @@ import React, { useContext, useState } from "react";
 import { TextInput } from "react-native";
 import { TouchableOpacity } from "react-native";
 import icons from "../scripts/icons.js";
-import UserContext from "../contexts/UserContext.jsx";
-import { router } from "expo-router";
-import ClassContext from "../contexts/ClassContext";
-import CoachContext from "../contexts/CoachContext";
+import { router, RelativePathString } from "expo-router";
+import { useUser } from "../contexts/UserContext";
+import type { User } from "../types/User";
+import { Athlete } from "../types/Athletes.js";
+import { Coach } from "../types/Coach.js";
+import { getPropertyValue } from "../utils/utils";
 
 const SelectField = ({
   title,
@@ -15,20 +17,29 @@ const SelectField = ({
   context = "user",
   containerStyles,
   action = "choice",
+}: {
+  title: string;
+  category: string;
+  displayTitle: string;
+  context?: string;
+  containerStyles?: string;
+  action?: string;
 }) => {
-  const { user, setUser } = useContext(UserContext);
-  const { classInfo, setClassInfo } = useContext(ClassContext);
-  const { coachInfo, setCoachInfo } = useContext(CoachContext);
+  const { userData, setUserData } = useUser();
 
-  const contexts = {
-    user: { get: user, set: setUser },
-    class: { get: classInfo, set: setClassInfo },
-    coach: { get: coachInfo, set: setCoachInfo },
+  const contexts: Record<
+    string,
+    {
+      get: Athlete | Coach | null;
+      set: React.Dispatch<React.SetStateAction<Athlete | Coach | null>>;
+    }
+  > = {
+    user: { get: userData, set: setUserData },
   };
 
   const onPress = () => {
     router.push({
-      pathname: `/${action}`,
+      pathname: `/${action}` as RelativePathString,
       params: { category: category, title: title, context: context },
     });
   };
@@ -44,7 +55,7 @@ const SelectField = ({
         </Text>
         <View className="h-full flex flex-row items-center">
           <Text className="text-secondary font-plight mr-2">
-            {contexts[context].get[title]}
+            {getPropertyValue(contexts[context].get, title)}
           </Text>
           <Image
             source={icons.rightArrow}

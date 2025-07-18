@@ -1,16 +1,10 @@
 import { View, Text, ScrollView } from "react-native";
 import React, { useState, useContext } from "react";
-import CoachContext from "../../contexts/CoachContext";
+
 import FormField from "../../components/FormField";
 import SelectField from "../../components/SelectField";
 import TonalButton from "../../components/TonalButton";
 import { router } from "expo-router";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { auth, db } from "../../scripts/firebase";
-import { setDoc, doc } from "firebase/firestore";
 
 const coachSignUp = () => {
   const { coachInfo, setCoachInfo } = useContext(CoachContext);
@@ -48,18 +42,6 @@ const coachSignUp = () => {
     if (hasError) return;
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        coachInfo.email,
-        coachInfo.password
-      );
-
-      await setDoc(doc(db, "coaches", userCredential.user.uid), coachInfo);
-      await signInWithEmailAndPassword(
-        auth,
-        coachInfo.email,
-        coachInfo.password
-      );
       router.replace("coach-add-athletes");
     } catch (error) {
       console.log(error.code);

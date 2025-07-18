@@ -3,7 +3,6 @@ import React, { useContext, useEffect } from "react";
 import OutlinedButton from "./OutlinedButton";
 import Icon from "./Icon";
 import TonalButton from "./TonalButton";
-import CoachContext from "../contexts/CoachContext";
 import { router } from "expo-router";
 import { calendarData } from "../scripts/calendarData";
 const ActivityDetailed = ({ week, day, index, studies }) => {

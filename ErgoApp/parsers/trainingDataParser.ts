@@ -508,7 +508,6 @@ const addSelectedExercise = async (
 
     if (exercise.reduceVolume) {
       const { id, ...volumeReduction } = exercise.reduceVolume;
-      console.log("exercise.reduceVolume", volumeReduction);
       for (const [fatigueLevel, percentage] of Object.entries(
         volumeReduction
       )) {

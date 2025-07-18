@@ -4,7 +4,6 @@ import Icon from "../components/Icon";
 import TonalButton from "../components/TonalButton";
 import OutlinedButton from "../components/OutlinedButton";
 import { router } from "expo-router";
-import ClassContext from "../contexts/ClassContext";
 const setClassTime = () => {
   const { classInfo, setClassInfo } = useContext(ClassContext);
 

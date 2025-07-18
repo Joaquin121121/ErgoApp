@@ -1,200 +1,169 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Athlete } from "../types/Athletes";
-import { User } from "@supabase/supabase-js";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "../utils/supabase";
+import { User, Role } from "../types/User";
+import { Athlete, initialAthlete } from "../types/Athletes";
+import { Coach, initialCoach } from "../types/Coach";
 
-interface UserContextProps {
-  user: Athlete;
-  setUser: (user: Athlete) => void;
-  authUser: User | null;
-  isAuthenticated: boolean;
-  version: string | null;
-  setVersion: (version: string) => void;
-  resetUser: () => void;
-  isLoading: boolean;
-}
-
-const UserContext = createContext<UserContextProps | null>(null);
-
-export const useUser = () => {
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-  return context;
+const initialUserState: User = {
+  email: "",
 };
 
-export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const initialUser: Athlete = {
-    id: "",
-    name: "",
-    discipline: "Football",
-    category: "Amateur",
-    birthDate: new Date("01/01/1999"),
-    height: "180",
-    heightUnit: "cm",
-    weight: "70",
-    weightUnit: "kgs",
-    gender: "M",
-    country: "",
-    state: "",
-    email: "",
-    password: "",
-    institution: "",
-    comments: "",
-    completedStudies: [],
-    currentTrainingPlan: undefined,
-    wellnessData: [],
-    sessionPerformanceData: [],
-    calendar: [],
-    character: "Roger",
-    objectives: [],
-    gamificationFeatures: {
-      streak: 0,
-      targetProgress: 0,
-      currentLevel: "beginner",
-    },
-    notifications: [],
-  };
+interface UserContextType {
+  user: User;
+  role: Role;
+  setRole: React.Dispatch<React.SetStateAction<Role>>;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
+  login: (
+    email: string,
+    password: string
+  ) => Promise<{ error: any } | undefined>;
+  signup: (email: string, password: string) => Promise<{ error: any }>;
+  loginWithGoogle: () => Promise<void>;
+  logout: () => Promise<{ error: any }>;
+  loading: boolean;
+  isLoggedIn: boolean;
+  userData: Coach | Athlete | null;
+  setUserData: React.Dispatch<React.SetStateAction<Coach | Athlete | null>>;
+}
 
-  const [user, setUser] = useState(initialUser);
-  const [isLoading, setIsLoading] = useState(true);
-  const [version, setVersion] = useState<string | null>(null);
-  const [authUser, setAuthUser] = useState<User | null>(null);
+const UserContext = createContext<UserContextType | undefined>(undefined);
 
-  const resetUser = () => {
-    setUser(initialUser);
-  };
+export function UserProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User>(initialUserState);
+  const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState<Role>("athlete");
+  const [userData, setUserData] = useState<Coach | Athlete | null>(
+    initialAthlete
+  );
+  // Map Supabase user to our User type
+  const mapSupabaseUser = (supabaseUser: any): User => {
+    if (!supabaseUser) return initialUserState;
 
-  // Load data from storage
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const [storedUser, storedVersion] = await Promise.all([
-          AsyncStorage.getItem("user"),
-          AsyncStorage.getItem("version"),
-        ]);
-
-        if (storedUser) {
-          const parsedUser = JSON.parse(storedUser);
-          setUser(parsedUser);
-        }
-
-        if (storedVersion) {
-          console.log("Loaded version from storage:", storedVersion);
-          setVersion(storedVersion);
-        }
-      } catch (error) {
-        console.error("Error loading data:", error);
-      } finally {
-        setIsLoading(false);
-      }
+    return {
+      id: supabaseUser.id,
+      email: supabaseUser.email || "",
+      phone: supabaseUser.phone || "",
+      created_at: supabaseUser.created_at,
+      updated_at: supabaseUser.updated_at,
+      last_sign_in_at: supabaseUser.last_sign_in_at,
+      confirmed_at:
+        supabaseUser.confirmed_at || supabaseUser.email_confirmed_at,
+      is_confirmed: !!supabaseUser.email_confirmed_at,
+      role: supabaseUser.role,
+      user_metadata: supabaseUser.user_metadata,
+      app_metadata: supabaseUser.app_metadata,
     };
-    loadData();
+  };
+
+  // Check for active session on mount
+  useEffect(() => {
+    const getUser = async () => {
+      setLoading(true);
+
+      const { data } = await supabase.auth.getSession();
+
+      if (data.session) {
+        const { user: supabaseUser } = data.session;
+        setUser(mapSupabaseUser(supabaseUser));
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+
+      setLoading(false);
+
+      // Listen for auth changes
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_OUT") {
+          setIsLoggedIn(false);
+        } else if (session) {
+          setUser(mapSupabaseUser(session.user));
+          setIsLoggedIn(true);
+        }
+      });
+      return () => {
+        subscription.unsubscribe();
+      };
+    };
+
+    getUser();
   }, []);
 
-  // Save user when it changes
-  useEffect(() => {
-    const storeUser = async () => {
-      try {
-        if (user) {
-          await AsyncStorage.setItem("user", JSON.stringify(user));
-          console.log("User data stored successfully");
-        } else {
-          await AsyncStorage.removeItem("user");
-          console.log("User data removed from storage");
-        }
-      } catch (error) {
-        console.error("Error storing user:", error);
-      }
-    };
-    storeUser();
-  }, [user]);
-
-  // Save version when it changes
-  useEffect(() => {
-    const storeVersion = async () => {
-      try {
-        console.log("Attempting to store version:", version);
-        if (version) {
-          await AsyncStorage.setItem("version", version);
-          console.log("Version stored successfully:", version);
-        } else {
-          await AsyncStorage.removeItem("version");
-          console.log("Version removed from storage");
-        }
-      } catch (error) {
-        console.error("Error storing version:", error);
-      }
-    };
-
-    if (version !== null) {
-      storeVersion();
+  // Login with email and password
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      return { error };
     }
-  }, [version]);
+  };
 
-  // Handle Supabase auth state changes
-  useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log("Auth state changed:", session?.user);
-        setAuthUser(session?.user || null);
-      }
-    );
+  // Sign up with email and password
+  const signup = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    return { error };
+  };
 
-    return () => {
-      authListener?.subscription?.unsubscribe();
-    };
-  }, []);
-
-  // Sync user data with Supabase
-  useEffect(() => {
-    const updateUserInSupabase = async () => {
-      try {
-        if (authUser && user) {
-          const { error } = await supabase.from("userdata").upsert({
-            ...user,
-            id: authUser.id,
-          });
-          if (error) throw error;
-          console.log("User data synced with Supabase");
-        }
-      } catch (error) {
-        console.error("Error updating user in Supabase:", error);
-      }
-    };
-
-    updateUserInSupabase();
-  }, [user, authUser]);
-
-  // Custom method to update version with storage handling
-  const updateVersion = async (newVersion: string) => {
+  // Login with Google OAuth
+  const loginWithGoogle = async () => {
     try {
-      await AsyncStorage.setItem("version", newVersion);
-      setVersion(newVersion);
-      console.log("Version updated successfully:", newVersion);
-      return true;
+      await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
     } catch (error) {
-      console.error("Error updating version:", error);
-      return false;
+      console.log(error);
     }
   };
+
+  // Logout
+  const logout = async () => {
+    const { error } = await supabase.auth.signOut();
+    setIsLoggedIn(false);
+    return { error };
+  };
+
+  useEffect(() => {
+    if (role === "athlete") {
+      setUserData(initialAthlete);
+    } else {
+      setUserData(initialCoach);
+    }
+  }, [role]);
 
   return (
     <UserContext.Provider
       value={{
         user,
+        role,
+        setRole,
         setUser,
-        authUser,
-        isAuthenticated: !!authUser,
-        version,
-        setVersion: updateVersion,
-        resetUser,
-        isLoading,
+        login,
+        signup,
+        loginWithGoogle,
+        logout,
+        loading,
+        isLoggedIn,
+        userData,
+        setUserData,
       }}
     >
       {children}
     </UserContext.Provider>
   );
-};
+}
+
+export function useUser(): UserContextType {
+  const context = useContext(UserContext);
+  if (context === undefined) {
+    throw new Error("useUser must be used within a UserProvider");
+  }
+  return context;
+}

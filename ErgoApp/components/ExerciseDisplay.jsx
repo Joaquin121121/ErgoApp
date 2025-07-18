@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React, { useEffect, useContext } from "react";
 import OutlinedButton from "./OutlinedButton";
 import TonalButton from "./TonalButton";
-import CurrentClassContext from "../contexts/CurrentClassContext";
 const ExerciseDisplay = ({ exerciseName, instructions, coachMode }) => {
   const {
     exercises,

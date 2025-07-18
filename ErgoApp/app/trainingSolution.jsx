@@ -1,7 +1,6 @@
 import { View, Text, ScrollView } from "react-native";
 import React, { useContext } from "react";
 import OutlinedButton from "../components/OutlinedButton";
-import CoachContext from "../contexts/CoachContext";
 import Icon from "../components/Icon";
 import { router } from "expo-router";
 

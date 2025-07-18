@@ -91,6 +91,7 @@ import food from "../assets/icons/food.png";
 import sleep from "../assets/icons/sleep.png";
 import antropometry from "../assets/icons/antropometry.png";
 import tools from "../assets/icons/tools.png";
+import logoSimplified from "../assets/icons/logoSimplified.png";
 
 export default {
   home,
@@ -100,6 +101,7 @@ export default {
   tools,
   photo,
   myProfile,
+  logoSimplified,
   logo,
   screening,
   checkGray,

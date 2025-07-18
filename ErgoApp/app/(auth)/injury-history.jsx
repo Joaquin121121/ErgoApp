@@ -13,7 +13,7 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import CustomButton from "../../components/CustomButton";
 import OutlinedButton from "../../components/OutlinedButton";
-import UserContext from "../../contexts/UserContext";
+
 import Icon from "../../components/Icon";
 import { router } from "expo-router";
 

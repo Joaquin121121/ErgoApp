@@ -20,3 +20,5 @@ export interface User {
     [key: string]: any;
   };
 }
+
+export type Role = "athlete" | "coach";

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { View, Text, Image, ScrollView } from "react-native";
-import UserContext from "../../contexts/UserContext";
+
 import StreakDisplay from "../../components/athlete/home/StreakDisplay";
 import icons from "../../scripts/icons.js";
 import CustomFlatlist from "../../components/CustomFlatlist.jsx";

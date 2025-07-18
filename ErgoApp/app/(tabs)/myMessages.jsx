@@ -2,7 +2,6 @@ import { View, Text, ScrollView } from "react-native";
 import React, { useContext, useState } from "react";
 import CustomFlatlist from "../../components/CustomFlatlist";
 import CoachDisplay from "../../components/CoachDisplay";
-import ChatContext from "../../contexts/ChatContext";
 
 const MyMessages = () => {
   const { coaches } = useContext(ChatContext);

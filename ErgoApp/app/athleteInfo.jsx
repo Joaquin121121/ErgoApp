@@ -1,5 +1,4 @@
 import { Text, View, ScrollView } from "react-native";
-import CoachContext from "../contexts/CoachContext";
 import { useContext } from "react";
 import TonalButton from "../components/TonalButton";
 import Icon from "../components/Icon";

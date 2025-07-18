@@ -2,9 +2,8 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Tabs, useRouter } from "expo-router";
 import { useContext } from "react";
-import UserContext from "../../contexts/UserContext";
+
 import icons from "../../scripts/icons.js";
-import CoachContext from "../../contexts/CoachContext.jsx";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (

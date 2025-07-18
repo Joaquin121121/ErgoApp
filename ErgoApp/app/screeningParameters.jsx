@@ -4,7 +4,6 @@ import React, { useContext, useEffect, useState } from "react";
 import OutlinedButton from "../components/OutlinedButton";
 import TonalButton from "../components/TonalButton";
 import Icon from "../components/Icon";
-import CoachContext from "../contexts/CoachContext";
 import { router } from "expo-router";
 const screeningParameters = () => {
   const allMovements = categories.studies.find(

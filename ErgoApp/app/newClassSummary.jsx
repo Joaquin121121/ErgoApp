@@ -1,13 +1,9 @@
 import { View, Text, ScrollView } from "react-native";
 import React, { useContext, useState } from "react";
-import ClassContext from "../contexts/ClassContext";
 import Icon from "../components/Icon";
 import OutlinedButton from "../components/OutlinedButton";
 import TonalButton from "../components/TonalButton";
 import { router } from "expo-router";
-import { db } from "../scripts/firebase";
-import { doc, setDoc, collection } from "firebase/firestore";
-import CoachContext from "../contexts/CoachContext";
 const newClassSummary = () => {
   const { classInfo } = useContext(ClassContext);
   const { coachInfo, setCoachInfo } = useContext(CoachContext);

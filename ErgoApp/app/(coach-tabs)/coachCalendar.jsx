@@ -1,7 +1,6 @@
 import { View, Text, ScrollView } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
 import Calendar from "../../components/Calendar.jsx";
-import CoachContext from "../../contexts/CoachContext.jsx";
 import ActivitySummary from "../../components/ActivitySummary.jsx";
 import CustomFlatlist from "../../components/CustomFlatlist.jsx";
 import { calendarData } from "../../scripts/calendarData.js";

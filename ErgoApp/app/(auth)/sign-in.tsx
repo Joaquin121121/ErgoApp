@@ -12,8 +12,7 @@ import icons from "../../scripts/icons.js";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import { router, useLocalSearchParams } from "expo-router";
-import { supabase } from "../../utils/supabase.js";
-
+import { supabase } from "../../utils/supabase";
 const SignIn = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -49,9 +48,10 @@ const SignIn = () => {
         <ScrollView className="w-[80%] ">
           <View className="w-full flex items-center justify-center ">
             <Image
-              source={icons.logoRed}
+              source={icons.logoSimplified}
               resizeMode="contain"
-              className="w-[80%]"
+              className="w-[120px] h-[12 0px] self-center"
+              style={{ backgroundColor: "transparent" }}
             />
             <Text className="text-2xl font-regular ">Iniciar Sesión</Text>
             <FormField

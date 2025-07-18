@@ -1,12 +1,11 @@
 import { View, Text, ScrollView, Image } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import CustomFlatlist from "../../components/CustomFlatlist";
-import UserContext from "../../contexts/UserContext";
+
 import icons from "../../scripts/icons";
 import ActivitySummary from "../../components/ActivitySummary";
 import NotificationDisplay from "../../components/NotificationDisplay";
-import CoachContext from "../../contexts/CoachContext";
-import { auth } from "../../scripts/firebase";
+
 const coachHome = () => {
   const { user, setUser, version } = useContext(UserContext);
   const { coachInfo, setCoachInfo } = useContext(CoachContext);

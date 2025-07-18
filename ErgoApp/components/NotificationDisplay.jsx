@@ -2,10 +2,7 @@ import { View, Text } from "react-native";
 import React, { useContext } from "react";
 import Icon from "./Icon";
 import TonalButton from "./TonalButton";
-import CoachContext from "../contexts/CoachContext";
 import { router } from "expo-router";
-import { auth } from "../scripts/firebase";
-import ChatContext from "../contexts/ChatContext";
 
 const NotificationDisplay = ({ index }) => {
   const { coachInfo } = useContext(CoachContext);

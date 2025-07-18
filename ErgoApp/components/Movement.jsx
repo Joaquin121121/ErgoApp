@@ -1,6 +1,5 @@
 import { View, Text, TextInput } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import CoachContext from "../contexts/CoachContext";
 import { TouchableOpacity } from "react-native";
 import Slider from "@react-native-community/slider";
 import Icon from "./Icon";

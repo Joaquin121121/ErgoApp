@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useContext } from "react";
 import { router } from "expo-router";
-import UserContext from "../contexts/UserContext";
 
 const IndexDisplay = ({
   name,

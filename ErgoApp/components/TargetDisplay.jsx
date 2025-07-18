@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React, { useContext } from "react";
-import UserContext from "../contexts/UserContext";
+
 import TargetCard from "./TargetCard";
 
 const TargetDisplay = ({ start = 0, finish = 3 }) => {

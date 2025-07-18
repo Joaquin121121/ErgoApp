@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useContext, useEffect } from "react";
-import UserContext from "../contexts/UserContext";
+
 import LineGraph from "../components/LineGraph";
 import { router, useLocalSearchParams } from "expo-router";
 import TonalButton from "../components/TonalButton";

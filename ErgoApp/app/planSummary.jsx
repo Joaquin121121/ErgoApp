@@ -1,6 +1,5 @@
 import { View, Text, ScrollView } from "react-native";
 import React, { useContext, useRef, useEffect } from "react";
-import CurrentClassContext from "../contexts/CurrentClassContext";
 import { router } from "expo-router";
 import OutlinedButton from "../components/OutlinedButton";
 import TonalButton from "../components/TonalButton";

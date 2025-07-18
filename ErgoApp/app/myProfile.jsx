@@ -9,11 +9,8 @@ import {
 import React, { useContext, useState } from "react";
 import icons from "../scripts/icons";
 import OutlinedButton from "../components/OutlinedButton";
-import UserContext from "../contexts/UserContext.jsx";
 import { router } from "expo-router";
-import TonalButton from "../components/TonalButton.jsx";
-import { auth } from "../scripts/firebase.js";
-import CoachContext from "../contexts/CoachContext.jsx";
+import TonalButton from "../components/TonalButton";
 import ImageUploadButton from "../components/ImageUploadButton.jsx";
 import Icon from "../components/Icon.jsx";
 const myProfile = () => {

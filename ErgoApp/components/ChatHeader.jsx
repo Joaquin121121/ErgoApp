@@ -1,7 +1,6 @@
 import { View, Text } from "react-native";
 import { useSearchParams } from "expo-router"; // Change this line
 import { useContext, useEffect } from "react";
-import ChatContext from "../contexts/ChatContext";
 
 export const ChatHeader = () => {
   const { currentRecipient } = useContext(ChatContext);

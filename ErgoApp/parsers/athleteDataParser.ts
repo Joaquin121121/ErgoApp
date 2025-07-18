@@ -33,15 +33,18 @@ const calculateAverages = (jumpTimes: JumpTime[]) => {
     avgFlightTime > 0 ? (9.81 * avgFlightTime ** 2 * 100) / 8 : 0;
   if (validTimes.some((t) => t.floorTime)) {
     avgFloorTime =
-      validTimes.reduce((sum, t) => sum + t.floorTime, 0) / validTimes.length;
+      validTimes.reduce((sum, t) => sum + (t.floorTime || 0), 0) /
+      validTimes.length;
   }
   if (validTimes.some((t) => t.stiffness)) {
     avgStiffness =
-      validTimes.reduce((sum, t) => sum + t.stiffness, 0) / validTimes.length;
+      validTimes.reduce((sum, t) => sum + (t.stiffness || 0), 0) /
+      validTimes.length;
   }
   if (validTimes.some((t) => t.performance)) {
     avgPerformance =
-      validTimes.reduce((sum, t) => sum + t.performance, 0) / validTimes.length;
+      validTimes.reduce((sum, t) => sum + (t.performance || 0), 0) /
+      validTimes.length;
     performanceDrop =
       ((Math.max(...validTimes.map((t) => t.performance || 0)) -
         avgPerformance) /
@@ -83,9 +86,9 @@ const processBasicResults = async (
     const processedTimes: JumpTime[] = jumpTimesForResult.map((jt) => ({
       time: jt.time,
       deleted: jt.deleted ?? false,
-      floorTime: jt.floor_time,
-      stiffness: jt.stiffness,
-      performance: jt.performance ?? undefined,
+      floorTime: jt.floor_time || undefined,
+      stiffness: jt.stiffness || undefined,
+      performance: jt.performance || undefined,
       baseResultId: baseResult.id,
     }));
 
@@ -146,7 +149,14 @@ const processBasicResults = async (
       } as CustomStudyResult;
     }
 
-    const studyInfo = studyInfoLookup[studyResult.type];
+    const studyInfo =
+      studyResult.type === "custom"
+        ? {
+            name: "Custom Study",
+            description: "Custom Study",
+            preview: { equipment: ["Alfombra de Contacto"] },
+          }
+        : studyInfoLookup[studyResult.type as keyof typeof studyInfoLookup];
     const completedStudy: CompletedStudy = {
       id: basicResult.id,
       studyInfo,
@@ -181,8 +191,8 @@ const processMultipleJumpsResults = async (
     const processedTimes: JumpTime[] = jumpTimesForResult.map((jt) => ({
       time: jt.time,
       deleted: jt.deleted ?? false,
-      floorTime: jt.floor_time,
-      stiffness: jt.stiffness,
+      floorTime: jt.floor_time || undefined,
+      stiffness: jt.stiffness || undefined,
       performance: jt.performance ?? undefined,
       baseResultId: baseResult.id,
     }));
@@ -258,8 +268,8 @@ const processMultipleDropJumpResults = async (
       const processedTimes: JumpTime[] = jumpTimesForResult.map((jt) => ({
         time: jt.time,
         deleted: jt.deleted ?? false,
-        floorTime: jt.floor_time,
-        stiffness: jt.stiffness,
+        floorTime: jt.floor_time || undefined,
+        stiffness: jt.stiffness || undefined,
         performance: jt.performance ?? undefined,
         baseResultId: baseResult.id,
       }));
@@ -361,16 +371,16 @@ const processBoscoResults = async (
     const createBoscoSubResult = (
       basicResult: any,
       type: "cmj" | "squatJump" | "abalakov"
-    ) => {
+    ): any => {
       const baseResult = baseResultMap.get(basicResult.base_result_id);
       if (!baseResult) return null;
 
       const jumpTimesForResult = jumpTimeMap.get(baseResult.id) || [];
       const processedTimes: JumpTime[] = jumpTimesForResult.map((jt) => ({
         time: jt.time,
-        deleted: jt.deleted,
-        floorTime: jt.floor_time,
-        stiffness: jt.stiffness,
+        deleted: jt.deleted ?? false,
+        floorTime: jt.floor_time || undefined,
+        stiffness: jt.stiffness || undefined,
         performance: jt.performance ?? undefined,
         baseResultId: baseResult.id,
       }));
@@ -434,7 +444,7 @@ const processBoscoResults = async (
 };
 
 const processWellnessData = async (
-  db: any,
+  db: DatabaseInstance,
   athletesMap: Map<string, Athlete>
 ) => {
   const athleteIds = Array.from(athletesMap.keys());
@@ -462,7 +472,7 @@ const processWellnessData = async (
 };
 
 const processPerformanceData = async (
-  db: any,
+  db: DatabaseInstance,
   athletesMap: Map<string, Athlete>
 ) => {
   const athleteIds = Array.from(athletesMap.keys());

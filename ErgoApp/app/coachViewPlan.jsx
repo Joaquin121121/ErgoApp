@@ -5,7 +5,6 @@ import CustomFlatlist from "../components/CustomFlatlist";
 import { router, useLocalSearchParams } from "expo-router";
 import OutlinedButton from "../components/OutlinedButton";
 import TonalButton from "../components/TonalButton";
-import CurrentClassContext from "../contexts/CurrentClassContext";
 
 const coachViewPlan = () => {
   const { action } = useLocalSearchParams();

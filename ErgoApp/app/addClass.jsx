@@ -4,7 +4,6 @@ import { TextInput } from "react-native";
 import TonalButton from "../components/TonalButton";
 import FormField from "../components/FormField";
 import SelectField from "../components/SelectField";
-import ClassContext from "../contexts/ClassContext";
 import OutlinedButton from "../components/OutlinedButton";
 import { router } from "expo-router";
 const addClass = () => {

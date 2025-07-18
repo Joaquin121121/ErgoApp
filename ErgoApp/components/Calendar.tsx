@@ -1,11 +1,17 @@
-import { View, Text, Animated, useWindowDimensions } from "react-native";
+import {
+  View,
+  Text,
+  Animated,
+  useWindowDimensions,
+  FlatList,
+} from "react-native";
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import Day from "./Day";
 import Icon from "./Icon";
 import { TouchableOpacity } from "react-native";
 import { calendarData, dayTranslations } from "../scripts/calendarData";
 
-const Calendar = ({ coach }) => {
+const Calendar = () => {
   // Sort weeks in chronological order
   const sortedWeeks = Object.keys(calendarData).sort((a, b) => {
     const [dayA] = a.split("-")[0].split("/").reverse();
@@ -33,12 +39,12 @@ const Calendar = ({ coach }) => {
   );
 
   const scrollX = useRef(new Animated.Value(0)).current;
-  const flatListRef = useRef(null);
+  const flatListRef = useRef<FlatList>(null);
   const { width: screenWidth } = useWindowDimensions();
   const CONTAINER_WIDTH = screenWidth * 0.85;
 
   const renderWeek = useCallback(
-    ({ item, index }) => {
+    ({ item, index }: { item: any; index: number }) => {
       const inputRange = [
         (index - 1) * CONTAINER_WIDTH,
         index * CONTAINER_WIDTH,
@@ -69,7 +75,7 @@ const Calendar = ({ coach }) => {
           <View className="gap-4">
             {/* First row - Monday to Wednesday */}
             <View className="w-full h-[110px] flex flex-row justify-between">
-              {item.days.slice(0, 3).map((day) => {
+              {item.days.slice(0, 3).map((day: string) => {
                 const dayData = item.data[day];
                 const hasActivity = dayData.scheduledActivities.length > 0;
                 const studies = dayData.scheduledStudies;
@@ -77,11 +83,10 @@ const Calendar = ({ coach }) => {
                 return (
                   <Day
                     key={day}
-                    day={dayTranslations[day]}
+                    day={dayTranslations[day as keyof typeof dayTranslations]}
                     sessions={
                       hasActivity ? dayData.scheduledActivities : "restDay"
                     }
-                    coach={coach}
                     currentWeekIndex={currentWeekIndex}
                     studies={studies}
                   />
@@ -91,19 +96,20 @@ const Calendar = ({ coach }) => {
 
             {/* Second row - Thursday to Saturday */}
             <View className="w-full h-[110px] flex flex-row justify-between">
-              {item.days.slice(3, 6).map((day) => {
+              {item.days.slice(3, 6).map((day: string) => {
                 const dayData = item.data[day];
                 const hasActivity = dayData.scheduledActivities.length > 0;
+                const studies = dayData.scheduledStudies;
 
                 return (
                   <Day
                     key={day}
-                    day={dayTranslations[day]}
+                    day={dayTranslations[day as keyof typeof dayTranslations]}
                     sessions={
                       hasActivity ? dayData.scheduledActivities : "restDay"
                     }
-                    coach={coach}
                     currentWeekIndex={currentWeekIndex}
+                    studies={studies}
                   />
                 );
               })}
@@ -112,14 +118,14 @@ const Calendar = ({ coach }) => {
         </Animated.View>
       );
     },
-    [CONTAINER_WIDTH, currentWeekIndex, coach]
+    [CONTAINER_WIDTH, currentWeekIndex]
   );
 
   const handleScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { x: scrollX } } }],
     {
       useNativeDriver: true,
-      listener: (event) => {
+      listener: (event: any) => {
         const newIndex = Math.round(
           event.nativeEvent.contentOffset.x / CONTAINER_WIDTH
         );
@@ -131,7 +137,7 @@ const Calendar = ({ coach }) => {
   );
 
   const scrollToIndex = useCallback(
-    (index) => {
+    (index: number) => {
       flatListRef.current?.scrollToOffset({
         offset: index * CONTAINER_WIDTH,
         animated: true,
@@ -154,11 +160,11 @@ const Calendar = ({ coach }) => {
 
   const flatListData = sortedWeeks.map((week) => ({
     key: week,
-    data: calendarData[week],
-    days: Object.keys(calendarData[week]),
+    data: calendarData[week as keyof typeof calendarData],
+    days: Object.keys(calendarData[week as keyof typeof calendarData]),
   }));
 
-  const formatDateRange = (dateRange) => {
+  const formatDateRange = (dateRange: string) => {
     const [start, end] = dateRange.split("-");
     return `${start} - ${end}`;
   };
@@ -199,7 +205,7 @@ const Calendar = ({ coach }) => {
           decelerationRate="fast"
           bounces={false}
           getItemLayout={useCallback(
-            (_, index) => ({
+            (_: any, index: number) => ({
               length: CONTAINER_WIDTH,
               offset: CONTAINER_WIDTH * index,
               index,

@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
-import CoachContext from "../../contexts/CoachContext";
+
 import React, { useState, useEffect, useContext } from "react";
 import FormField from "../../components/FormField";
 import Icon from "../../components/Icon";

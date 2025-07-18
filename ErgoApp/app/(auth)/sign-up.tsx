@@ -14,11 +14,14 @@ import { Link, router } from "expo-router";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import SelectField from "../../components/SelectField";
-import UserContext from "../../contexts/UserContext";
+
 import DateTimePicker from "@react-native-community/datetimepicker";
 import TonalButton from "../../components/TonalButton";
+import { useUser } from "../../contexts/UserContext";
+import { Athlete } from "../../types/Athletes";
+
 const SignUp = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUserData, userData } = useUser();
 
   const [date, setDate] = useState(
     new Date(Date.now() - 25 * 365.25 * 24 * 60 * 60 * 1000)
@@ -30,16 +33,19 @@ const SignUp = () => {
 
   const numbers = Array.from({ length: 5 }, (_, i) => i + 1);
   const signIn = () => {
-    router.replace("sign-in");
+    router.replace("/(auth)/sign-in");
   };
 
   const toggleVisibility = () => {
     setPickerVisible(!pickerVisible);
   };
 
-  const onChange = ({ type }, selectedDate) => {
+  const onChange = (
+    { type }: { type: string },
+    selectedDate: Date | undefined
+  ) => {
     if (type === "set") {
-      setDate(selectedDate);
+      setDate(selectedDate ?? new Date());
       if (Platform.OS === "android") {
         saveChanges();
       }
@@ -51,20 +57,20 @@ const SignUp = () => {
   const saveChanges = () => {
     toggleVisibility();
     setDisplayDate(date.toDateString());
-    setUser({ ...user, birthDate: date.toDateString() });
+    setUserData({ ...userData, birthDate: date } as Athlete);
   };
 
   const onContinue = () => {
-    if (!user.fullName) {
+    if (!userData?.name) {
       setNameError(true);
       return;
     }
-    router.push("targets");
+    router.push("/(auth)/targets");
   };
 
   useEffect(() => {
     setNameError(false);
-  }, [user.fullName]);
+  }, [userData?.name]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -76,10 +82,11 @@ const SignUp = () => {
               <>
                 <FormField
                   title="Nombre"
-                  value={user.fullName}
-                  handleChangeText={(e) => setUser({ ...user, fullName: e })}
+                  value={userData?.name}
+                  handleChangeText={(e) =>
+                    setUserData({ ...userData, name: e } as Athlete)
+                  }
                   otherStyles="mt-8"
-                  keyboardType="text"
                   placeholder="Ingrese su nombre..."
                 />
                 {nameError && (

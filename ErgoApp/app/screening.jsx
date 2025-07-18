@@ -2,7 +2,6 @@ import { ScrollView, View, Text } from "react-native";
 import React, { useContext, useState, useEffect } from "react";
 import Movement from "../components/Movement";
 import CustomFlatlist from "../components/CustomFlatlist";
-import CoachContext from "../contexts/CoachContext";
 import TonalButton from "../components/TonalButton";
 
 const screening = () => {

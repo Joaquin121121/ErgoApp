@@ -1,8 +1,6 @@
 import { createContext, useContext, useEffect, useState, useRef } from "react";
-import UserContext from "./UserContext";
-import { doc, getDoc } from "firebase/firestore";
+import { useUser } from "./UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { db } from "../scripts/firebase";
 
 const ChatContext = createContext();
 const COACHES_STORAGE_KEY = "cached_coaches";
@@ -11,7 +9,7 @@ const CURRENT_COACH_KEY = "current_coach_id";
 export function ChatProvider({ children }) {
   const [coaches, setCoaches] = useState({}); // Changed to object instead of array
   const [currentRecipient, setCurrentRecipient] = useState("");
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const previousCoaches = useRef([]);
 
   // Debug logging

@@ -1,11 +1,9 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import React, { useContext, useState, useEffect } from "react";
-import CoachContext from "../../contexts/CoachContext";
+
 import Icon from "../../components/Icon";
 import FormField from "../../components/FormField";
-import { auth } from "../../scripts/firebase";
 import { router } from "expo-router";
-import ChatContext from "../../contexts/ChatContext";
 const coachMessages = () => {
   const { coachInfo, setCoachInfo } = useContext(CoachContext);
   const [athletes, setAthletes] = useState(coachInfo.athletes);

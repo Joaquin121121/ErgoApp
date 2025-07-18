@@ -3,7 +3,7 @@ import React, { useState, useCallback, useContext, useEffect } from "react";
 import Icon from "../../components/Icon";
 import TonalButton from "../../components/TonalButton";
 import { router } from "expo-router";
-import UserContext from "../../contexts/UserContext";
+
 import { categories } from "../../scripts/categories";
 import { set } from "date-fns";
 import { tr } from "date-fns/locale";

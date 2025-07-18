@@ -2,12 +2,7 @@
 import React, { useContext, useState } from "react";
 import { TouchableOpacity, Text, ActivityIndicator, Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { doc, updateDoc } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { db, storage } from "../scripts/firebase";
 import OutlinedButton from "./OutlinedButton";
-import CoachContext from "../contexts/CoachContext";
 
 const ImageUploadButton = ({
   onUploadSuccess,

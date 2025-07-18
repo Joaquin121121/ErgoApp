@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import Icon from "./Icon";
 import OutlinedButton from "./OutlinedButton";
 import TonalButton from "./TonalButton";
-import UserContext from "../contexts/UserContext";
+
 import icons from "../scripts/icons";
 import { router } from "expo-router";
 

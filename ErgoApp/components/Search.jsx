@@ -1,9 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
 import { categories } from "../scripts/categories";
-import UserContext from "../contexts/UserContext";
-import ClassContext from "../contexts/ClassContext";
-import CoachContext from "../contexts/CoachContext";
+
 import { router } from "expo-router";
 import FormField from "./FormField";
 import icons from "../scripts/icons";
