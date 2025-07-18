@@ -14,6 +14,16 @@ const CustomButton = ({
   icon,
   iconSize,
   inverse,
+}: {
+  title: string;
+  onPress: () => void;
+  containerStyles?: string;
+  textStyles?: string;
+  isLoading?: boolean;
+  provider?: boolean;
+  icon?: string;
+  iconSize?: number;
+  inverse?: boolean;
 }) => {
   return (
     <TouchableOpacity
@@ -33,7 +43,7 @@ const CustomButton = ({
               className="w-10 h-10"
             ></Image>
           )}
-          {icon && <Icon icon={icon} size={iconSize} />}
+          {icon && <Icon icon={icon} size={iconSize} style={{}} />}
           <Text className={`text-primary font-pmedium text-16 ${textStyles}`}>
             {title}
           </Text>
@@ -50,7 +60,7 @@ const CustomButton = ({
               className="w-10 h-10"
             ></Image>
           )}
-          {icon && <Icon icon={icon} size={iconSize} />}
+          {icon && <Icon icon={icon} size={iconSize} style={{}} />}
         </>
       )}
     </TouchableOpacity>

@@ -11,7 +11,9 @@ const loadStudy = () => {
   const [search, setSearch] = useState("");
   const studies = categories.studies;
 
-  const onPress = (name) => {};
+  const onPress = (name) => {
+    router.push(name + "Info");
+  };
 
   return (
     <ScrollView>
@@ -29,7 +31,7 @@ const loadStudy = () => {
         {studies
           .filter((athlete) => containsText(athlete.name, search))
           .map((e) => (
-            <TouchableOpacity onPress={() => onPress(e.name)}>
+            <TouchableOpacity onPress={() => onPress(e.value)}>
               <View className="self-center mb-4 bg-white w-[85vw] rounded-2xl shadow-sm">
                 <Text className="font-pregular text-h3 self-center mt-2 mb-4">
                   {e.name}

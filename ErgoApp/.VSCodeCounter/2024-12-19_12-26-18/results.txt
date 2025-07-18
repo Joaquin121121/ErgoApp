@@ -1,0 +1,158 @@
+Date : 2024-12-19 12:26:18
+Directory : c:\Users\Public\ErgoApp\ErgoApp
+Total : 111 files,  28348 codes, 121 comments, 826 blanks, all 29295 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| JSON               |          3 |     19,057 |          0 |          3 |     19,060 |
+| JavaScript JSX     |         83 |      8,392 |         90 |        709 |      9,191 |
+| JavaScript         |         11 |        578 |         15 |         42 |        635 |
+| TypeScript JSX     |          8 |        235 |          3 |         41 |        279 |
+| TypeScript         |          4 |         38 |         13 |         10 |         61 |
+| Markdown           |          1 |         31 |          0 |         20 |         51 |
+| JSON with Comments |          1 |         17 |          0 |          1 |         18 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                         | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                            |        111 |     28,348 |        121 |        826 |     29,295 |
+| . (Files)                                                                    |          9 |     19,210 |          1 |         31 |     19,242 |
+| app                                                                          |         44 |      5,252 |         34 |        397 |      5,683 |
+| app (Files)                                                                  |         21 |      2,675 |         27 |        215 |      2,917 |
+| app\(auth)                                                                   |         11 |      1,660 |          4 |        104 |      1,768 |
+| app\(coach-tabs)                                                             |          6 |        453 |          1 |         33 |        487 |
+| app\(tabs)                                                                   |          5 |        454 |          2 |         42 |        498 |
+| app\search                                                                   |          1 |         10 |          0 |          3 |         13 |
+| components                                                                   |         42 |      2,515 |         49 |        288 |      2,852 |
+| components (Files)                                                           |         37 |      2,442 |         48 |        272 |      2,762 |
+| components\__tests__                                                         |          1 |          7 |          0 |          4 |         11 |
+| components\athlete                                                           |          3 |         60 |          0 |          9 |         69 |
+| components\athlete\home                                                      |          3 |         60 |          0 |          9 |         69 |
+| components\navigation                                                        |          1 |          6 |          1 |          3 |         10 |
+| constants                                                                    |          1 |         20 |          4 |          3 |         27 |
+| contexts                                                                     |          5 |        860 |         10 |         65 |        935 |
+| hooks                                                                        |          3 |         18 |          9 |          7 |         34 |
+| scripts                                                                      |          7 |        473 |         14 |         35 |        522 |
++------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                     | language           | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| c:\Users\Public\ErgoApp\ErgoApp\README.md                                    | Markdown           |         31 |          0 |         20 |         51 |
+| c:\Users\Public\ErgoApp\ErgoApp\app.config.js                                | JavaScript         |         55 |          0 |          1 |         56 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(auth)\_layout.jsx                       | JavaScript JSX     |         92 |          0 |          6 |         98 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(auth)\choice.jsx                        | JavaScript JSX     |          9 |          0 |          3 |         12 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(auth)\coach-add-athletes.jsx            | JavaScript JSX     |        341 |          0 |         11 |        352 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(auth)\coach-sign-up.jsx                 | JavaScript JSX     |        199 |          0 |         12 |        211 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(auth)\injury-history.jsx                | JavaScript JSX     |        223 |          0 |         15 |        238 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(auth)\search.jsx                        | JavaScript JSX     |          8 |          0 |          3 |         11 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(auth)\sign-in.jsx                       | JavaScript JSX     |        142 |          0 |          7 |        149 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(auth)\sign-up-2.jsx                     | JavaScript JSX     |        256 |          0 |         15 |        271 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(auth)\sign-up.jsx                       | JavaScript JSX     |        169 |          0 |         13 |        182 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(auth)\targets.jsx                       | JavaScript JSX     |        126 |          4 |         13 |        143 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(auth)\versionChoice.jsx                 | JavaScript JSX     |         95 |          0 |          6 |        101 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(coach-tabs)\_layout.jsx                 | JavaScript JSX     |        140 |          1 |          6 |        147 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(coach-tabs)\coachAthletes.jsx           | JavaScript JSX     |         73 |          0 |          7 |         80 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(coach-tabs)\coachCalendar.jsx           | JavaScript JSX     |         50 |          0 |          5 |         55 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(coach-tabs)\coachClasses.jsx            | JavaScript JSX     |         52 |          0 |          5 |         57 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(coach-tabs)\coachHome.jsx               | JavaScript JSX     |         80 |          0 |          6 |         86 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(coach-tabs)\coachMessages.jsx           | JavaScript JSX     |         58 |          0 |          4 |         62 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(tabs)\_layout.jsx                       | JavaScript JSX     |        115 |          1 |          7 |        123 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(tabs)\home.jsx                          | JavaScript JSX     |        145 |          1 |         10 |        156 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(tabs)\myMessages.jsx                    | JavaScript JSX     |         34 |          0 |          5 |         39 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(tabs)\myStats.jsx                       | JavaScript JSX     |         96 |          0 |         15 |        111 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\(tabs)\train.jsx                         | JavaScript JSX     |         64 |          0 |          5 |         69 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\_layout.jsx                              | JavaScript JSX     |        284 |          1 |          6 |        291 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\addClass.jsx                             | JavaScript JSX     |        162 |          0 |         10 |        172 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\athleteInfo.jsx                          | JavaScript JSX     |        143 |          0 |          9 |        152 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\chat.jsx                                 | JavaScript JSX     |        380 |          9 |         44 |        433 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\coachViewPlan.jsx                        | JavaScript JSX     |         65 |          0 |          9 |         74 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\dayInfo.jsx                              | JavaScript JSX     |         99 |          0 |         17 |        116 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\index.jsx                                | JavaScript JSX     |         36 |          1 |          4 |         41 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\loadStudy.jsx                            | JavaScript JSX     |         66 |          0 |          6 |         72 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\myProfile.jsx                            | JavaScript JSX     |        201 |          6 |         18 |        225 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\newClassSummary.jsx                      | JavaScript JSX     |        162 |          3 |         16 |        181 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\planSummary.jsx                          | JavaScript JSX     |        101 |          0 |          9 |        110 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\prePoll.jsx                              | JavaScript JSX     |         81 |          0 |          5 |         86 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\screeningInfo.jsx                        | JavaScript JSX     |         16 |          0 |          3 |         19 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\search\[query].jsx                       | JavaScript JSX     |         10 |          0 |          3 |         13 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\setClassTime.jsx                         | JavaScript JSX     |         96 |          0 |         12 |        108 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\setClassTime2.jsx                        | JavaScript JSX     |        160 |          1 |         11 |        172 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\statGraph.jsx                            | JavaScript JSX     |        103 |          0 |          5 |        108 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\studies.jsx                              | JavaScript JSX     |         26 |          0 |          3 |         29 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\studyDetails.jsx                         | JavaScript JSX     |         55 |          0 |          3 |         58 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\success.jsx                              | JavaScript JSX     |         92 |          6 |          9 |        107 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\trainingSolution.jsx                     | JavaScript JSX     |         60 |          0 |          5 |         65 |
+| c:\Users\Public\ErgoApp\ErgoApp\app\viewPlan.jsx                             | JavaScript JSX     |        287 |          0 |         11 |        298 |
+| c:\Users\Public\ErgoApp\ErgoApp\babel.config.js                              | JavaScript         |          7 |          0 |          1 |          8 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\ActivityDetailed.jsx              | JavaScript JSX     |        155 |          9 |         18 |        182 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\ActivitySummary.jsx               | JavaScript JSX     |         67 |          0 |          8 |         75 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\Calendar.jsx                      | JavaScript JSX     |        221 |          5 |         24 |        250 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\ChatHeader.jsx                    | JavaScript JSX     |         16 |          0 |          3 |         19 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\Choice.jsx                        | JavaScript JSX     |         53 |          0 |          5 |         58 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\CoachDisplay.jsx                  | JavaScript JSX     |         39 |          0 |          6 |         45 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\Collapsible.tsx                   | TypeScript JSX     |         37 |          0 |          5 |         42 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\CustomButton.jsx                  | JavaScript JSX     |         58 |          0 |          3 |         61 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\CustomFlatlist.jsx                | JavaScript JSX     |        203 |          1 |         18 |        222 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\Day.jsx                           | JavaScript JSX     |         61 |          0 |          7 |         68 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\EmptyHeader.jsx                   | JavaScript JSX     |          5 |          0 |          3 |          8 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\ExerciseDisplay.jsx               | JavaScript JSX     |         78 |          0 |          8 |         86 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\ExternalLink.tsx                  | TypeScript JSX     |         20 |          2 |          3 |         25 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\FilledButton.jsx                  | JavaScript JSX     |         19 |          0 |          2 |         21 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\FormField.jsx                     | JavaScript JSX     |         80 |          0 |          4 |         84 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\HelloWave.tsx                     | TypeScript JSX     |         31 |          0 |          7 |         38 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\Icon.jsx                          | JavaScript JSX     |         14 |          0 |          3 |         17 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\ImageUploadButton.jsx             | JavaScript JSX     |        125 |          5 |         20 |        150 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\IndexDisplay.jsx                  | JavaScript JSX     |         88 |          1 |          9 |         98 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\LineGraph.jsx                     | JavaScript JSX     |        255 |         15 |         31 |        301 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\NotificationDisplay.jsx           | JavaScript JSX     |         42 |          0 |          4 |         46 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\OutlinedButton.jsx                | JavaScript JSX     |         23 |          0 |          2 |         25 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\ParallaxScrollView.tsx            | TypeScript JSX     |         69 |          0 |          8 |         77 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\PendingStudy.jsx                  | JavaScript JSX     |         63 |          0 |          7 |         70 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\ProgressBar.jsx                   | JavaScript JSX     |         53 |          3 |          6 |         62 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\ProgressDisplay.jsx               | JavaScript JSX     |         26 |          0 |          3 |         29 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\ProgressDonut.jsx                 | JavaScript JSX     |         92 |          7 |         10 |        109 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\Search.jsx                        | JavaScript JSX     |         68 |          0 |          6 |         74 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\SelectField.jsx                   | JavaScript JSX     |         55 |          0 |          5 |         60 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\StatsDisplay.jsx                  | JavaScript JSX     |         33 |          0 |          4 |         37 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\StudySummary.jsx                  | JavaScript JSX     |         64 |          0 |          4 |         68 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\TargetCard.jsx                    | JavaScript JSX     |         46 |          0 |          6 |         52 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\TargetDisplay.jsx                 | JavaScript JSX     |         29 |          0 |          3 |         32 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\ThemedText.tsx                    | TypeScript JSX     |         55 |          0 |          6 |         61 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\ThemedView.tsx                    | TypeScript JSX     |         10 |          0 |          5 |         15 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\TonalButton.jsx                   | JavaScript JSX     |         23 |          0 |          2 |         25 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\TrainingSession.jsx               | JavaScript JSX     |         66 |          0 |          4 |         70 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\__tests__\ThemedText-test.tsx     | TypeScript JSX     |          7 |          0 |          4 |         11 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\athlete\home\AthleteProfile.jsx   | JavaScript JSX     |         19 |          0 |          3 |         22 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\athlete\home\ProgressToTarget.jsx | JavaScript JSX     |         20 |          0 |          3 |         23 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\athlete\home\StreakDisplay.jsx    | JavaScript JSX     |         21 |          0 |          3 |         24 |
+| c:\Users\Public\ErgoApp\ErgoApp\components\navigation\TabBarIcon.tsx         | TypeScript JSX     |          6 |          1 |          3 |         10 |
+| c:\Users\Public\ErgoApp\ErgoApp\constants\Colors.ts                          | TypeScript         |         20 |          4 |          3 |         27 |
+| c:\Users\Public\ErgoApp\ErgoApp\contexts\ChatContext.jsx                     | JavaScript JSX     |        109 |          4 |         20 |        133 |
+| c:\Users\Public\ErgoApp\ErgoApp\contexts\ClassContext.jsx                    | JavaScript JSX     |         23 |          0 |          6 |         29 |
+| c:\Users\Public\ErgoApp\ErgoApp\contexts\CoachContext.jsx                    | JavaScript JSX     |        436 |          0 |         15 |        451 |
+| c:\Users\Public\ErgoApp\ErgoApp\contexts\CurrentClassContext.jsx             | JavaScript JSX     |        141 |          0 |          6 |        147 |
+| c:\Users\Public\ErgoApp\ErgoApp\contexts\UserContext.jsx                     | JavaScript JSX     |        151 |          6 |         18 |        175 |
+| c:\Users\Public\ErgoApp\ErgoApp\eas.json                                     | JSON               |         21 |          0 |          1 |         22 |
+| c:\Users\Public\ErgoApp\ErgoApp\hooks\useColorScheme.ts                      | TypeScript         |          1 |          0 |          1 |          2 |
+| c:\Users\Public\ErgoApp\ErgoApp\hooks\useColorScheme.web.ts                  | TypeScript         |          3 |          5 |          1 |          9 |
+| c:\Users\Public\ErgoApp\ErgoApp\hooks\useThemeColor.ts                       | TypeScript         |         14 |          4 |          5 |         23 |
+| c:\Users\Public\ErgoApp\ErgoApp\metro.config.js                              | JavaScript         |          4 |          0 |          3 |          7 |
+| c:\Users\Public\ErgoApp\ErgoApp\package-lock.json                            | JSON               |     18,970 |          0 |          1 |     18,971 |
+| c:\Users\Public\ErgoApp\ErgoApp\package.json                                 | JSON               |         66 |          0 |          1 |         67 |
+| c:\Users\Public\ErgoApp\ErgoApp\scripts\calendarData.js                      | JavaScript         |        121 |          5 |         11 |        137 |
+| c:\Users\Public\ErgoApp\ErgoApp\scripts\categories.js                        | JavaScript         |         60 |          0 |          1 |         61 |
+| c:\Users\Public\ErgoApp\ErgoApp\scripts\firebase.js                          | JavaScript         |         22 |          0 |          3 |         25 |
+| c:\Users\Public\ErgoApp\ErgoApp\scripts\icons.js                             | JavaScript         |        181 |          0 |          3 |        184 |
+| c:\Users\Public\ErgoApp\ErgoApp\scripts\maxValues.js                         | JavaScript         |         11 |          0 |          1 |         12 |
+| c:\Users\Public\ErgoApp\ErgoApp\scripts\reset-project.js                     | JavaScript         |         57 |          5 |         12 |         74 |
+| c:\Users\Public\ErgoApp\ErgoApp\scripts\utils.js                             | JavaScript         |         21 |          4 |          4 |         29 |
+| c:\Users\Public\ErgoApp\ErgoApp\tailwind.config.js                           | JavaScript         |         39 |          1 |          2 |         42 |
+| c:\Users\Public\ErgoApp\ErgoApp\tsconfig.json                                | JSON with Comments |         17 |          0 |          1 |         18 |
+| Total                                                                        |                    |     28,348 |        121 |        826 |     29,295 |
++------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

@@ -1,12 +1,9 @@
 PENDIENTE DE MÍ
-    Implementar Screening
+    Implementar Screening --> Continuar y Volver
     Botón de editar información
-    Establecer notificaciones de antropometrías
     Login con auth provider
     Arreglar target cards
-    
-PENDIENTE DE SARA
-    Animaciones de personajes
+    Notificaciones automaticas
 
 POST DESKTOP
     Tests de responsividad

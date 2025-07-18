@@ -10,6 +10,7 @@ import React, { useContext, useEffect, useState } from "react";
 
 import { router } from "expo-router";
 import CustomButton from "../../components/CustomButton";
+import SelectField from "../../components/SelectField";
 import UserContext from "../../contexts/UserContext";
 import FormField from "../../components/FormField";
 import {
@@ -210,6 +211,12 @@ const SignUp2 = () => {
                     }}
                   />
                 </View>
+                <SelectField
+                  containerStyles="mt-8"
+                  category="genders"
+                  displayTitle="Género"
+                  title="gender"
+                ></SelectField>
               </>
             )}
 

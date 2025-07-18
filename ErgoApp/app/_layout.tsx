@@ -54,7 +54,6 @@ export default function _layout() {
                     headerBackTitle: "\np",
                     headerStyle: {
                       backgroundColor: "#F5F5F5",
-                      opactity: 0,
                     },
                     headerShadowVisible: false,
                   }}
@@ -69,7 +68,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -82,7 +80,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -95,7 +92,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -108,7 +104,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -121,7 +116,6 @@ export default function _layout() {
                       backgroundColor: "white",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -134,7 +128,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -147,7 +140,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -160,7 +152,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -173,7 +164,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -186,7 +176,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -199,7 +188,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -212,7 +200,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -225,7 +212,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -238,7 +224,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -251,7 +236,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -264,7 +248,6 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
                   }}
                 />
                 <Stack.Screen
@@ -277,7 +260,54 @@ export default function _layout() {
                       backgroundColor: "#F5F5F5",
                     },
                     headerShadowVisible: false,
-                    headerBackTitleVisible: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="screeningInfo"
+                  options={{
+                    headerShown: true,
+                    headerTitle: "",
+                    headerBackTitle: "\np",
+                    headerStyle: {
+                      backgroundColor: "#F5F5F5",
+                    },
+                    headerShadowVisible: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="screeningParameters"
+                  options={{
+                    headerShown: true,
+                    headerTitle: "",
+                    headerBackTitle: "\np",
+                    headerStyle: {
+                      backgroundColor: "#F5F5F5",
+                    },
+                    headerShadowVisible: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="screening"
+                  options={{
+                    headerShown: true,
+                    headerTitle: "",
+                    headerBackTitle: "\np",
+                    headerStyle: {
+                      backgroundColor: "#F5F5F5",
+                    },
+                    headerShadowVisible: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="exerciseSearch"
+                  options={{
+                    headerShown: true,
+                    headerTitle: "",
+                    headerBackTitle: "\np",
+                    headerStyle: {
+                      backgroundColor: "#F5F5F5",
+                    },
+                    headerShadowVisible: false,
                   }}
                 />
               </Stack>

@@ -1,43 +1,67 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "../scripts/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { Athlete } from "../types/Athletes";
+import { User } from "@supabase/supabase-js";
+import { supabase } from "../utils/supabase";
 
-const UserContext = createContext();
+interface UserContextProps {
+  user: Athlete;
+  setUser: (user: Athlete) => void;
+  authUser: User | null;
+  isAuthenticated: boolean;
+  version: string | null;
+  setVersion: (version: string) => void;
+  resetUser: () => void;
+  isLoading: boolean;
+}
 
-export const UserProvider = ({ children }) => {
-  const initialUser = {
-    fullName: "",
-    sport: "Football",
+const UserContext = createContext<UserContextProps | null>(null);
+
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("useUser must be used within a UserProvider");
+  }
+  return context;
+};
+
+export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+  const initialUser: Athlete = {
+    id: "",
+    name: "",
+    discipline: "Football",
     category: "Amateur",
-    birthDate: "01/01/1999",
-    height: 180,
+    birthDate: new Date("01/01/1999"),
+    height: "180",
     heightUnit: "cm",
-    weight: 70,
-    weightUnit: "kg",
+    weight: "70",
+    weightUnit: "kgs",
+    gender: "M",
+    country: "",
+    state: "",
     email: "",
     password: "",
+    institution: "",
+    comments: "",
+    completedStudies: [],
+    currentTrainingPlan: undefined,
+    wellnessData: [],
+    sessionPerformanceData: [],
+    calendar: [],
+    character: "Roger",
+    objectives: [],
     gamificationFeatures: {
       streak: 0,
       targetProgress: 0,
       currentLevel: "beginner",
     },
-    calendar: [],
-    character: "Roger",
-    targets: [],
-    stats: [],
     notifications: [],
-    coaches: {},
-    registryDate: new Date().toISOString().split("T")[0],
-    experienceLevel: 5,
-    injuryHistory: [],
   };
 
   const [user, setUser] = useState(initialUser);
   const [isLoading, setIsLoading] = useState(true);
-  const [version, setVersion] = useState(null);
-  const [authUser, setAuthUser] = useState(null);
+  const [version, setVersion] = useState<string | null>(null);
+  const [authUser, setAuthUser] = useState<User | null>(null);
 
   const resetUser = () => {
     setUser(initialUser);
@@ -110,37 +134,42 @@ export const UserProvider = ({ children }) => {
     }
   }, [version]);
 
-  // Handle Firebase auth state changes
+  // Handle Supabase auth state changes
   useEffect(() => {
-    if (auth) {
-      const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-        console.log("Auth state changed:", firebaseUser);
-        setAuthUser(firebaseUser);
-      });
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        console.log("Auth state changed:", session?.user);
+        setAuthUser(session?.user || null);
+      }
+    );
 
-      return () => unsubscribe();
-    }
+    return () => {
+      authListener?.subscription?.unsubscribe();
+    };
   }, []);
 
-  // Sync user data with Firestore
+  // Sync user data with Supabase
   useEffect(() => {
-    const updateUserInFirestore = async () => {
+    const updateUserInSupabase = async () => {
       try {
-        if (auth?.currentUser && user) {
-          const userRef = doc(db, "userdata", auth.currentUser.uid);
-          await setDoc(userRef, user, { merge: true });
-          console.log("User data synced with Firestore");
+        if (authUser && user) {
+          const { error } = await supabase.from("userdata").upsert({
+            ...user,
+            id: authUser.id,
+          });
+          if (error) throw error;
+          console.log("User data synced with Supabase");
         }
       } catch (error) {
-        console.error("Error updating user in Firestore:", error);
+        console.error("Error updating user in Supabase:", error);
       }
     };
 
-    updateUserInFirestore();
-  }, [user]);
+    updateUserInSupabase();
+  }, [user, authUser]);
 
   // Custom method to update version with storage handling
-  const updateVersion = async (newVersion) => {
+  const updateVersion = async (newVersion: string) => {
     try {
       await AsyncStorage.setItem("version", newVersion);
       setVersion(newVersion);
@@ -169,5 +198,3 @@ export const UserProvider = ({ children }) => {
     </UserContext.Provider>
   );
 };
-
-export default UserContext;

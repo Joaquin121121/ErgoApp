@@ -80,6 +80,8 @@ import splash from "../assets/images/splash.gif";
 import addRed from "../assets/icons/addRed.png";
 import photo from "../assets/icons/photo.png";
 import velocimeter from "../assets/icons/velocimeter.png";
+import eyeWhite from "../assets/icons/eyeWhite.png";
+import eyeRed from "../assets/icons/eyeRed.png";
 import search from "../assets/icons/search.png";
 import edit from "../assets/icons/edit.png";
 import checkGray from "../assets/icons/checkGray.png";
@@ -105,6 +107,7 @@ export default {
   doubleCheckRed,
   logoRed,
   eye,
+  eyeRed,
   eyeHide,
   google,
   check,
@@ -114,6 +117,7 @@ export default {
   loading,
   dumbbell,
   hand,
+  eyeWhite,
   fat,
   upload,
   bone,

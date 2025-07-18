@@ -49,6 +49,9 @@ export default {
     extra: {
       eas: {
         projectId: "9665c70c-2683-4b8b-a2c9-417f0e3d975a",
+        supabaseUrl: "https://txpdkefctuxefnitisqp.supabase.co",
+        supabaseAnonKey:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4cGRrZWZjdHV4ZWZuaXRpc3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1OTMyMjYsImV4cCI6MjA2MDE2OTIyNn0._G_0hzRYcl7bbR-r3EAIZK54YmEco1DOE_Pi6butFKY",
       },
     },
   },

@@ -227,7 +227,7 @@
       "x": 453.34538412885667,
       "y": -4.953858033724487,
       "width": 150.88148011258008,
-      "height": 350,
+      "height": 375,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -241,8 +241,8 @@
       "index": "a7",
       "roundness": null,
       "seed": 1823479797,
-      "version": 420,
-      "versionNonce": 1179448046,
+      "version": 431,
+      "versionNonce": 161924286,
       "isDeleted": false,
       "boundElements": [
         {
@@ -250,16 +250,16 @@
           "type": "arrow"
         }
       ],
-      "updated": 1734467610167,
+      "updated": 1734537950294,
       "link": null,
       "locked": false,
-      "text": "fullName\nsport\ncategory\nbirthdate\nheight\nheightUnit\nweight\nweightUnit\nemail\npassword\ninstitution\nregistryDate\nexperienceLevel\n",
+      "text": "fullName\nsport\ncategory\nbirthdate\nheight\nheightUnit\nweight\nweightUnit\ngender\nemail\npassword\ninstitution\nregistryDate\nexperienceLevel\n",
       "fontSize": 20,
       "fontFamily": 5,
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "fullName\nsport\ncategory\nbirthdate\nheight\nheightUnit\nweight\nweightUnit\nemail\npassword\ninstitution\nregistryDate\nexperienceLevel\n",
+      "originalText": "fullName\nsport\ncategory\nbirthdate\nheight\nheightUnit\nweight\nweightUnit\ngender\nemail\npassword\ninstitution\nregistryDate\nexperienceLevel\n",
       "autoResize": false,
       "lineHeight": 1.25
     },
@@ -5163,9 +5163,9 @@
       "id": "HaNJyV0MHbOArM7lrisl_",
       "type": "arrow",
       "x": 605.2268642414367,
-      "y": 49.0457841366768,
+      "y": 51.254714146503105,
       "width": 109.16713715567425,
-      "height": 123.37685210002682,
+      "height": 121.16792209020052,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -5181,11 +5181,11 @@
         "type": 2
       },
       "seed": 498315996,
-      "version": 310,
-      "versionNonce": 843867438,
+      "version": 322,
+      "versionNonce": 1143700734,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1734467610168,
+      "updated": 1734537950295,
       "link": null,
       "locked": false,
       "points": [
@@ -5195,7 +5195,7 @@
         ],
         [
           109.16713715567425,
-          123.37685210002682
+          121.16792209020052
         ]
       ],
       "lastCommittedPoint": null,
@@ -5652,7 +5652,7 @@
       "version": 109,
       "versionNonce": 430351986,
       "isDeleted": false,
-      "boundElements": null,
+      "boundElements": [],
       "updated": 1734467744322,
       "link": null,
       "locked": false,
@@ -5691,7 +5691,7 @@
       "version": 53,
       "versionNonce": 2139028206,
       "isDeleted": false,
-      "boundElements": null,
+      "boundElements": [],
       "updated": 1734467773510,
       "link": null,
       "locked": false,

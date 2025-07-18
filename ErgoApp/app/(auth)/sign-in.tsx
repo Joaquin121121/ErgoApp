@@ -7,27 +7,20 @@ import {
   Keyboard,
   TouchableOpacity,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import icons from "../../scripts/icons.js";
-import FormField from "../../components/FormField.jsx";
-import CustomButton from "../../components/CustomButton.jsx";
-import UserContext from "../../contexts/UserContext.jsx";
-import { Link, router } from "expo-router";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { db, auth } from "../../scripts/firebase.js";
-import { doc, getDoc } from "firebase/firestore";
-import { useLocalSearchParams } from "expo-router";
-import CoachContext from "../../contexts/CoachContext.jsx";
+import FormField from "../../components/FormField";
+import CustomButton from "../../components/CustomButton";
+import { router, useLocalSearchParams } from "expo-router";
+import { supabase } from "../../utils/supabase.js";
 
 const SignIn = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const [passwordError, setPasswordError] = useState(null);
-  const [emailError, setEmailError] = useState(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   const { selectedVersion } = useLocalSearchParams();
-  const { setUser, setVersion } = useContext(UserContext);
-  const { setCoachInfo } = useContext(CoachContext);
 
   const handleLogIn = async () => {
     if (form.email === "") {
@@ -40,44 +33,12 @@ const SignIn = () => {
     }
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, form.email, form.password).then(
-        async (userCredential) => {
-          const docRef = doc(
-            db,
-            `${selectedVersion === "coach" ? "coaches" : "userdata"}`,
-            userCredential.user.uid
-          );
-          const docSnap = await getDoc(docRef);
-          if (!docSnap.exists()) {
-            await auth.signOut();
-            setPasswordError("Email y/o contraseña incorrectos");
-            setLoading(false);
-            return;
-          }
-          const userdata = docSnap.data();
-          if (selectedVersion === "coach") {
-            await setCoachInfo(userdata);
-          } else {
-            await setUser(userdata);
-          }
-          await setVersion(selectedVersion);
-          console.log("UserData: ", userdata);
-          router.replace(
-            `${selectedVersion === "coach" ? "coachHome" : "home"}`
-          );
-        }
-      );
+      await supabase.auth.signInWithPassword({
+        email: form.email,
+        password: form.password,
+      });
     } catch (error) {
-      console.log("Error:", error.code);
-      switch (error.code) {
-        case "auth/invalid-email":
-          setEmailError("Email inválido");
-          break;
-        case "auth/invalid-credential":
-          setEmailError("Email y/o contraseña incorrectos");
-        default:
-          break;
-      }
+      console.log("Error:", error);
     }
     setLoading(false);
   };
@@ -130,7 +91,9 @@ const SignIn = () => {
                 onPress={() =>
                   router.push(
                     `${
-                      selectedVersion === "coach" ? "coach-sign-up" : "sign-up"
+                      selectedVersion === "coach"
+                        ? "/coach-sign-up"
+                        : "/sign-up"
                     }`
                   )
                 }

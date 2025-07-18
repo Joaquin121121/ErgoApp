@@ -9,11 +9,18 @@ import FormField from "./FormField";
 import icons from "../scripts/icons";
 import { containsText } from "../scripts/utils";
 
-const Search = ({ category, title, context }) => {
+const Search = ({
+  category,
+  title,
+  context,
+  currentStudy,
+  field = "disciplina",
+}) => {
   const [search, setSearch] = useState("");
   const { user, setUser } = useContext(UserContext);
   const { classInfo, setClassInfo } = useContext(ClassContext);
-  const { coachInfo, setCoachInfo } = useContext(CoachContext);
+  const { coachInfo, setCoachInfo, currentStudyData, setCurrentStudyData } =
+    useContext(CoachContext);
 
   const contexts = {
     user: { get: user, set: setUser },
@@ -21,19 +28,48 @@ const Search = ({ category, title, context }) => {
     coach: { get: coachInfo, set: setCoachInfo },
   };
   const [selectedOption, setSelectedOption] = useState(
-    contexts[context].get[title]
+    currentStudy ? "" : contexts[context].get[title]
   );
 
-  const options = categories[category];
+  const getOptions = () => {
+    if (currentStudy) {
+      if (currentStudy === "screening") {
+        return currentStudyData.availableMovements;
+      }
+    }
+    return categories?.[category];
+  };
+
+  const options = getOptions();
+
+  const onPress = ({ i }) => {
+    if (currentStudy) {
+      if (currentStudy === "screening") {
+        console.log(options[i]);
+        setCurrentStudyData({
+          ...currentStudyData,
+          availableMovements: currentStudyData.availableMovements.filter(
+            (e) => e !== options[i]
+          ),
+        });
+      }
+    } else {
+      contexts[context].set({
+        ...contexts[context].get,
+        [title]: e,
+      });
+    }
+    router.back();
+  };
 
   useEffect(() => {
-    console.log(options);
+    console.log(currentStudy, currentStudyData.availableMovements);
   }, []);
   return (
     <ScrollView>
       <View className="w-full self-center justify-start pl-4 mb-8">
         <FormField
-          placeholder="Buscar disciplina..."
+          placeholder={`Buscar ${field}...`}
           value={search}
           handleChangeText={(e) => setSearch(e)}
           otherStyles="self-center  w-[90vw] mb-4"
@@ -45,15 +81,9 @@ const Search = ({ category, title, context }) => {
             <TouchableOpacity
               key={i}
               className={`border border-gray border-r-0 border-l-0 border-t-0 w-[95%] h-12 border-opacity-20 flex justify-center ${
-                i === options.length - 1 ? "border-b-0" : ""
+                i === options.length - 1 && i !== 0 ? "border-b-0" : ""
               }`}
-              onPress={() => {
-                contexts[context].set({
-                  ...contexts[context].get,
-                  [title]: e,
-                });
-                router.back();
-              }}
+              onPress={() => onPress({ i })}
             >
               <Text className="text-lg">{e}</Text>
               {selectedOption === options[i] && (

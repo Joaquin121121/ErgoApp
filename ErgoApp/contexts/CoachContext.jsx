@@ -379,6 +379,7 @@ export function CoachProvider({ children }) {
   };
 
   const [coachInfo, setCoachInfo] = useState(initialCoachInfo);
+  const [currentStudyData, setCurrentStudyData] = useState({});
 
   const resetCoachInfo = () => {
     setCoachInfo(initialCoachInfo);
@@ -440,6 +441,8 @@ export function CoachProvider({ children }) {
         selectedAthlete,
         setSelectedAthlete,
         resetCoachInfo,
+        currentStudyData,
+        setCurrentStudyData,
       }}
     >
       {children}

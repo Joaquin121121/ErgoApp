@@ -96,7 +96,6 @@ export default function AthleteInfo() {
         </Text>
         {athlete.trainingSolutions.additionals.slice(0, 2).map((additional) => (
           <Text className="font-pregular text-sm text-darkGray mt-2">
-            {" "}
             - {additional}
           </Text>
         ))}

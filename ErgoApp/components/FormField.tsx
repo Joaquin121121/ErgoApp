@@ -1,6 +1,6 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
-import { TextInput } from "react-native";
+import { KeyboardTypeOptions, TextInput } from "react-native";
 import icons from "../scripts/icons.js";
 import Icon from "./Icon";
 const FormField = ({
@@ -17,7 +17,23 @@ const FormField = ({
   multiline,
   date,
   icon,
+  keyboardType,
   ...props
+}: {
+  title?: string;
+  value?: string;
+  placeholder?: string;
+  handleChangeText?: (text: string) => void;
+  otherStyles?: string;
+  toggleVisibility?: () => void;
+  pickerVisible?: boolean;
+  onChange?: (e: any) => void;
+  maxLength?: number;
+  onEnter?: () => void;
+  multiline?: boolean;
+  date?: boolean;
+  icon?: string;
+  keyboardType?: KeyboardTypeOptions;
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -62,6 +78,7 @@ const FormField = ({
             multiline={multiline}
             textAlignVertical={multiline ? "top" : "center"}
             numberOfLines={multiline ? 4 : 1}
+            keyboardType={keyboardType}
           />
         )}
 
@@ -74,7 +91,7 @@ const FormField = ({
             />
           </TouchableOpacity>
         )}
-        {icon && <Icon icon={icon} />}
+        {icon && <Icon icon={icon} size={24} style={{ marginRight: 10 }} />}
       </View>
     </View>
   );
