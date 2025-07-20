@@ -4,7 +4,7 @@ import { View, Text, Image, ScrollView } from "react-native";
 
 import StreakDisplay from "../../components/athlete/home/StreakDisplay";
 import icons from "../../scripts/icons.js";
-import Calendar from "../../components/Calendar.jsx";
+import Calendar from "../../components/Calendar";
 import CustomFlatlist from "../../components/CustomFlatlist.jsx";
 import AthleteProfile from "../../components/athlete/home/AthleteProfile.jsx";
 import { useState } from "react";

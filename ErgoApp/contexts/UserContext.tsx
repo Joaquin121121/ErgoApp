@@ -24,6 +24,7 @@ interface UserContextType {
   isLoggedIn: boolean;
   userData: Coach | Athlete | null;
   setUserData: React.Dispatch<React.SetStateAction<Coach | Athlete | null>>;
+  linkAthleteToCoach: (athleteId: string) => Promise<boolean>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -54,6 +55,43 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       user_metadata: supabaseUser.user_metadata,
       app_metadata: supabaseUser.app_metadata,
     };
+  };
+
+  const linkAthleteToCoach = async (athleteId: string): Promise<boolean> => {
+    try {
+      // First, check if athlete exists and has email as NULL
+      const { data: athlete, error: fetchError } = await supabase
+        .from("athlete")
+        .select(
+          "id, email, name, discipline, institution, category, gender, comments"
+        )
+        .eq("id", athleteId)
+        .is("email", null)
+        .single();
+
+      if (fetchError || !athlete) {
+        return false;
+      }
+
+      // If athlete exists with email NULL, return the name
+
+      const newAthlete: Athlete = {
+        ...athlete,
+        birthDate: new Date(),
+        country: "",
+        state: "",
+        height: "",
+        heightUnit: "cm",
+        weight: "",
+        weightUnit: "kgs",
+        completedStudies: [],
+      };
+      setUserData(newAthlete);
+      return true;
+    } catch (error) {
+      console.error("Error in linkAthleteToCoach:", error);
+      return false;
+    }
   };
 
   // Check for active session on mount
@@ -153,6 +191,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         isLoggedIn,
         userData,
         setUserData,
+        linkAthleteToCoach,
       }}
     >
       {children}

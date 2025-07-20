@@ -87,7 +87,7 @@ const InjuryHistory = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View className="bg-offWhite h-[85vh] w-full flex items-center justify-center">
+      <View className="bg-offWhite h-[90vh] w-full flex items-center justify-center">
         <ScrollView className="w-[80vw] ">
           <View className="w-full flex items-center justify-center ">
             <Text className="text-2xl font-regular">Lesiones</Text>

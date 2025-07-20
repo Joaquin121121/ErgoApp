@@ -88,6 +88,12 @@ const AuthLayout = () => {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="athlete-coach-link"
+          options={{
+            headerShown: false,
+          }}
+        />
         <StatusBar></StatusBar>
       </Stack>
     </>

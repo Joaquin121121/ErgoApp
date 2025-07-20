@@ -12,7 +12,7 @@ import OutlinedButton from "../components/OutlinedButton";
 import { router } from "expo-router";
 import TonalButton from "../components/TonalButton";
 import ImageUploadButton from "../components/ImageUploadButton.jsx";
-import Icon from "../components/Icon.jsx";
+import Icon from "../components/Icon";
 const myProfile = () => {
   const characters = [
     { name: "Roger", key: 0 },

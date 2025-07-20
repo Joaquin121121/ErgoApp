@@ -11,21 +11,22 @@ import { Coach } from "../types/Coach.js";
 import { getPropertyValue } from "../utils/utils";
 
 const SelectField = ({
-  title,
   category,
   displayTitle,
   context = "user",
   containerStyles,
   action = "choice",
+  disabled = false,
 }: {
-  title: string;
   category: string;
   displayTitle: string;
   context?: string;
   containerStyles?: string;
   action?: string;
+  disabled?: boolean;
 }) => {
   const { userData, setUserData } = useUser();
+  const [showError, setShowError] = useState(false);
 
   const contexts: Record<
     string,
@@ -38,16 +39,32 @@ const SelectField = ({
   };
 
   const onPress = () => {
+    if (disabled) {
+      setShowError(true);
+      // Hide error after 3 seconds
+      setTimeout(() => setShowError(false), 3000);
+      return;
+    }
+
     router.push({
       pathname: `/${action}` as RelativePathString,
-      params: { category: category, title: title, context: context },
+      params: { category: category, title: displayTitle, context: context },
     });
+  };
+
+  const getErrorMessage = () => {
+    if (category === "state") {
+      return "Primero selecciona un país";
+    }
+    return "Completa el campo anterior";
   };
 
   return (
     <View className={`space-y-2 w-full mt-1`}>
       <TouchableOpacity
-        className={`w-full h-12 px-4 bg-white rounded-2xl flex-row justify-between pl-4 pr-4 items-center shadow-sm ${containerStyles}`}
+        className={`w-full h-12 px-4 bg-white rounded-2xl flex-row justify-between pl-4 pr-4 items-center shadow-sm ${containerStyles} ${
+          disabled ? "opacity-50" : ""
+        }`}
         onPress={onPress}
       >
         <Text className="flex-1 text-darkGray font-plight text-base ">
@@ -55,7 +72,7 @@ const SelectField = ({
         </Text>
         <View className="h-full flex flex-row items-center">
           <Text className="text-secondary font-plight mr-2">
-            {getPropertyValue(contexts[context].get, title)}
+            {getPropertyValue(contexts[context].get, category)}
           </Text>
           <Image
             source={icons.rightArrow}
@@ -64,6 +81,11 @@ const SelectField = ({
           ></Image>
         </View>
       </TouchableOpacity>
+      {showError && (
+        <Text className="text-secondary text-sm self-center">
+          {getErrorMessage()}
+        </Text>
+      )}
     </View>
   );
 };

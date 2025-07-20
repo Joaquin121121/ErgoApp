@@ -43,68 +43,71 @@ const SignIn = () => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View className="bg-offWhite mt-10 h-[85vh] w-full flex items-center justify-center">
-        <ScrollView className="w-[80%] ">
-          <View className="w-full flex items-center justify-center ">
-            <Image
-              source={icons.logoSimplified}
-              resizeMode="contain"
-              className="w-[120px] h-[12 0px] self-center"
-              style={{ backgroundColor: "transparent" }}
-            />
-            <Text className="text-2xl font-regular ">Iniciar Sesión</Text>
-            <FormField
-              title="Email"
-              value={form.email}
-              handleChangeText={(e) => setForm({ ...form, email: e })}
-              otherStyles="mt-8"
-              keyboardType="email-address"
-              onChange={() => setEmailError(null)}
-            />
-            {emailError && (
-              <Text className="text-secondary mt-2">{emailError}</Text>
-            )}
-            <FormField
-              title="Contraseña"
-              value={form.password}
-              handleChangeText={(e) => setForm({ ...form, password: e })}
-              onChange={() => setPasswordError(null)}
-              otherStyles="mt-8"
-              onEnter={handleLogIn}
-            />
-            {passwordError && (
-              <Text className="text-secondary mt-2">{passwordError}</Text>
-            )}
-            <CustomButton
-              title="Iniciar Sesión"
-              onPress={handleLogIn}
-              containerStyles="mt-16 bg-secondary z-50"
-              textStyles="text-white"
-              isLoading={loading}
-              icon="next"
-            ></CustomButton>
+    <View className="bg-offWhite mt-10 h-[90vh] w-full flex items-center justify-center">
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View className="absolute inset-0 z-0" />
+      </TouchableWithoutFeedback>
+      <ScrollView
+        className="w-[80%] z-10"
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
+        <View className="w-full flex items-center justify-center ">
+          <Image
+            source={icons.logoSimplified}
+            resizeMode="contain"
+            className="w-[120px] h-[12 0px] self-center"
+            style={{ backgroundColor: "transparent" }}
+          />
+          <Text className="text-2xl font-regular ">Iniciar Sesión</Text>
+          <FormField
+            title="Email"
+            value={form.email}
+            handleChangeText={(e) => setForm({ ...form, email: e })}
+            otherStyles="mt-8"
+            keyboardType="email-address"
+            onChange={() => setEmailError(null)}
+          />
+          {emailError && (
+            <Text className="text-secondary mt-2">{emailError}</Text>
+          )}
+          <FormField
+            title="Contraseña"
+            value={form.password}
+            handleChangeText={(e) => setForm({ ...form, password: e })}
+            onChange={() => setPasswordError(null)}
+            otherStyles="mt-8"
+            onEnter={handleLogIn}
+          />
+          {passwordError && (
+            <Text className="text-secondary mt-2">{passwordError}</Text>
+          )}
+          <CustomButton
+            title="Iniciar Sesión"
+            onPress={handleLogIn}
+            containerStyles="mt-16 bg-secondary z-50"
+            textStyles="text-white"
+            isLoading={loading}
+            icon="next"
+          ></CustomButton>
 
-            <View className="justify-center pt-5 flex-row gap-2">
-              <Text className="text-md">No tienes cuenta?</Text>
-              <TouchableOpacity
-                onPress={() =>
-                  router.push(
-                    `${
-                      selectedVersion === "coach"
-                        ? "/coach-sign-up"
-                        : "/sign-up"
-                    }`
-                  )
-                }
-              >
-                <Text className="text-secondary">Registrarse</Text>
-              </TouchableOpacity>
-            </View>
+          <View className="justify-center pt-5 flex-row gap-2">
+            <Text className="text-md">No tienes cuenta?</Text>
+            <TouchableOpacity
+              onPress={() =>
+                router.push(
+                  `${
+                    selectedVersion === "coach" ? "/coach-sign-up" : "/sign-up"
+                  }`
+                )
+              }
+            >
+              <Text className="text-secondary">Registrarse</Text>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-      </View>
-    </TouchableWithoutFeedback>
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 

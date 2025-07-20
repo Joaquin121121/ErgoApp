@@ -1,8 +1,6 @@
 import { PlanState } from "./trainingPlan";
 import { CompletedStudy } from "./Studies";
-import { Event } from "./Events";
 import { Objective } from "./Objective";
-import { Notification } from "./Notifications";
 
 export interface Athlete {
   id: string;
@@ -25,7 +23,6 @@ export interface Athlete {
   notifications?: Notification[];
   objectives?: Objective[];
   email?: string;
-  password?: string;
   gamificationFeatures?: GamificationFeatures;
   currentTrainingPlan?: PlanState;
   wellnessData?: WellnessData[];
@@ -312,7 +309,6 @@ export const initialAthlete: Athlete = {
   notifications: [],
   objectives: [],
   email: "",
-  password: "",
   gamificationFeatures: {
     streak: 0,
     targetProgress: 0,

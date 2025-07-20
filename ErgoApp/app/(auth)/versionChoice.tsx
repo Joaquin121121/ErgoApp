@@ -11,9 +11,13 @@ import { router } from "expo-router";
 import icons from "../../scripts/icons";
 import Icon from "../../components/Icon";
 import TonalButton from "../../components/TonalButton";
+import { useRouter } from "expo-router";
 
 const versionChoice = () => {
-  const [selectedVersion, setSelectedVersion] = useState(null);
+  const router = useRouter();
+  const [selectedVersion, setSelectedVersion] = useState<
+    "coach" | "athlete" | null
+  >(null);
   const [error, setError] = useState(false);
 
   const onPress = () => {
@@ -21,7 +25,7 @@ const versionChoice = () => {
       setError(true);
       return;
     }
-    router.push(`sign-in?selectedVersion=${selectedVersion}`);
+    router.push("/athlete-coach-link");
   };
 
   useEffect(() => {
@@ -32,7 +36,7 @@ const versionChoice = () => {
       <Image
         source={icons.logoSimplified}
         resizeMode="contain"
-        className="w-[150px] h-[150px] self-center"
+        className="w-[120px] h-[120px] self-center"
         style={{ backgroundColor: "transparent" }}
       />
       <Text className=" font-pregular text-[32px] self-center">

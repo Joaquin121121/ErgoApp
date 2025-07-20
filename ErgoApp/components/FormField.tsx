@@ -18,6 +18,8 @@ const FormField = ({
   date,
   icon,
   keyboardType,
+  onFocusInput,
+  onBlurInput,
   ...props
 }: {
   title?: string;
@@ -32,8 +34,10 @@ const FormField = ({
   onEnter?: () => void;
   multiline?: boolean;
   date?: boolean;
-  icon?: string;
+  icon?: keyof typeof icons;
   keyboardType?: KeyboardTypeOptions;
+  onFocusInput?: (title: string) => void;
+  onBlurInput?: () => void;
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -70,8 +74,12 @@ const FormField = ({
             onChangeText={handleChangeText}
             autoCapitalize="none"
             secureTextEntry={title === "Contraseña" && !showPassword}
-            onFocus={toggleVisibility}
-            onBlur={toggleVisibility}
+            onFocus={() => {
+              if (onFocusInput && title) onFocusInput(title);
+            }}
+            onBlur={() => {
+              if (onBlurInput) onBlurInput();
+            }}
             onChange={onChange}
             onSubmitEditing={onEnter}
             {...(maxLength !== undefined && { maxLength })}
