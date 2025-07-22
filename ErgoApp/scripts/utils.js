@@ -6,6 +6,19 @@ export function parseCamelCase(text) {
     );
   return parsedText.join("");
 }
+
+export function shortenName(name) {
+  if (name.length < 10) {
+    return name;
+  }
+
+  const firstName = name.split(" ")[0];
+  if (firstName.length < 10) {
+    return firstName;
+  }
+
+  return firstName.slice(0, 3) + ".";
+}
 export function fractionToPercentage(numerator, denominator) {
   // Handle division by zero
   if (denominator === 0) return "0%";

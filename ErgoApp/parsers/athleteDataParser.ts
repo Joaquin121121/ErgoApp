@@ -443,60 +443,6 @@ const processBoscoResults = async (
   }
 };
 
-const processWellnessData = async (
-  db: DatabaseInstance,
-  athletesMap: Map<string, Athlete>
-) => {
-  const athleteIds = Array.from(athletesMap.keys());
-  const placeholders = athleteIds.map(() => "?").join(", ");
-
-  const wellnessData = await db.select(
-    `
-    SELECT * FROM athlete_weekly_stats WHERE athlete_id IN (${placeholders}) AND deleted_at IS NULL
-  `,
-    [...athleteIds]
-  );
-
-  wellnessData.forEach((wd: any) => {
-    const athlete = athletesMap.get(wd.athlete_id);
-    if (athlete) {
-      athlete.wellnessData?.push({
-        week: wd.week_start_date,
-        sleep: wd.sleep,
-        nutrition: wd.nutrition,
-        fatigue: wd.fatigue,
-      });
-    }
-  });
-  return athletesMap;
-};
-
-const processPerformanceData = async (
-  db: DatabaseInstance,
-  athletesMap: Map<string, Athlete>
-) => {
-  const athleteIds = Array.from(athletesMap.keys());
-  const placeholders = athleteIds.map(() => "?").join(", ");
-
-  const performanceData = await db.select(
-    `SELECT * FROM athlete_session_performance WHERE athlete_id IN (${placeholders}) AND deleted_at IS NULL`,
-    [...athleteIds]
-  );
-
-  performanceData.forEach((pd: any) => {
-    const athlete = athletesMap.get(pd.athlete_id);
-    if (athlete) {
-      athlete.sessionPerformanceData?.push({
-        sessionId: pd.session_id,
-        week: pd.week_start_date,
-        performance: pd.performance,
-        completedExercises: pd.completed_exercises,
-      });
-    }
-  });
-  return athletesMap;
-};
-
 export const getAthletes = async (coachId: string): Promise<Athlete[]> => {
   try {
     const db = await getDatabaseInstance();
@@ -742,6 +688,208 @@ export const deleteAthlete = async (
   } catch (error) {
     console.error("Error deleting athlete:", error);
     throw error;
+  }
+};
+
+export const getAthleteDataAsUser = async (
+  email: string
+): Promise<Athlete | null> => {
+  try {
+    const db = await getDatabaseInstance();
+
+    // Fetch athlete data by email
+    const athletes = await db.select(
+      `SELECT * FROM athlete 
+       WHERE email = ? AND deleted_at IS NULL 
+       LIMIT 1`,
+      [email]
+    );
+
+    if (athletes.length === 0) {
+      return null;
+    }
+
+    const athleteData = athletes[0];
+
+    // Transform database data to Athlete interface
+    const athlete = transformToAthlete({
+      id: athleteData.id,
+      name: athleteData.name,
+      birthDate: athleteData.birth_date,
+      country: athleteData.country,
+      state: athleteData.state,
+      gender: athleteData.gender,
+      height: athleteData.height,
+      heightUnit: athleteData.height_unit,
+      weight: athleteData.weight,
+      weightUnit: athleteData.weight_unit,
+      discipline: athleteData.discipline,
+      category: athleteData.category,
+      institution: athleteData.institution,
+      comments: athleteData.comments,
+      character: athleteData.character,
+      email: athleteData.email,
+      completedStudies: [],
+      sessionPerformanceData: [],
+      wellnessData: [],
+      performanceData: [],
+    });
+
+    if (!athlete) {
+      return null;
+    }
+
+    // Create a Map for processing (following existing pattern)
+    const athletesMap = new Map<string, Athlete>();
+    athletesMap.set(athlete.id, athlete);
+
+    // Fetch and process test results (following existing pattern)
+    const baseResults = await db.select(
+      `SELECT br.* 
+       FROM base_result br
+       WHERE br.deleted_at IS NULL AND br.athlete_id = ?`,
+      [athlete.id]
+    );
+
+    if (baseResults.length > 0) {
+      const baseResultMap = new Map<string, DbBaseResult>();
+      baseResults.forEach((br: DbBaseResult) => {
+        baseResultMap.set(br.id, br);
+      });
+
+      const jumpTimes = await db.select(
+        `
+        SELECT jt.* 
+        FROM jump_time jt
+        WHERE jt.base_result_id IN (${baseResults.map(() => "?").join(", ")})
+        ORDER BY jt.base_result_id, jt."index"
+      `,
+        baseResults.map((br) => br.id)
+      );
+
+      const jumpTimeMap = new Map<string, DbJumpTime[]>();
+      jumpTimes.forEach((jt: DbJumpTime) => {
+        if (!jumpTimeMap.has(jt.base_result_id)) {
+          jumpTimeMap.set(jt.base_result_id, []);
+        }
+        jumpTimeMap.get(jt.base_result_id)!.push(jt);
+      });
+
+      // Process all test results (following existing pattern)
+      await processBasicResults(db, baseResultMap, jumpTimeMap, athletesMap);
+      await processBoscoResults(db, baseResultMap, jumpTimeMap, athletesMap);
+      await processMultipleJumpsResults(
+        db,
+        baseResultMap,
+        jumpTimeMap,
+        athletesMap
+      );
+      await processMultipleDropJumpResults(
+        db,
+        baseResultMap,
+        jumpTimeMap,
+        athletesMap
+      );
+    }
+
+    return athletesMap.get(athlete.id) || null;
+  } catch (error) {
+    console.error("Error fetching athlete data by email:", error);
+    return null;
+  }
+};
+
+export const setAthleteDataAsUser = async (
+  athlete: Athlete,
+  pushRecord: (records: PendingRecord[]) => Promise<void>
+): Promise<"success" | "error"> => {
+  try {
+    const db = await getDatabaseInstance();
+
+    await db.execute("BEGIN TRANSACTION");
+
+    try {
+      const existingAthlete = await db.select(
+        "SELECT id FROM athlete WHERE id = ?",
+        [athlete.id]
+      );
+
+      const birthDateFormatted = athlete.birthDate
+        ? athlete.birthDate.toISOString().split("T")[0]
+        : null;
+
+      if (existingAthlete.length > 0) {
+        // Update existing athlete
+        await db.execute(
+          `UPDATE athlete 
+           SET name = ?, birth_date = ?, country = ?, state = ?, gender = ?, 
+               height = ?, height_unit = ?, weight = ?, weight_unit = ?, 
+               discipline = ?, category = ?, institution = ?, comments = ?,
+               character = ?, email = ?, last_changed = ?
+           WHERE id = ?`,
+          [
+            athlete.name,
+            birthDateFormatted,
+            athlete.country,
+            athlete.state,
+            athlete.gender,
+            athlete.height,
+            athlete.heightUnit,
+            athlete.weight,
+            athlete.weightUnit,
+            athlete.discipline,
+            athlete.category,
+            athlete.institution,
+            athlete.comments,
+            athlete.character,
+            athlete.email,
+            new Date().toISOString(),
+            athlete.id,
+          ]
+        );
+      } else {
+        // Insert new athlete (though this case is less likely for user updates)
+        await db.execute(
+          `INSERT INTO athlete (id, name, birth_date, country, state, gender, 
+                               height, height_unit, weight, weight_unit, 
+                               discipline, category, institution, comments, 
+                               character, email, created_at, last_changed, coach_id)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            athlete.id,
+            athlete.name,
+            birthDateFormatted,
+            athlete.country,
+            athlete.state,
+            athlete.gender,
+            athlete.height,
+            athlete.heightUnit,
+            athlete.weight,
+            athlete.weightUnit,
+            athlete.discipline,
+            athlete.category,
+            athlete.institution,
+            athlete.comments,
+            athlete.character,
+            athlete.email,
+            new Date().toISOString(),
+            new Date().toISOString(),
+            "", // coach_id can be empty for user updates
+          ]
+        );
+      }
+
+      await db.execute("COMMIT");
+      await pushRecord([{ tableName: "athlete", id: athlete.id }]);
+
+      return "success";
+    } catch (innerError) {
+      await db.execute("ROLLBACK");
+      throw innerError;
+    }
+  } catch (error) {
+    console.error("Error updating athlete data:", error);
+    return "error";
   }
 };
 

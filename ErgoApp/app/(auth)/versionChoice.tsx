@@ -12,6 +12,7 @@ import icons from "../../scripts/icons";
 import Icon from "../../components/Icon";
 import TonalButton from "../../components/TonalButton";
 import { useRouter } from "expo-router";
+import { useUser } from "../../contexts/UserContext";
 
 const versionChoice = () => {
   const router = useRouter();
@@ -19,13 +20,18 @@ const versionChoice = () => {
     "coach" | "athlete" | null
   >(null);
   const [error, setError] = useState(false);
+  const { isLoggedIn } = useUser();
 
   const onPress = () => {
     if (!selectedVersion) {
       setError(true);
       return;
     }
-    router.push("/athlete-coach-link");
+    if (isLoggedIn) {
+      router.push("/home");
+    } else {
+      router.push("/sign-in");
+    }
   };
 
   useEffect(() => {

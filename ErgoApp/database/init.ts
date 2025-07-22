@@ -28,12 +28,7 @@ CREATE TABLE IF NOT EXISTS "athlete" (
     "comments" TEXT,
     "email" TEXT,
     "character" TEXT,
-    "notifications" TEXT,
-    "objectives" TEXT,
-    "gamification_features" TEXT,
-    "current_training_plan" TEXT,
-    "wellness_data" TEXT,
-    "session_performance_data" TEXT,
+    "streak" INTEGER DEFAULT 0,
     "last_changed" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMP,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -73,8 +68,10 @@ CREATE TABLE IF NOT EXISTS "basic_result" (
     "loadunit" TEXT NOT NULL CHECK (loadunit IN ('kgs', 'lbs')),
     "base_result_id" UUID NOT NULL,
     "bosco_result_id" UUID,
+    "athlete_id" UUID NOT NULL,
     FOREIGN KEY ("base_result_id") REFERENCES "base_result"("id"),
-    FOREIGN KEY ("bosco_result_id") REFERENCES "bosco_result"("id")
+    FOREIGN KEY ("bosco_result_id") REFERENCES "bosco_result"("id"),
+    FOREIGN KEY ("athlete_id") REFERENCES "athlete"("id")
 );
 
 CREATE TABLE IF NOT EXISTS "bosco_result" (
@@ -95,8 +92,10 @@ CREATE TABLE IF NOT EXISTS "drop_jump_result" (
     "stiffness" NUMERIC NOT NULL,
     "base_result_id" UUID NOT NULL,
     "multiple_drop_jump_id" UUID,
+    "athlete_id" UUID NOT NULL,
     FOREIGN KEY ("base_result_id") REFERENCES "base_result"("id"),
-    FOREIGN KEY ("multiple_drop_jump_id") REFERENCES "multiple_drop_jump_result"("id")
+    FOREIGN KEY ("multiple_drop_jump_id") REFERENCES "multiple_drop_jump_result"("id"),
+    FOREIGN KEY ("athlete_id") REFERENCES "athlete"("id")
 );
 
 CREATE TABLE IF NOT EXISTS "event" (
@@ -135,7 +134,9 @@ CREATE TABLE IF NOT EXISTS "jump_time" (
     "performance" REAL,
     "last_changed" TIMESTAMP NOT NULL,
     "deleted_at" TIMESTAMP,
-    FOREIGN KEY ("base_result_id") REFERENCES "base_result"("id")
+    "athlete_id" UUID NOT NULL,
+    FOREIGN KEY ("base_result_id") REFERENCES "base_result"("id"),
+    FOREIGN KEY ("athlete_id") REFERENCES "athlete"("id")
 );
 
 CREATE TABLE IF NOT EXISTS "multiple_drop_jump_result" (
@@ -158,7 +159,9 @@ CREATE TABLE IF NOT EXISTS "multiple_jumps_result" (
     "criteria" TEXT NOT NULL CHECK (criteria IN ('numberOfJumps', 'stiffness', 'time')),
     "criteria_value" NUMERIC,
     "base_result_id" UUID NOT NULL,
-    FOREIGN KEY ("base_result_id") REFERENCES "base_result"("id")
+    "athlete_id" UUID NOT NULL,
+    FOREIGN KEY ("base_result_id") REFERENCES "base_result"("id"),
+    FOREIGN KEY ("athlete_id") REFERENCES "athlete"("id")
 );
 
 -- Base exercises table
@@ -176,12 +179,12 @@ CREATE TABLE IF NOT EXISTS "training_plans" (
     "id" UUID PRIMARY KEY,
     "n_of_weeks" INTEGER NOT NULL DEFAULT 4,
     "n_of_sessions" INTEGER NOT NULL DEFAULT 0,
-    "user_id" UUID,
+    "coach_id" UUID,
     "athlete_id" UUID,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "last_changed" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "deleted_at" TIMESTAMP,
-    FOREIGN KEY ("user_id") REFERENCES "coach"("id"),
+    FOREIGN KEY ("coach_id") REFERENCES "coach"("id"),
     FOREIGN KEY ("athlete_id") REFERENCES "athlete"("id")
 );
 
@@ -191,10 +194,12 @@ CREATE TABLE IF NOT EXISTS "training_models" (
     "name" TEXT NOT NULL,
     "description" TEXT,
     "training_plan_id" UUID NOT NULL,
+    "coach_id" UUID NOT NULL,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "last_changed" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "deleted_at" TIMESTAMP,
-    FOREIGN KEY ("training_plan_id") REFERENCES "training_plans"("id")
+    FOREIGN KEY ("training_plan_id") REFERENCES "training_plans"("id"),
+    FOREIGN KEY ("coach_id") REFERENCES "coach"("id")
 );
 
 -- Sessions table
@@ -202,10 +207,14 @@ CREATE TABLE IF NOT EXISTS "sessions" (
     "id" UUID PRIMARY KEY,
     "plan_id" UUID NOT NULL,
     "name" TEXT NOT NULL,
+    "athlete_id" UUID,
+    "coach_id" UUID,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "last_changed" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "deleted_at" TIMESTAMP,
-    FOREIGN KEY ("plan_id") REFERENCES "training_plans"("id")
+    FOREIGN KEY ("plan_id") REFERENCES "training_plans"("id"),
+    FOREIGN KEY ("athlete_id") REFERENCES "athlete"("id"),
+    FOREIGN KEY ("coach_id") REFERENCES "coach"("id")
 );
 
 -- Session days table (for the days array)
@@ -213,10 +222,14 @@ CREATE TABLE IF NOT EXISTS "session_days" (
     "id" UUID PRIMARY KEY,
     "session_id" UUID NOT NULL,
     "day_name" TEXT NOT NULL,
+    "athlete_id" UUID,
+    "coach_id" UUID,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "last_changed" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "deleted_at" TIMESTAMP,
-    FOREIGN KEY ("session_id") REFERENCES "sessions"("id")
+    FOREIGN KEY ("session_id") REFERENCES "sessions"("id"),
+    FOREIGN KEY ("athlete_id") REFERENCES "athlete"("id"),
+    FOREIGN KEY ("coach_id") REFERENCES "coach"("id")
 );
 
 -- Training blocks table
@@ -231,10 +244,14 @@ CREATE TABLE IF NOT EXISTS "training_blocks" (
     "comments" TEXT,
     "rest_time" INTEGER NOT NULL DEFAULT 60,
     "index" INTEGER NOT NULL DEFAULT 0,
+    "athlete_id" UUID,
+    "coach_id" UUID,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "last_changed" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "deleted_at" TIMESTAMP,
-    FOREIGN KEY ("session_id") REFERENCES "sessions"("id")
+    FOREIGN KEY ("session_id") REFERENCES "sessions"("id"),
+    FOREIGN KEY ("athlete_id") REFERENCES "athlete"("id"),
+    FOREIGN KEY ("coach_id") REFERENCES "coach"("id")
 );
 
 -- Selected exercises table
@@ -249,12 +266,16 @@ CREATE TABLE IF NOT EXISTS "selected_exercises" (
     "rest_time" INTEGER NOT NULL DEFAULT 60,
     "comments" TEXT,
     "index" INTEGER NOT NULL DEFAULT 0,
+    "athlete_id" UUID,
+    "coach_id" UUID,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "last_changed" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "deleted_at" TIMESTAMP,
     FOREIGN KEY ("session_id") REFERENCES "sessions"("id"),
     FOREIGN KEY ("exercise_id") REFERENCES "exercises"("id"),
-    FOREIGN KEY ("block_id") REFERENCES "training_blocks"("id")
+    FOREIGN KEY ("block_id") REFERENCES "training_blocks"("id"),
+    FOREIGN KEY ("athlete_id") REFERENCES "athlete"("id"),
+    FOREIGN KEY ("coach_id") REFERENCES "coach"("id")
 );
 
 -- Progressions table (for both selected exercises and training blocks)
@@ -266,11 +287,15 @@ CREATE TABLE IF NOT EXISTS "progressions" (
     "repetitions" TEXT NOT NULL,
     "effort" INTEGER NOT NULL,
     "week_number" INTEGER NOT NULL DEFAULT 1, -- To maintain order of progressions
+    "athlete_id" UUID,
+    "coach_id" UUID,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "last_changed" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "deleted_at" TIMESTAMP,
     FOREIGN KEY ("selected_exercise_id") REFERENCES "selected_exercises"("id"),
     FOREIGN KEY ("training_block_id") REFERENCES "training_blocks"("id"),
+    FOREIGN KEY ("athlete_id") REFERENCES "athlete"("id"),
+    FOREIGN KEY ("coach_id") REFERENCES "coach"("id"),
     
     -- Ensure progression belongs to either exercise or block, not both
     CHECK (
@@ -286,11 +311,15 @@ CREATE TABLE IF NOT EXISTS "volume_reductions" (
     "training_block_id" UUID,
     "fatigue_level" TEXT NOT NULL,
     "reduction_percentage" INTEGER NOT NULL,
+    "athlete_id" UUID,
+    "coach_id" UUID,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "last_changed" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "deleted_at" TIMESTAMP,
     FOREIGN KEY ("selected_exercise_id") REFERENCES "selected_exercises"("id"),
     FOREIGN KEY ("training_block_id") REFERENCES "training_blocks"("id"),
+    FOREIGN KEY ("athlete_id") REFERENCES "athlete"("id"),
+    FOREIGN KEY ("coach_id") REFERENCES "coach"("id"),
     
     -- Ensure reduction belongs to either exercise or block, not both
     CHECK (
@@ -306,11 +335,15 @@ CREATE TABLE IF NOT EXISTS "effort_reductions" (
     "training_block_id" UUID,
     "effort_level" TEXT NOT NULL,
     "reduction_amount" INTEGER NOT NULL,
+    "athlete_id" UUID,
+    "coach_id" UUID,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "last_changed" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "deleted_at" TIMESTAMP,
     FOREIGN KEY ("selected_exercise_id") REFERENCES "selected_exercises"("id"),
     FOREIGN KEY ("training_block_id") REFERENCES "training_blocks"("id"),
+    FOREIGN KEY ("athlete_id") REFERENCES "athlete"("id"),
+    FOREIGN KEY ("coach_id") REFERENCES "coach"("id"),
     
     -- Ensure reduction belongs to either exercise or block, not both
     CHECK (
@@ -357,6 +390,27 @@ CREATE TABLE IF NOT EXISTS "athlete_session_performance" (
     CONSTRAINT session_week_starts_monday CHECK (strftime('%w', week_start_date) = '1'),
     FOREIGN KEY ("athlete_id") REFERENCES "athlete"("id") ON DELETE CASCADE,
     FOREIGN KEY ("session_id") REFERENCES "sessions"("id") ON DELETE CASCADE
+);
+
+-- Targets table for athlete goal tracking
+CREATE TABLE IF NOT EXISTS "targets" (
+    "id" UUID PRIMARY KEY,
+    "athlete_id" UUID NOT NULL,
+    "target" REAL NOT NULL,
+    "exercise_id" UUID NOT NULL,
+    "current_state" REAL NOT NULL DEFAULT 0,
+    "comment" TEXT,
+    "metric" TEXT NOT NULL CHECK (metric IN (
+        'repetitions', 'time', 'distance', 'weight', 
+        'cmjResult', 'squatJumpResult', 'abalakovResult', 
+        'dropJumpResult', 'multipleJumpsResult', 'other'
+    )),
+    "target_date" DATE NOT NULL,
+    "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "last_changed" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" TIMESTAMP,
+    FOREIGN KEY ("athlete_id") REFERENCES "athlete"("id") ON DELETE CASCADE,
+    FOREIGN KEY ("exercise_id") REFERENCES "exercises"("id")
 );
 `;
 
@@ -531,6 +585,13 @@ BEGIN
     WHERE session_id = NEW.session_id 
     AND week_start_date = NEW.week_start_date;
 END;
+
+-- targets table
+CREATE TRIGGER IF NOT EXISTS set_last_changed_targets
+AFTER UPDATE ON "targets"
+BEGIN
+    UPDATE "targets" SET last_changed = CURRENT_TIMESTAMP WHERE id = NEW.id;
+END;
 `;
 
 const INDEXES_SQL = `
@@ -551,6 +612,7 @@ CREATE INDEX IF NOT EXISTS idx_progressions_last_changed ON "progressions"("last
 CREATE INDEX IF NOT EXISTS idx_volume_reductions_last_changed ON "volume_reductions"("last_changed");
 CREATE INDEX IF NOT EXISTS idx_effort_reductions_last_changed ON "effort_reductions"("last_changed");
 CREATE INDEX IF NOT EXISTS idx_events_athletes_last_changed ON "events_athletes"("last_changed");
+CREATE INDEX IF NOT EXISTS idx_targets_last_changed ON "targets"("last_changed");
 
 -- Soft deletion indexes (deleted_at fields)
 -- These optimize queries that filter out deleted records
@@ -565,24 +627,46 @@ CREATE INDEX IF NOT EXISTS idx_progressions_deleted_at ON "progressions"("delete
 CREATE INDEX IF NOT EXISTS idx_volume_reductions_deleted_at ON "volume_reductions"("deleted_at");
 CREATE INDEX IF NOT EXISTS idx_effort_reductions_deleted_at ON "effort_reductions"("deleted_at");
 CREATE INDEX IF NOT EXISTS idx_events_athletes_deleted_at ON "events_athletes"("deleted_at");
+CREATE INDEX IF NOT EXISTS idx_targets_deleted_at ON "targets"("deleted_at");
 
 -- Foreign key indexes for join performance
-CREATE INDEX IF NOT EXISTS idx_training_plans_user_id ON "training_plans"("user_id");
+CREATE INDEX IF NOT EXISTS idx_training_plans_coach_id ON "training_plans"("coach_id");
 CREATE INDEX IF NOT EXISTS idx_training_models_training_plan_id ON "training_models"("training_plan_id");
+CREATE INDEX IF NOT EXISTS idx_training_models_coach_id ON "training_models"("coach_id");
 CREATE INDEX IF NOT EXISTS idx_sessions_plan_id ON "sessions"("plan_id");
+CREATE INDEX IF NOT EXISTS idx_sessions_athlete_id ON "sessions"("athlete_id");
+CREATE INDEX IF NOT EXISTS idx_sessions_coach_id ON "sessions"("coach_id");
 CREATE INDEX IF NOT EXISTS idx_session_days_session_id ON "session_days"("session_id");
+CREATE INDEX IF NOT EXISTS idx_session_days_athlete_id ON "session_days"("athlete_id");
+CREATE INDEX IF NOT EXISTS idx_session_days_coach_id ON "session_days"("coach_id");
 CREATE INDEX IF NOT EXISTS idx_training_blocks_session_id ON "training_blocks"("session_id");
+CREATE INDEX IF NOT EXISTS idx_training_blocks_athlete_id ON "training_blocks"("athlete_id");
+CREATE INDEX IF NOT EXISTS idx_training_blocks_coach_id ON "training_blocks"("coach_id");
 CREATE INDEX IF NOT EXISTS idx_selected_exercises_session_id ON "selected_exercises"("session_id");
 CREATE INDEX IF NOT EXISTS idx_selected_exercises_exercise_id ON "selected_exercises"("exercise_id");
 CREATE INDEX IF NOT EXISTS idx_selected_exercises_block_id ON "selected_exercises"("block_id");
+CREATE INDEX IF NOT EXISTS idx_selected_exercises_athlete_id ON "selected_exercises"("athlete_id");
+CREATE INDEX IF NOT EXISTS idx_selected_exercises_coach_id ON "selected_exercises"("coach_id");
 CREATE INDEX IF NOT EXISTS idx_progressions_selected_exercise_id ON "progressions"("selected_exercise_id");
 CREATE INDEX IF NOT EXISTS idx_progressions_training_block_id ON "progressions"("training_block_id");
+CREATE INDEX IF NOT EXISTS idx_progressions_athlete_id ON "progressions"("athlete_id");
+CREATE INDEX IF NOT EXISTS idx_progressions_coach_id ON "progressions"("coach_id");
 CREATE INDEX IF NOT EXISTS idx_volume_reductions_selected_exercise_id ON "volume_reductions"("selected_exercise_id");
 CREATE INDEX IF NOT EXISTS idx_volume_reductions_training_block_id ON "volume_reductions"("training_block_id");
+CREATE INDEX IF NOT EXISTS idx_volume_reductions_athlete_id ON "volume_reductions"("athlete_id");
+CREATE INDEX IF NOT EXISTS idx_volume_reductions_coach_id ON "volume_reductions"("coach_id");
 CREATE INDEX IF NOT EXISTS idx_effort_reductions_selected_exercise_id ON "effort_reductions"("selected_exercise_id");
 CREATE INDEX IF NOT EXISTS idx_effort_reductions_training_block_id ON "effort_reductions"("training_block_id");
+CREATE INDEX IF NOT EXISTS idx_effort_reductions_athlete_id ON "effort_reductions"("athlete_id");
+CREATE INDEX IF NOT EXISTS idx_effort_reductions_coach_id ON "effort_reductions"("coach_id");
+CREATE INDEX IF NOT EXISTS idx_basic_result_athlete_id ON "basic_result"("athlete_id");
+CREATE INDEX IF NOT EXISTS idx_drop_jump_result_athlete_id ON "drop_jump_result"("athlete_id");
+CREATE INDEX IF NOT EXISTS idx_jump_time_athlete_id ON "jump_time"("athlete_id");
+CREATE INDEX IF NOT EXISTS idx_multiple_jumps_result_athlete_id ON "multiple_jumps_result"("athlete_id");
 CREATE INDEX IF NOT EXISTS idx_events_athletes_event_id ON "events_athletes"("event_id");
 CREATE INDEX IF NOT EXISTS idx_events_athletes_athlete_id ON "events_athletes"("athlete_id");
+CREATE INDEX IF NOT EXISTS idx_targets_athlete_id ON "targets"("athlete_id");
+CREATE INDEX IF NOT EXISTS idx_targets_exercise_id ON "targets"("exercise_id");
 
 -- Index for date-based queries
 CREATE INDEX IF NOT EXISTS idx_athlete_weekly_stats_date ON "athlete_weekly_stats"("week_start_date");
@@ -599,6 +683,8 @@ CREATE INDEX IF NOT EXISTS idx_athlete_session_performance_deleted_last_changed 
 -- Composite index for athlete-specific queries
 CREATE INDEX IF NOT EXISTS idx_athlete_weekly_stats_athlete_date ON "athlete_weekly_stats"("athlete_id", "week_start_date");
 CREATE INDEX IF NOT EXISTS idx_athlete_session_performance_athlete_date ON "athlete_session_performance"("athlete_id", "week_start_date");
+CREATE INDEX IF NOT EXISTS idx_targets_athlete_date ON "targets"("athlete_id", "target_date");
+CREATE INDEX IF NOT EXISTS idx_targets_deleted_last_changed ON "targets"("deleted_at", "last_changed");
 `;
 
 const CASCADE_TRIGGERS_SQL = `
@@ -606,17 +692,47 @@ const CASCADE_TRIGGERS_SQL = `
 -- CASCADING SOFT DELETE TRIGGERS
 -- ========================================
 
+-- Parent: coach
+CREATE TRIGGER IF NOT EXISTS cascade_soft_delete_coach
+AFTER UPDATE OF deleted_at ON "coach"
+FOR EACH ROW
+BEGIN
+    UPDATE "athlete" SET deleted_at = NEW.deleted_at WHERE coach_id = NEW.id;
+    UPDATE "event" SET deleted_at = NEW.deleted_at WHERE coach_id = NEW.id;
+    UPDATE "training_plans" SET deleted_at = NEW.deleted_at WHERE coach_id = NEW.id;
+    UPDATE "training_models" SET deleted_at = NEW.deleted_at WHERE coach_id = NEW.id;
+    UPDATE "sessions" SET deleted_at = NEW.deleted_at WHERE coach_id = NEW.id;
+    UPDATE "session_days" SET deleted_at = NEW.deleted_at WHERE coach_id = NEW.id;
+    UPDATE "training_blocks" SET deleted_at = NEW.deleted_at WHERE coach_id = NEW.id;
+    UPDATE "selected_exercises" SET deleted_at = NEW.deleted_at WHERE coach_id = NEW.id;
+    UPDATE "progressions" SET deleted_at = NEW.deleted_at WHERE coach_id = NEW.id;
+    UPDATE "volume_reductions" SET deleted_at = NEW.deleted_at WHERE coach_id = NEW.id;
+    UPDATE "effort_reductions" SET deleted_at = NEW.deleted_at WHERE coach_id = NEW.id;
+END;
+
 -- Parent: athlete
 CREATE TRIGGER IF NOT EXISTS cascade_soft_delete_athlete
 AFTER UPDATE OF deleted_at ON "athlete"
 FOR EACH ROW
 BEGIN
     UPDATE "base_result" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
+    UPDATE "basic_result" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
     UPDATE "bosco_result" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
-    UPDATE "events_athletes" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
+    UPDATE "drop_jump_result" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
+    UPDATE "jump_time" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
     UPDATE "multiple_drop_jump_result" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
+    UPDATE "multiple_jumps_result" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
+    UPDATE "events_athletes" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
+    UPDATE "sessions" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
+    UPDATE "session_days" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
+    UPDATE "training_blocks" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
+    UPDATE "selected_exercises" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
+    UPDATE "progressions" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
+    UPDATE "volume_reductions" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
+    UPDATE "effort_reductions" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
     UPDATE "athlete_weekly_stats" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
     UPDATE "athlete_session_performance" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
+    UPDATE "targets" SET deleted_at = NEW.deleted_at WHERE athlete_id = NEW.id;
 END;
 
 -- Parent: base_result

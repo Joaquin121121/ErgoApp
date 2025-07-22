@@ -3,6 +3,11 @@ import { supabase } from "../utils/supabase";
 import { User, Role } from "../types/User";
 import { Athlete, initialAthlete } from "../types/Athletes";
 import { Coach, initialCoach } from "../types/Coach";
+import {
+  getAthleteDataAsUser,
+  setAthleteDataAsUser,
+} from "../parsers/athleteDataParser";
+import { useDatabaseSync } from "../hooks/useDatabaseSync";
 
 const initialUserState: User = {
   email: "",
@@ -24,7 +29,9 @@ interface UserContextType {
   isLoggedIn: boolean;
   userData: Coach | Athlete | null;
   setUserData: React.Dispatch<React.SetStateAction<Coach | Athlete | null>>;
-  linkAthleteToCoach: (athleteId: string) => Promise<boolean>;
+  linkAthleteToCoach: (
+    athleteId: string
+  ) => Promise<"success" | "nonExistent" | "alreadyRegistered">;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -34,9 +41,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState<Role>("athlete");
-  const [userData, setUserData] = useState<Coach | Athlete | null>(
-    initialAthlete
-  );
+  const [userData, setUserData] = useState<Coach | Athlete | null>(null);
+  const { pushRecord } = useDatabaseSync();
+
   // Map Supabase user to our User type
   const mapSupabaseUser = (supabaseUser: any): User => {
     if (!supabaseUser) return initialUserState;
@@ -57,24 +64,29 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     };
   };
 
-  const linkAthleteToCoach = async (athleteId: string): Promise<boolean> => {
+  const linkAthleteToCoach = async (
+    athleteId: string
+  ): Promise<"success" | "nonExistent" | "alreadyRegistered"> => {
     try {
-      // First, check if athlete exists and has email as NULL
+      // First, check if athlete exists
       const { data: athlete, error: fetchError } = await supabase
         .from("athlete")
         .select(
           "id, email, name, discipline, institution, category, gender, comments"
         )
         .eq("id", athleteId)
-        .is("email", null)
         .single();
 
       if (fetchError || !athlete) {
-        return false;
+        return "nonExistent";
       }
 
-      // If athlete exists with email NULL, return the name
+      // Check if athlete already has an email
+      if (athlete.email) {
+        return "alreadyRegistered";
+      }
 
+      // If athlete exists with email NULL, set user data and return success
       const newAthlete: Athlete = {
         ...athlete,
         birthDate: new Date(),
@@ -87,67 +99,142 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         completedStudies: [],
       };
       setUserData(newAthlete);
-      return true;
+      return "success";
     } catch (error) {
       console.error("Error in linkAthleteToCoach:", error);
-      return false;
+      return "nonExistent";
     }
   };
 
   // Check for active session on mount
   useEffect(() => {
-    const getUser = async () => {
+    const initializeAuth = async () => {
       setLoading(true);
 
-      const { data } = await supabase.auth.getSession();
+      try {
+        // Check for active session
+        const { data, error } = await supabase.auth.getSession();
 
-      if (data.session) {
-        const { user: supabaseUser } = data.session;
-        setUser(mapSupabaseUser(supabaseUser));
-        setIsLoggedIn(true);
-      } else {
+        if (error) {
+          console.error("Error getting session:", error);
+          setIsLoggedIn(false);
+        } else if (data.session) {
+          const { user: supabaseUser } = data.session;
+          setUser(mapSupabaseUser(supabaseUser));
+          const athlete = await getAthleteDataAsUser(supabaseUser.email || "");
+          if (athlete) {
+            setUserData(athlete);
+          }
+
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+          setUserData(null);
+        }
+      } catch (error) {
+        console.error("Error initializing auth:", error);
         setIsLoggedIn(false);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
 
       // Listen for auth changes
       const {
         data: { subscription },
-      } = supabase.auth.onAuthStateChange((event, session) => {
+      } = supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log("Auth state change:", event);
+
         if (event === "SIGNED_OUT") {
           setIsLoggedIn(false);
-        } else if (session) {
+          setUser(initialUserState);
+          setUserData(null);
+        } else if (session && session.user) {
+          setUser(mapSupabaseUser(session.user));
+          setIsLoggedIn(true);
+        } else if (event === "TOKEN_REFRESHED" && session?.user) {
+          // Session was refreshed, user remains logged in
           setUser(mapSupabaseUser(session.user));
           setIsLoggedIn(true);
         }
       });
+
       return () => {
         subscription.unsubscribe();
       };
     };
 
-    getUser();
+    initializeAuth();
   }, []);
+
+  // Handle role changes
+  useEffect(() => {
+    if (!isLoggedIn) {
+      if (role === "athlete") {
+        setUserData(initialAthlete);
+      } else {
+        setUserData(initialCoach);
+      }
+    }
+  }, [role, isLoggedIn]);
 
   // Login with email and password
   const login = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      const athleteData: Athlete | null = await getAthleteDataAsUser(email);
+      if (athleteData) {
+        setAthleteDataAsUser(athleteData, pushRecord);
+        setUserData(athleteData);
+      }
+
+      if (error) {
+        return { error };
+      }
+    } catch (error) {
       return { error };
     }
   };
 
   // Sign up with email and password
   const signup = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    return { error };
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (!error && userData) {
+        const athleteData = userData as Athlete;
+        const { data, error: insertError } = await supabase
+          .from("athlete")
+          .update({
+            email: email,
+            name: athleteData.name,
+            birth_date: athleteData.birthDate,
+            height: athleteData.height,
+            height_unit: athleteData.heightUnit,
+            weight: athleteData.weight,
+            weight_unit: athleteData.weightUnit,
+            country: athleteData.country,
+            state: athleteData.state,
+          })
+          .eq("id", athleteData.id);
+
+        console.log("athleteInsertionData:", data);
+        if (insertError) {
+          return { error: insertError };
+        }
+      }
+
+      return { error };
+    } catch (error) {
+      console.log(error);
+      return { error };
+    }
   };
 
   // Login with Google OAuth
@@ -163,18 +250,17 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   // Logout
   const logout = async () => {
-    const { error } = await supabase.auth.signOut();
-    setIsLoggedIn(false);
-    return { error };
-  };
-
-  useEffect(() => {
-    if (role === "athlete") {
-      setUserData(initialAthlete);
-    } else {
-      setUserData(initialCoach);
+    try {
+      const { error } = await supabase.auth.signOut();
+      setIsLoggedIn(false);
+      setUser(initialUserState);
+      setUserData(null);
+      return { error };
+    } catch (error) {
+      console.error("Error during logout:", error);
+      return { error };
     }
-  }, [role]);
+  };
 
   return (
     <UserContext.Provider

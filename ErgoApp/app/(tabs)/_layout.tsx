@@ -1,11 +1,17 @@
-// app/(tabs)/_layout.jsx
+// app/(tabs)/_layout.tsx
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Tabs, useRouter } from "expo-router";
-import { useContext } from "react";
-
+import { useUser } from "../../contexts/UserContext";
 import icons from "../../scripts/icons.js";
 
-const TabIcon = ({ icon, color, name, focused }) => {
+interface TabIconProps {
+  icon: any;
+  color: string;
+  name: string;
+  focused: boolean;
+}
+
+const TabIcon = ({ icon, color, name, focused }: TabIconProps) => {
   return (
     <View className="w-[25vw] items-center justify-center mt-6">
       <Image
@@ -26,10 +32,10 @@ const TabIcon = ({ icon, color, name, focused }) => {
 
 const TabsLayout = () => {
   const router = useRouter();
-  const { user } = useContext(UserContext);
+  const { userData } = useUser();
 
   const handleProfilePress = () => {
-    router.push("myProfile"); // Updated navigation path
+    router.push("/myProfile"); // Updated navigation path
   };
 
   return (
@@ -40,8 +46,12 @@ const TabsLayout = () => {
       >
         <Image
           className="w-14 h-14"
-          source={icons[user.character]}
-          resizeMethod="contain"
+          source={
+            icons[
+              ((userData as any)?.character || "Emily") as keyof typeof icons
+            ]
+          }
+          resizeMode="contain"
         />
       </TouchableOpacity>
 

@@ -23,11 +23,13 @@ export interface Athlete {
   notifications?: Notification[];
   objectives?: Objective[];
   email?: string;
-  gamificationFeatures?: GamificationFeatures;
+  streak?: number;
+  targets?: Target[];
   currentTrainingPlan?: PlanState;
   wellnessData?: WellnessData[];
   sessionPerformanceData?: SessionPerformanceData[];
   performanceData?: PerformanceData[];
+  coachId?: string;
   deletedAt?: Date | null;
 }
 
@@ -38,10 +40,23 @@ export interface WellnessData {
   fatigue: number;
 }
 
-export interface GamificationFeatures {
-  streak: number;
-  targetProgress: number;
-  currentLevel: string;
+export interface Target {
+  target: number;
+  exerciseId: string;
+  currentState: number;
+  comment?: string;
+  metric:
+    | "repetitions"
+    | "time"
+    | "distance"
+    | "weight"
+    | "cmjResult"
+    | "squatJumpResult"
+    | "abalakovResult"
+    | "dropJumpResult"
+    | "multipleJumpsResult"
+    | "other";
+  targetDate: Date;
 }
 
 export interface SessionPerformanceData {
@@ -309,11 +324,8 @@ export const initialAthlete: Athlete = {
   notifications: [],
   objectives: [],
   email: "",
-  gamificationFeatures: {
-    streak: 0,
-    targetProgress: 0,
-    currentLevel: "",
-  },
+  streak: 0,
+  targets: [],
   currentTrainingPlan: undefined,
   wellnessData: [],
   sessionPerformanceData: [],

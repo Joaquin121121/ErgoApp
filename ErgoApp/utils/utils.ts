@@ -536,3 +536,45 @@ export const getPropertyValue = (
 
   return "";
 };
+
+/**
+ * Calculates age from a birth date
+ * @param birthDate - The birth date as Date object or ISO string (e.g., "2025-07-21T00:00:00.000Z")
+ * @returns The age in years, or 0 if invalid date or future date
+ */
+export const getAge = (birthDate: Date | string): number => {
+  try {
+    // Convert to Date object if it's a string
+    const birth =
+      typeof birthDate === "string" ? new Date(birthDate) : birthDate;
+
+    // Check if the date is valid
+    if (isNaN(birth.getTime())) {
+      return 0;
+    }
+
+    const today = new Date();
+
+    // Validate the date is not in the future
+    if (birth > today) {
+      return 0; // Return 0 instead of throwing error
+    }
+
+    // Calculate age
+    let age = today.getFullYear() - birth.getFullYear();
+
+    // Adjust age if birthday hasn't occurred this year
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
+      age--;
+    }
+
+    return Math.max(0, age); // Ensure age is never negative
+  } catch (error) {
+    console.error("Error calculating age:", error);
+    return 0;
+  }
+};

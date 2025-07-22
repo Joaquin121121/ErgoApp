@@ -14,7 +14,7 @@ export const tablesInfo = new Map([
   ["multiple_jumps_result", "id"], // References base_result
   ["jump_time", "id"], // References base_result
   // Training-related tables
-  ["exercises", "id"], // Exercises must come before selected_exercises
+  ["exercises", "id"], // Exercises must come before selected_exercises and targets
   ["training_plans", "id"], // Training plans must come before sessions and models
   ["training_models", "id"], // Models reference training_plans
   ["sessions", "id"], // Sessions reference training_plans
@@ -25,6 +25,7 @@ export const tablesInfo = new Map([
   ["progressions", "id"], // Progressions reference selected_exercises or training_blocks
   ["volume_reductions", "id"], // Volume reductions reference selected_exercises or training_blocks
   ["effort_reductions", "id"], // Effort reductions reference selected_exercises or training_blocks
+  ["targets", "id"], // Targets reference athlete and exercises
 ]);
 
 export type TableName =
@@ -50,4 +51,5 @@ export type TableName =
   | "selected_exercises"
   | "progressions"
   | "volume_reductions"
-  | "effort_reductions";
+  | "effort_reductions"
+  | "targets";

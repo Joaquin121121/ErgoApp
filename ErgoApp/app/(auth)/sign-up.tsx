@@ -79,7 +79,7 @@ const SignUp = () => {
       setNameError(true);
       return;
     }
-    router.push("/(auth)/targets");
+    router.push("/(auth)/sign-up-2");
   };
 
   const handleInputChange = (field: keyof Athlete, value: string | Date) => {

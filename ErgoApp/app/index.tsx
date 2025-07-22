@@ -3,27 +3,14 @@ import { Link, router } from "expo-router";
 import icons from "../scripts/icons.js";
 import { useEffect, useContext } from "react";
 import { useUser } from "../contexts/UserContext";
+import { useDatabaseSync } from "../hooks/useDatabaseSync.js";
 
 export default function Index() {
-  const { version, isLoading } = useUser();
-
   useEffect(() => {
     setTimeout(async () => {
-      console.log("Version: ", version);
-      if (!isLoading) {
-        // Only navigate when loading is complete
-        router.replace(
-          `${
-            version === "coach"
-              ? "/coachHome"
-              : version === "athlete"
-              ? "/home"
-              : "/versionChoice"
-          }`
-        );
-      }
+      router.replace("/versionChoice");
     }, 2200);
-  }, [version, isLoading]); // Add version and isLoading to dependency array
+  }, []);
 
   return (
     <View style={{ height: "100%" }}>

@@ -7,12 +7,13 @@ import {
   Keyboard,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import icons from "../../scripts/icons.js";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import { router, useLocalSearchParams } from "expo-router";
 import { supabase } from "../../utils/supabase";
+import { useUser } from "../../contexts/UserContext";
 const SignIn = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -20,7 +21,7 @@ const SignIn = () => {
   const [emailError, setEmailError] = useState<string | null>(null);
 
   const { selectedVersion } = useLocalSearchParams();
-
+  const { login } = useUser();
   const handleLogIn = async () => {
     if (form.email === "") {
       setEmailError("Ingrese un email");
@@ -32,12 +33,10 @@ const SignIn = () => {
     }
     setLoading(true);
     try {
-      await supabase.auth.signInWithPassword({
-        email: form.email,
-        password: form.password,
-      });
+      await login(form.email, form.password);
+      router.push("/home");
     } catch (error) {
-      console.log("Error:", error);
+      setPasswordError("Email o contraseña incorrectos");
     }
     setLoading(false);
   };
@@ -52,11 +51,11 @@ const SignIn = () => {
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{ flexGrow: 1 }}
       >
-        <View className="w-full flex items-center justify-center ">
+        <View className="w-full flex items-center justify-center py-16 ">
           <Image
             source={icons.logoSimplified}
             resizeMode="contain"
-            className="w-[120px] h-[12 0px] self-center"
+            className="w-[120px] h-[120px] self-center"
             style={{ backgroundColor: "transparent" }}
           />
           <Text className="text-2xl font-regular ">Iniciar Sesión</Text>
@@ -97,7 +96,9 @@ const SignIn = () => {
               onPress={() =>
                 router.push(
                   `${
-                    selectedVersion === "coach" ? "/coach-sign-up" : "/sign-up"
+                    selectedVersion === "coach"
+                      ? "/coach-sign-up"
+                      : "/athlete-coach-link"
                   }`
                 )
               }

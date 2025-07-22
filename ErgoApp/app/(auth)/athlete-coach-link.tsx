@@ -4,21 +4,24 @@ import React, { useEffect, useState } from "react";
 import { useUser } from "../../contexts/UserContext";
 import icons from "../../scripts/icons";
 import { router } from "expo-router";
+import TonalButton from "../../components/TonalButton";
 
 const AthleteCoachLink = () => {
   const [code, setCode] = useState("");
   const { userData } = useUser();
   const [validationStatus, setValidationStatus] = useState<
-    "validating" | "valid" | "invalid"
+    "validating" | "valid" | "invalid" | "alreadyRegistered"
   >("invalid");
   const { linkAthleteToCoach } = useUser();
   const validateCode = async () => {
     try {
       setValidationStatus("validating");
-      const isLinked = await linkAthleteToCoach(code);
-      if (isLinked) {
+      const operationResult = await linkAthleteToCoach(code);
+      if (operationResult === "success") {
         setValidationStatus("valid");
         router.push("/sign-up");
+      } else if (operationResult === "alreadyRegistered") {
+        setValidationStatus("alreadyRegistered");
       } else {
         setValidationStatus("invalid");
       }
@@ -51,6 +54,20 @@ const AthleteCoachLink = () => {
             </View>
           </>
         );
+      case "alreadyRegistered":
+        return (
+          <>
+            <Text className="text-16 font-regular mt-4 text-secondary">
+              Ya tienes una cuenta, inicia sesión con tu correo
+            </Text>
+            <TonalButton
+              icon="next"
+              containerStyles="mt-8"
+              title="Iniciar Sesión"
+              onPress={() => router.push("/sign-in")}
+            />
+          </>
+        );
       default:
         return (
           <Text className="text-16 font-regular mt-4 text-secondary">
@@ -65,7 +82,7 @@ const AthleteCoachLink = () => {
   }, [code]);
 
   return (
-    <View className="bg-offWhite h-[90vh] w-full flex items-center py-16 px-4">
+    <View className="bg-offWhite h-[90vh] w-full flex items-center  py-16 px-4">
       <Image
         source={icons.logoSimplified}
         resizeMode="contain"

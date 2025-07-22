@@ -5,11 +5,41 @@ import {
   useWindowDimensions,
   StyleSheet,
   Animated,
+  ViewStyle,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+  ListRenderItem,
+  ViewabilityConfig,
 } from "react-native";
 
-const CustomFlatlist = ({
+interface CustomFlatlistItem {
+  key: string | number;
+  [key: string]: any;
+}
+
+interface CustomFlatlistProps {
+  data: CustomFlatlistItem[];
+  renderContent?: (item: CustomFlatlistItem) => React.ReactNode;
+  activeIndex: number;
+  setActiveIndex: (index: number) => void;
+  itemWidthPercentage?: number;
+  slideDistance?: number;
+  scaleRange?: [number, number, number];
+  onItemChange?: (index: number) => void;
+  containerStyle?: ViewStyle;
+  itemStyle?: ViewStyle;
+  showIndicators?: boolean;
+  indicatorActiveColor?: string;
+  indicatorInactiveColor?: string;
+  indicatorContainerStyle?: ViewStyle;
+  indicatorStyle?: ViewStyle;
+  height?: number;
+  large?: boolean;
+}
+
+const CustomFlatlist: React.FC<CustomFlatlistProps> = ({
   data,
-  renderContent = (item) => item,
+  renderContent = (item: CustomFlatlistItem) => item,
   activeIndex,
   setActiveIndex,
   itemWidthPercentage = 0.85,
@@ -27,9 +57,9 @@ const CustomFlatlist = ({
   large = false,
 }) => {
   const { width: screenWidth } = useWindowDimensions();
-  const flatListRef = useRef(null);
+  const flatListRef = useRef<FlatList<CustomFlatlistItem>>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
-  const isScrolling = useRef(false);
+  const isScrolling = useRef<boolean>(false);
 
   const ITEM_WIDTH = screenWidth * itemWidthPercentage;
   const SIDE_PADDING = large
@@ -77,7 +107,7 @@ const CustomFlatlist = ({
     },
   });
 
-  const viewabilityConfig = useRef({
+  const viewabilityConfig = useRef<ViewabilityConfig>({
     itemVisiblePercentThreshold: 50,
     minimumViewTime: 0,
   }).current;
@@ -86,7 +116,7 @@ const CustomFlatlist = ({
     [{ nativeEvent: { contentOffset: { x: scrollX } } }],
     {
       useNativeDriver: true,
-      listener: (event) => {
+      listener: (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const maxOffset = (data.length - 1) * ITEM_WIDTH;
         const currentOffset = event.nativeEvent.contentOffset.x;
 
@@ -104,15 +134,21 @@ const CustomFlatlist = ({
     }
   );
 
-  const onViewableItemsChangedRef = useRef(({ viewableItems }) => {
-    if (viewableItems?.length > 0) {
-      const newIndex = parseInt(viewableItems[0].item.key);
-      setActiveIndex(newIndex);
-      onItemChange?.(newIndex);
+  const onViewableItemsChangedRef = useRef(
+    ({
+      viewableItems,
+    }: {
+      viewableItems: Array<{ item: CustomFlatlistItem }>;
+    }) => {
+      if (viewableItems?.length > 0) {
+        const newIndex = parseInt(viewableItems[0].item.key.toString());
+        setActiveIndex(newIndex);
+        onItemChange?.(newIndex);
+      }
     }
-  }).current;
+  ).current;
 
-  const renderItem = useCallback(
+  const renderItem: ListRenderItem<CustomFlatlistItem> = useCallback(
     ({ item, index }) => {
       const inputRange = [
         (index - 1) * ITEM_WIDTH,
@@ -149,7 +185,7 @@ const CustomFlatlist = ({
             },
           ]}
         >
-          {renderContent(item)}
+          {renderContent(item) as React.ReactNode}
         </Animated.View>
       );
     },
@@ -157,7 +193,7 @@ const CustomFlatlist = ({
   );
 
   const getItemLayout = useCallback(
-    (_, index) => ({
+    (_: CustomFlatlistItem[] | null | undefined, index: number) => ({
       length: ITEM_WIDTH,
       offset: ITEM_WIDTH * index,
       index,
@@ -165,7 +201,7 @@ const CustomFlatlist = ({
     [ITEM_WIDTH]
   );
 
-  const indicators = data.map((_, index) => (
+  const indicators = data.map((_, index: number) => (
     <View
       key={index}
       style={[
@@ -184,7 +220,7 @@ const CustomFlatlist = ({
   return (
     <View style={styles.wrapper}>
       <View style={[styles.container, containerStyle]}>
-        <Animated.FlatList
+        <Animated.FlatList<CustomFlatlistItem>
           ref={flatListRef}
           style={styles.flatList}
           contentContainerStyle={{
@@ -193,7 +229,10 @@ const CustomFlatlist = ({
           }}
           data={data}
           horizontal
-          keyExtractor={useCallback((item) => item.key.toString(), [])}
+          keyExtractor={useCallback(
+            (item: CustomFlatlistItem) => item.key.toString(),
+            []
+          )}
           renderItem={renderItem}
           snapToInterval={ITEM_WIDTH}
           snapToAlignment="start"
@@ -201,7 +240,7 @@ const CustomFlatlist = ({
           onViewableItemsChanged={onViewableItemsChangedRef}
           viewabilityConfig={viewabilityConfig}
           showsHorizontalScrollIndicator={false}
-          getItemLayout={getItemLayout}
+          getItemLayout={getItemLayout as any}
           bounces={false}
           scrollEventThrottle={16}
           onScroll={handleScroll}
