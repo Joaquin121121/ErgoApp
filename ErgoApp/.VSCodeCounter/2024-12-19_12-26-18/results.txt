@@ -148,7 +148,7 @@ Files
 | c:\Users\Public\ErgoApp\ErgoApp\scripts\calendarData.js                      | JavaScript         |        121 |          5 |         11 |        137 |
 | c:\Users\Public\ErgoApp\ErgoApp\scripts\categories.js                        | JavaScript         |         60 |          0 |          1 |         61 |
 | c:\Users\Public\ErgoApp\ErgoApp\scripts\firebase.js                          | JavaScript         |         22 |          0 |          3 |         25 |
-| c:\Users\Public\ErgoApp\ErgoApp\scripts\icons.js                             | JavaScript         |        181 |          0 |          3 |        184 |
+| c:\Users\Public\ErgoApp\ErgoApp\scripts\icons                             | JavaScript         |        181 |          0 |          3 |        184 |
 | c:\Users\Public\ErgoApp\ErgoApp\scripts\maxValues.js                         | JavaScript         |         11 |          0 |          1 |         12 |
 | c:\Users\Public\ErgoApp\ErgoApp\scripts\reset-project.js                     | JavaScript         |         57 |          5 |         12 |         74 |
 | c:\Users\Public\ErgoApp\ErgoApp\scripts\utils.js                             | JavaScript         |         21 |          4 |          4 |         29 |

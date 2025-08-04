@@ -1,6 +1,7 @@
 import { PlanState } from "./trainingPlan";
 import { CompletedStudy } from "./Studies";
 import { Objective } from "./Objective";
+import { DayName } from "./trainingPlan";
 
 export interface Athlete {
   id: string;
@@ -12,7 +13,7 @@ export interface Athlete {
   height: string;
   heightUnit: "cm" | "ft";
   weight: string;
-  weightUnit: "kgs" | "lbs";
+  weightUnit: "kg" | "lb";
   discipline: string;
   category: string;
   institution: string;
@@ -34,7 +35,8 @@ export interface Athlete {
 }
 
 export interface WellnessData {
-  week: Date | string;
+  id: string;
+  date: Date | string;
   sleep: number;
   nutrition: number;
   fatigue: number;
@@ -42,7 +44,7 @@ export interface WellnessData {
 
 export interface Target {
   target: number;
-  exerciseId: string;
+  exerciseId?: string;
   currentState: number;
   comment?: string;
   metric:
@@ -60,10 +62,14 @@ export interface Target {
 }
 
 export interface SessionPerformanceData {
+  id: string;
+  sessionDayName: DayName;
   sessionId: string;
   week: Date | string;
   performance: number;
   completedExercises: number;
+  alternativeDate?: Date | string;
+  exercisePerformanceData: ExercisePerformanceData[];
 }
 
 export interface PerformanceData {
@@ -71,6 +77,13 @@ export interface PerformanceData {
   attendance: string;
   completedExercises: string;
   performance: string;
+}
+
+export interface ExercisePerformanceData {
+  selectedExerciseId: string;
+  exerciseName: string;
+  completed: boolean;
+  performed: boolean;
 }
 
 export function isAthlete(value: unknown): value is Athlete {
@@ -116,7 +129,7 @@ export function isAthlete(value: unknown): value is Athlete {
   }
 
   // Check weightUnit
-  if (!["kgs", "lbs"].includes(athlete.weightUnit as string)) {
+  if (!["kg", "lb"].includes(athlete.weightUnit as string)) {
     return false;
   }
 
@@ -180,15 +193,23 @@ export function transformToAthlete(data: unknown): Athlete | null {
 
     const weightUnit =
       typeof input.weightUnit === "string" &&
-      ["kgs", "lbs"].includes(input.weightUnit)
-        ? (input.weightUnit as "kgs" | "lbs")
-        : "kgs";
+      ["kg", "lb"].includes(input.weightUnit)
+        ? (input.weightUnit as "kg" | "lb")
+        : "kg";
 
     // Handle completedStudies array
     const completedStudies = Array.isArray(input.completedStudies)
       ? input.completedStudies.filter(
           (study): study is CompletedStudy =>
             typeof study === "object" && study !== null
+        )
+      : [];
+
+    // Handle targets array
+    const targets = Array.isArray(input.targets)
+      ? input.targets.filter(
+          (target): target is Target =>
+            typeof target === "object" && target !== null
         )
       : [];
 
@@ -208,6 +229,11 @@ export function transformToAthlete(data: unknown): Athlete | null {
       institution: String(input.institution || ""),
       comments: String(input.comments || ""),
       completedStudies,
+      email: typeof input.email === "string" ? input.email : undefined,
+      character:
+        typeof input.character === "string" ? input.character : undefined,
+      streak: typeof input.streak === "number" ? input.streak : 0,
+      targets,
       deletedAt:
         input.deletedAt && input.deletedAt instanceof Date
           ? input.deletedAt
@@ -313,7 +339,7 @@ export const initialAthlete: Athlete = {
   height: "",
   heightUnit: "cm",
   weight: "",
-  weightUnit: "kgs",
+  weightUnit: "kg",
   discipline: "",
   category: "",
   institution: "",

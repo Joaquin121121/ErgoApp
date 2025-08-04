@@ -8,7 +8,7 @@ const Icon = ({
   style,
 }: {
   icon: keyof typeof icons;
-  size: number;
+  size?: number;
   style?: any;
 }) => {
   const iconSize = size || 24; // Default size if not provided

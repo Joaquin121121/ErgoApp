@@ -129,7 +129,7 @@ const InjuryHistory = () => {
                 />
                 <TonalButton
                   title="Continuar"
-                  icon="next"
+                  icon="arrow-right"
                   containerStyles="mt-16"
                   onPress={() => router.push("/sign-up-2")}
                 />

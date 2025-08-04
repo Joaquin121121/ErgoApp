@@ -1,3 +1,4 @@
+import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import {
   PlanState,
@@ -26,7 +27,7 @@ const getTrainingPlans = async (
     const db = externalDb || (await getDatabaseInstance());
 
     const rawPlans = await db.select(
-      "SELECT * FROM training_plans WHERE user_id = ? AND deleted_at IS NULL ORDER BY created_at DESC",
+      "SELECT * FROM training_plans WHERE coach_id = ? AND deleted_at IS NULL ORDER BY created_at DESC",
       [coachId]
     );
 
@@ -205,6 +206,193 @@ const getTrainingPlans = async (
   }
 };
 
+const getTrainingPlanForAthlete = async (
+  athleteId: string,
+  externalDb?: DatabaseInstance
+): Promise<PlanState[]> => {
+  try {
+    const db = externalDb || (await getDatabaseInstance());
+
+    const rawPlans = await db.select(
+      "SELECT * FROM training_plans WHERE athlete_id = ? AND deleted_at IS NULL ORDER BY created_at DESC",
+      [athleteId]
+    );
+
+    const plans: PlanState[] = [];
+
+    for (const rawPlan of rawPlans) {
+      const rawSessions = await db.select(
+        "SELECT * FROM sessions WHERE plan_id = ? AND deleted_at IS NULL ORDER BY created_at ASC",
+        [rawPlan.id]
+      );
+
+      const sessions: Session[] = [];
+
+      for (const rawSession of rawSessions) {
+        const rawSessionDays = await db.select(
+          "SELECT * FROM session_days WHERE session_id = ? AND deleted_at IS NULL ORDER BY created_at ASC",
+          [rawSession.id]
+        );
+
+        const days = rawSessionDays.map((day) => day.day_name);
+
+        const exercises: (SelectedExercise | TrainingBlock)[] = [];
+
+        const rawBlocks = await db.select(
+          "SELECT * FROM training_blocks WHERE session_id = ? AND deleted_at IS NULL ORDER BY created_at ASC",
+          [rawSession.id]
+        );
+
+        for (const rawBlock of rawBlocks) {
+          const blockProgressions = await getProgressions(
+            null,
+            rawBlock.id,
+            db
+          );
+
+          const blockVolumeReductions = await getVolumeReductions(
+            null,
+            rawBlock.id,
+            db
+          );
+
+          const blockEffortReductions = await getEffortReductions(
+            null,
+            rawBlock.id,
+            db
+          );
+
+          const rawBlockExercises = await db.select(
+            "SELECT se.*, e.name as exercise_name FROM selected_exercises se JOIN exercises e ON se.exercise_id = e.id WHERE se.block_id = ? AND se.deleted_at IS NULL ORDER BY se.created_at ASC",
+            [rawBlock.id]
+          );
+
+          const selectedExercises: SelectedExercise[] = [];
+          for (const rawExercise of rawBlockExercises) {
+            const exerciseProgressions = await getProgressions(
+              rawExercise.id,
+              null,
+              db
+            );
+            const exerciseVolumeReductions = await getVolumeReductions(
+              rawExercise.id,
+              null,
+              db
+            );
+            const exerciseEffortReductions = await getEffortReductions(
+              rawExercise.id,
+              null,
+              db
+            );
+
+            selectedExercises.push({
+              type: "selectedExercise",
+              id: rawExercise.id,
+              sessionId: rawExercise.session_id,
+              name: rawExercise.exercise_name,
+              exerciseId: rawExercise.exercise_id,
+              series: rawExercise.series,
+              repetitions: rawExercise.repetitions,
+              effort: rawExercise.effort,
+              restTime: rawExercise.rest_time,
+              progression: exerciseProgressions,
+              comments: rawExercise.comments || "",
+              blockId: rawExercise.block_id,
+              reduceVolume: exerciseVolumeReductions,
+              reduceEffort: exerciseEffortReductions,
+            });
+          }
+
+          const trainingBlock: TrainingBlock = {
+            type: "trainingBlock",
+            id: rawBlock.id,
+            sessionId: rawBlock.session_id,
+            name: rawBlock.name,
+            series: rawBlock.series,
+            repetitions: rawBlock.repetitions,
+            effort: rawBlock.effort,
+            selectedExercises,
+            blockModel: rawBlock.block_model,
+            progression: blockProgressions,
+            comments: rawBlock.comments || "",
+            restTime: rawBlock.rest_time,
+            reduceVolume: blockVolumeReductions,
+            reduceEffort: blockEffortReductions,
+          };
+
+          exercises.push(trainingBlock);
+        }
+
+        const rawDirectExercises = await db.select(
+          "SELECT se.*, e.name as exercise_name FROM selected_exercises se JOIN exercises e ON se.exercise_id = e.id WHERE se.session_id = ? AND se.block_id IS NULL AND se.deleted_at IS NULL ORDER BY se.created_at ASC",
+          [rawSession.id]
+        );
+
+        for (const rawExercise of rawDirectExercises) {
+          const exerciseProgressions = await getProgressions(
+            rawExercise.id,
+            null,
+            db
+          );
+          const exerciseVolumeReductions = await getVolumeReductions(
+            rawExercise.id,
+            null,
+            db
+          );
+          const exerciseEffortReductions = await getEffortReductions(
+            rawExercise.id,
+            null,
+            db
+          );
+
+          const selectedExercise: SelectedExercise = {
+            type: "selectedExercise",
+            id: rawExercise.id,
+            sessionId: rawExercise.session_id,
+            name: rawExercise.exercise_name,
+            exerciseId: rawExercise.exercise_id,
+            series: rawExercise.series,
+            repetitions: rawExercise.repetitions,
+            effort: rawExercise.effort,
+            restTime: rawExercise.rest_time,
+            progression: exerciseProgressions,
+            comments: rawExercise.comments || "",
+            reduceVolume: exerciseVolumeReductions,
+            reduceEffort: exerciseEffortReductions,
+          };
+
+          exercises.push(selectedExercise);
+        }
+
+        const session: Session = {
+          id: rawSession.id,
+          planId: rawSession.plan_id,
+          name: rawSession.name,
+          days,
+          exercises,
+        };
+
+        sessions.push(session);
+      }
+
+      const plan: PlanState = {
+        id: rawPlan.id,
+        nOfWeeks: rawPlan.n_of_weeks,
+        sessions,
+        nOfSessions: rawPlan.n_of_sessions,
+        athleteId: rawPlan.athlete_id,
+      };
+
+      plans.push(plan);
+    }
+
+    return plans;
+  } catch (error) {
+    console.error("Error getting training plans for athlete:", error);
+    return [];
+  }
+};
+
 const getProgressions = async (
   selectedExerciseId: string | null,
   trainingBlockId: string | null,
@@ -229,12 +417,30 @@ const getProgressions = async (
     const rawProgressions = await db.select(query, params);
     const progressions: Progression[] = [];
     rawProgressions.forEach((prog: RawProgression) => {
-      progressions.push({
+      const progression: Progression = {
         id: prog.id,
         series: prog.series,
         repetitions: prog.repetitions,
         effort: prog.effort,
-      });
+      };
+
+      // Only include completed if it's defined in the database
+      if (prog.completed !== undefined && prog.completed !== null) {
+        // Convert 0/1 to boolean values
+        progression.completed = Boolean(prog.completed);
+      }
+
+      // Only include weight if it's defined in the database
+      if (prog.weight !== undefined && prog.weight !== null) {
+        progression.weight = prog.weight;
+      }
+
+      // Only include weight_unit if it's defined in the database
+      if (prog.weight_unit !== undefined && prog.weight_unit !== null) {
+        progression.weightUnit = prog.weight_unit;
+      }
+
+      progressions.push(progression);
     });
     return progressions;
   } catch (error) {
@@ -362,13 +568,13 @@ const addTrainingPlan = async (
 
     const planId = planState.id || uuidv4();
     await dbToUse.execute(
-      `INSERT INTO training_plans (id, n_of_weeks, n_of_sessions, user_id, athlete_id, created_at)
+      `INSERT INTO training_plans (id, n_of_weeks, n_of_sessions, coach_id, athlete_id, created_at)
         VALUES (?, ?, ?, ?, ?, datetime('now'))`,
       [
         planId,
         planState.nOfWeeks,
         planState.nOfSessions,
-        userId,
+        userId, // This is the coach_id
         planState.athleteId || null,
       ]
     );
@@ -377,6 +583,8 @@ const addTrainingPlan = async (
       const sessionRecords = await addSession(
         session,
         planId,
+        userId, // Pass coach_id
+        planState.athleteId || null, // Pass athlete_id
         pushRecord,
         dbToUse
       );
@@ -401,6 +609,8 @@ const addTrainingPlan = async (
 const addSession = async (
   session: Session,
   planId: string,
+  coachId: string,
+  athleteId: string | null,
   pushRecord: (records: PendingRecord[]) => Promise<void>,
   externalDb?: DatabaseInstance
 ): Promise<PendingRecord[] | undefined> => {
@@ -411,16 +621,16 @@ const addSession = async (
     const sessionId = session.id || uuidv4();
 
     await db.execute(
-      `INSERT INTO sessions (id, plan_id, name, created_at) VALUES (?, ?, ?, datetime('now'))`,
-      [sessionId, planId, session.name]
+      `INSERT INTO sessions (id, plan_id, name, coach_id, athlete_id, created_at) VALUES (?, ?, ?, ?, ?, datetime('now'))`,
+      [sessionId, planId, session.name, coachId, athleteId]
     );
     recordsToSync.push({ tableName: "sessions", id: sessionId });
 
     for (const day of session.days) {
       const dayId = uuidv4();
       await db.execute(
-        `INSERT INTO session_days (id, session_id, day_name, created_at) VALUES (?, ?, ?, datetime('now'))`,
-        [dayId, sessionId, day]
+        `INSERT INTO session_days (id, session_id, day_name, coach_id, athlete_id, created_at) VALUES (?, ?, ?, ?, ?, datetime('now'))`,
+        [dayId, sessionId, day, coachId, athleteId]
       );
       recordsToSync.push({ tableName: "session_days", id: dayId });
     }
@@ -430,6 +640,8 @@ const addSession = async (
           exercise,
           sessionId,
           null,
+          coachId,
+          athleteId,
           pushRecord,
           db
         );
@@ -440,6 +652,8 @@ const addSession = async (
         const result = await addTrainingBlock(
           exercise,
           sessionId,
+          coachId,
+          athleteId,
           pushRecord,
           db
         );
@@ -462,6 +676,8 @@ const addSelectedExercise = async (
   exercise: SelectedExercise,
   sessionId: string,
   blockId: string | null,
+  coachId: string,
+  athleteId: string | null,
   pushRecord: (records: PendingRecord[]) => Promise<void>,
   externalDb?: DatabaseInstance
 ): Promise<string | PendingRecord[] | undefined> => {
@@ -472,8 +688,8 @@ const addSelectedExercise = async (
     const db = externalDb || (await getDatabaseInstance());
 
     await db.execute(
-      `INSERT INTO selected_exercises (id, session_id, exercise_id, block_id, series, repetitions, effort, rest_time, comments, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+      `INSERT INTO selected_exercises (id, session_id, exercise_id, block_id, series, repetitions, effort, rest_time, comments, coach_id, athlete_id, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
       [
         exerciseId,
         sessionId,
@@ -484,6 +700,8 @@ const addSelectedExercise = async (
         exercise.effort,
         exercise.restTime,
         exercise.comments,
+        coachId,
+        athleteId,
       ]
     );
     recordsToSync.push({ tableName: "selected_exercises", id: exerciseId });
@@ -491,18 +709,136 @@ const addSelectedExercise = async (
     for (let i = 0; i < exercise.progression.length; i++) {
       const progression = exercise.progression[i];
       const progressionId = uuidv4();
-      await db.execute(
-        `INSERT INTO progressions (id, selected_exercise_id, series, repetitions, effort, week_number, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`,
-        [
+
+      // Build the query and parameters dynamically based on optional fields
+      let query: string;
+      let params: any[];
+
+      const hasCompleted = progression.completed !== undefined;
+      const hasWeight =
+        progression.weight !== undefined && progression.weight !== null;
+      const hasWeightUnit =
+        progression.weightUnit !== undefined && progression.weightUnit !== null;
+
+      if (hasCompleted && hasWeight && hasWeightUnit) {
+        query = `INSERT INTO progressions (id, selected_exercise_id, series, repetitions, effort, week_number, completed, weight, weight_unit, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
           progressionId,
           exerciseId,
           progression.series,
           progression.repetitions,
           progression.effort,
           i + 1,
-        ]
-      );
+          progression.completed,
+          progression.weight,
+          progression.weightUnit,
+          coachId,
+          athleteId,
+        ];
+      } else if (hasCompleted && hasWeight) {
+        query = `INSERT INTO progressions (id, selected_exercise_id, series, repetitions, effort, week_number, completed, weight, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
+          progressionId,
+          exerciseId,
+          progression.series,
+          progression.repetitions,
+          progression.effort,
+          i + 1,
+          progression.completed,
+          progression.weight,
+          coachId,
+          athleteId,
+        ];
+      } else if (hasCompleted && hasWeightUnit) {
+        query = `INSERT INTO progressions (id, selected_exercise_id, series, repetitions, effort, week_number, completed, weight_unit, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
+          progressionId,
+          exerciseId,
+          progression.series,
+          progression.repetitions,
+          progression.effort,
+          i + 1,
+          progression.completed,
+          progression.weightUnit,
+          coachId,
+          athleteId,
+        ];
+      } else if (hasWeight && hasWeightUnit) {
+        query = `INSERT INTO progressions (id, selected_exercise_id, series, repetitions, effort, week_number, weight, weight_unit, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
+          progressionId,
+          exerciseId,
+          progression.series,
+          progression.repetitions,
+          progression.effort,
+          i + 1,
+          progression.weight,
+          progression.weightUnit,
+          coachId,
+          athleteId,
+        ];
+      } else if (hasCompleted) {
+        query = `INSERT INTO progressions (id, selected_exercise_id, series, repetitions, effort, week_number, completed, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
+          progressionId,
+          exerciseId,
+          progression.series,
+          progression.repetitions,
+          progression.effort,
+          i + 1,
+          progression.completed,
+          coachId,
+          athleteId,
+        ];
+      } else if (hasWeight) {
+        query = `INSERT INTO progressions (id, selected_exercise_id, series, repetitions, effort, week_number, weight, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
+          progressionId,
+          exerciseId,
+          progression.series,
+          progression.repetitions,
+          progression.effort,
+          i + 1,
+          progression.weight,
+          coachId,
+          athleteId,
+        ];
+      } else if (hasWeightUnit) {
+        query = `INSERT INTO progressions (id, selected_exercise_id, series, repetitions, effort, week_number, weight_unit, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
+          progressionId,
+          exerciseId,
+          progression.series,
+          progression.repetitions,
+          progression.effort,
+          i + 1,
+          progression.weightUnit,
+          coachId,
+          athleteId,
+        ];
+      } else {
+        query = `INSERT INTO progressions (id, selected_exercise_id, series, repetitions, effort, week_number, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
+          progressionId,
+          exerciseId,
+          progression.series,
+          progression.repetitions,
+          progression.effort,
+          i + 1,
+          coachId,
+          athleteId,
+        ];
+      }
+
+      await db.execute(query, params);
       recordsToSync.push({ tableName: "progressions", id: progressionId });
     }
 
@@ -513,9 +849,16 @@ const addSelectedExercise = async (
       )) {
         const volumeReductionId = uuidv4();
         await db.execute(
-          `INSERT INTO volume_reductions (id, selected_exercise_id, fatigue_level, reduction_percentage, created_at)
-         VALUES (?, ?, ?, ?, datetime('now'))`,
-          [volumeReductionId, exerciseId, fatigueLevel, percentage]
+          `INSERT INTO volume_reductions (id, selected_exercise_id, fatigue_level, reduction_percentage, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`,
+          [
+            volumeReductionId,
+            exerciseId,
+            fatigueLevel,
+            percentage,
+            coachId,
+            athleteId,
+          ]
         );
         recordsToSync.push({
           tableName: "volume_reductions",
@@ -533,9 +876,16 @@ const addSelectedExercise = async (
       for (const [effortLevel, amount] of Object.entries(effortReduction)) {
         const effortReductionId = uuidv4();
         await db.execute(
-          `INSERT INTO effort_reductions (id, selected_exercise_id, effort_level, reduction_amount, created_at)
-         VALUES (?, ?, ?, ?, datetime('now'))`,
-          [effortReductionId, exerciseId, effortLevel, amount]
+          `INSERT INTO effort_reductions (id, selected_exercise_id, effort_level, reduction_amount, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`,
+          [
+            effortReductionId,
+            exerciseId,
+            effortLevel,
+            amount,
+            coachId,
+            athleteId,
+          ]
         );
         recordsToSync.push({
           tableName: "effort_reductions",
@@ -557,6 +907,8 @@ const addSelectedExercise = async (
 const addTrainingBlock = async (
   block: TrainingBlock,
   sessionId: string,
+  coachId: string,
+  athleteId: string | null,
   pushRecord: (records: PendingRecord[]) => Promise<void>,
   externalDb?: DatabaseInstance
 ): Promise<PendingRecord[] | undefined> => {
@@ -566,8 +918,8 @@ const addTrainingBlock = async (
     const blockId = block.id || uuidv4();
 
     await db.execute(
-      `INSERT INTO training_blocks (id, session_id, name, series, repetitions, effort, block_model, comments, rest_time, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+      `INSERT INTO training_blocks (id, session_id, name, series, repetitions, effort, block_model, comments, rest_time, coach_id, athlete_id, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
       [
         blockId,
         sessionId,
@@ -578,6 +930,8 @@ const addTrainingBlock = async (
         block.blockModel,
         block.comments,
         block.restTime,
+        coachId,
+        athleteId,
       ]
     );
     recordsToSync.push({ tableName: "training_blocks", id: blockId });
@@ -585,18 +939,136 @@ const addTrainingBlock = async (
     for (let i = 0; i < block.progression.length; i++) {
       const progression = block.progression[i];
       const progressionId = uuidv4();
-      await db.execute(
-        `INSERT INTO progressions (id, training_block_id, series, repetitions, effort, week_number, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`,
-        [
+
+      // Build the query and parameters dynamically based on optional fields
+      let query: string;
+      let params: any[];
+
+      const hasCompleted = progression.completed !== undefined;
+      const hasWeight =
+        progression.weight !== undefined && progression.weight !== null;
+      const hasWeightUnit =
+        progression.weightUnit !== undefined && progression.weightUnit !== null;
+
+      if (hasCompleted && hasWeight && hasWeightUnit) {
+        query = `INSERT INTO progressions (id, training_block_id, series, repetitions, effort, week_number, completed, weight, weight_unit, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
           progressionId,
           blockId,
           progression.series,
           progression.repetitions,
           progression.effort,
           i + 1,
-        ]
-      );
+          progression.completed,
+          progression.weight,
+          progression.weightUnit,
+          coachId,
+          athleteId,
+        ];
+      } else if (hasCompleted && hasWeight) {
+        query = `INSERT INTO progressions (id, training_block_id, series, repetitions, effort, week_number, completed, weight, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
+          progressionId,
+          blockId,
+          progression.series,
+          progression.repetitions,
+          progression.effort,
+          i + 1,
+          progression.completed,
+          progression.weight,
+          coachId,
+          athleteId,
+        ];
+      } else if (hasCompleted && hasWeightUnit) {
+        query = `INSERT INTO progressions (id, training_block_id, series, repetitions, effort, week_number, completed, weight_unit, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
+          progressionId,
+          blockId,
+          progression.series,
+          progression.repetitions,
+          progression.effort,
+          i + 1,
+          progression.completed,
+          progression.weightUnit,
+          coachId,
+          athleteId,
+        ];
+      } else if (hasWeight && hasWeightUnit) {
+        query = `INSERT INTO progressions (id, training_block_id, series, repetitions, effort, week_number, weight, weight_unit, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
+          progressionId,
+          blockId,
+          progression.series,
+          progression.repetitions,
+          progression.effort,
+          i + 1,
+          progression.weight,
+          progression.weightUnit,
+          coachId,
+          athleteId,
+        ];
+      } else if (hasCompleted) {
+        query = `INSERT INTO progressions (id, training_block_id, series, repetitions, effort, week_number, completed, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
+          progressionId,
+          blockId,
+          progression.series,
+          progression.repetitions,
+          progression.effort,
+          i + 1,
+          progression.completed,
+          coachId,
+          athleteId,
+        ];
+      } else if (hasWeight) {
+        query = `INSERT INTO progressions (id, training_block_id, series, repetitions, effort, week_number, weight, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
+          progressionId,
+          blockId,
+          progression.series,
+          progression.repetitions,
+          progression.effort,
+          i + 1,
+          progression.weight,
+          coachId,
+          athleteId,
+        ];
+      } else if (hasWeightUnit) {
+        query = `INSERT INTO progressions (id, training_block_id, series, repetitions, effort, week_number, weight_unit, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
+          progressionId,
+          blockId,
+          progression.series,
+          progression.repetitions,
+          progression.effort,
+          i + 1,
+          progression.weightUnit,
+          coachId,
+          athleteId,
+        ];
+      } else {
+        query = `INSERT INTO progressions (id, training_block_id, series, repetitions, effort, week_number, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`;
+        params = [
+          progressionId,
+          blockId,
+          progression.series,
+          progression.repetitions,
+          progression.effort,
+          i + 1,
+          coachId,
+          athleteId,
+        ];
+      }
+
+      await db.execute(query, params);
       recordsToSync.push({ tableName: "progressions", id: progressionId });
     }
 
@@ -608,9 +1080,16 @@ const addTrainingBlock = async (
       )) {
         const volumeReductionId = uuidv4();
         await db.execute(
-          `INSERT INTO volume_reductions (id, training_block_id, fatigue_level, reduction_percentage, created_at)
-         VALUES (?, ?, ?, ?, datetime('now'))`,
-          [volumeReductionId, blockId, fatigueLevel, percentage]
+          `INSERT INTO volume_reductions (id, training_block_id, fatigue_level, reduction_percentage, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`,
+          [
+            volumeReductionId,
+            blockId,
+            fatigueLevel,
+            percentage,
+            coachId,
+            athleteId,
+          ]
         );
         recordsToSync.push({
           tableName: "volume_reductions",
@@ -624,9 +1103,9 @@ const addTrainingBlock = async (
       for (const [effortLevel, amount] of Object.entries(effortReduction)) {
         const effortReductionId = uuidv4();
         await db.execute(
-          `INSERT INTO effort_reductions (id, training_block_id, effort_level, reduction_amount, created_at)
-         VALUES (?, ?, ?, ?, datetime('now'))`,
-          [effortReductionId, blockId, effortLevel, amount]
+          `INSERT INTO effort_reductions (id, training_block_id, effort_level, reduction_amount, coach_id, athlete_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`,
+          [effortReductionId, blockId, effortLevel, amount, coachId, athleteId]
         );
         recordsToSync.push({
           tableName: "effort_reductions",
@@ -640,6 +1119,8 @@ const addTrainingBlock = async (
         exercise,
         sessionId,
         blockId,
+        coachId,
+        athleteId,
         pushRecord,
         db
       );
@@ -971,30 +1452,30 @@ const getTrainingModels = async (userId: string): Promise<TrainingModel[]> => {
 
     // First, get all training models metadata
     const rawModels: any[] = await db.select(
-      `SELECT tm.id, tm.name, tm.description, tm.training_plan_id, tm.created_at, tp.user_id
+      `SELECT tm.id, tm.name, tm.description, tm.training_plan_id, tm.created_at, tp.coach_id
        FROM training_models tm 
        JOIN training_plans tp ON tm.training_plan_id = tp.id 
-       WHERE tm.deleted_at IS NULL AND tp.deleted_at IS NULL AND tp.user_id = ?
+       WHERE tm.deleted_at IS NULL AND tp.deleted_at IS NULL AND tp.coach_id = ?
        ORDER BY tm.created_at DESC`,
       [userId]
     );
 
     const models: TrainingModel[] = [];
 
-    // Group models by user_id to minimize database calls
-    const userIds = Array.from(
-      new Set(rawModels.map((model) => model.user_id))
+    // Group models by coach_id to minimize database calls
+    const coachIds = Array.from(
+      new Set(rawModels.map((model) => model.coach_id))
     );
-    const allPlansByUser = new Map<string, PlanState[]>();
+    const allPlansByCoach = new Map<string, PlanState[]>();
 
-    for (const userId of userIds) {
-      const plans = await getTrainingPlans(userId, db);
-      allPlansByUser.set(userId, plans);
+    for (const coachId of coachIds) {
+      const plans = await getTrainingPlans(coachId, db);
+      allPlansByCoach.set(coachId, plans);
     }
 
     for (const rawModel of rawModels) {
-      const userPlans = allPlansByUser.get(rawModel.user_id) || [];
-      const basePlan = userPlans.find(
+      const coachPlans = allPlansByCoach.get(rawModel.coach_id) || [];
+      const basePlan = coachPlans.find(
         (plan) => plan.id === rawModel.training_plan_id
       );
 
@@ -1044,9 +1525,9 @@ const addTrainingModel = async (
       recordsToSync.push(...(planRecords || []));
 
       await db.execute(
-        `INSERT INTO training_models (id, name, description, training_plan_id, created_at)
-           VALUES (?, ?, ?, ?, datetime('now'))`,
-        [model.id, model.name, model.description, model.trainingPlanId]
+        `INSERT INTO training_models (id, name, description, training_plan_id, coach_id, created_at)
+           VALUES (?, ?, ?, ?, ?, datetime('now'))`,
+        [model.id, model.name, model.description, model.trainingPlanId, userId]
       );
       await db.execute("COMMIT");
       recordsToSync.push({ tableName: "training_models", id: model.id });
@@ -1353,15 +1834,103 @@ const updateProgression = async (
   try {
     const db = await getDatabaseInstance();
 
-    await db.execute(
-      "UPDATE progressions SET series = ?, repetitions = ?, effort = ? WHERE id = ?",
-      [
+    // Build the query and parameters dynamically based on optional fields
+    let query: string;
+    let params: any[];
+
+    const hasCompleted = progression.completed !== undefined;
+    const hasWeight =
+      progression.weight !== undefined && progression.weight !== null;
+    const hasWeightUnit =
+      progression.weightUnit !== undefined && progression.weightUnit !== null;
+
+    if (hasCompleted && hasWeight && hasWeightUnit) {
+      query =
+        "UPDATE progressions SET series = ?, repetitions = ?, effort = ?, completed = ?, weight = ?, weight_unit = ? WHERE id = ?";
+      params = [
+        progression.series,
+        progression.repetitions,
+        progression.effort,
+        progression.completed,
+        progression.weight,
+        progression.weightUnit,
+        progression.id,
+      ];
+    } else if (hasCompleted && hasWeight) {
+      query =
+        "UPDATE progressions SET series = ?, repetitions = ?, effort = ?, completed = ?, weight = ? WHERE id = ?";
+      params = [
+        progression.series,
+        progression.repetitions,
+        progression.effort,
+        progression.completed,
+        progression.weight,
+        progression.id,
+      ];
+    } else if (hasCompleted && hasWeightUnit) {
+      query =
+        "UPDATE progressions SET series = ?, repetitions = ?, effort = ?, completed = ?, weight_unit = ? WHERE id = ?";
+      params = [
+        progression.series,
+        progression.repetitions,
+        progression.effort,
+        progression.completed,
+        progression.weightUnit,
+        progression.id,
+      ];
+    } else if (hasWeight && hasWeightUnit) {
+      query =
+        "UPDATE progressions SET series = ?, repetitions = ?, effort = ?, weight = ?, weight_unit = ? WHERE id = ?";
+      params = [
+        progression.series,
+        progression.repetitions,
+        progression.effort,
+        progression.weight,
+        progression.weightUnit,
+        progression.id,
+      ];
+    } else if (hasCompleted) {
+      query =
+        "UPDATE progressions SET series = ?, repetitions = ?, effort = ?, completed = ? WHERE id = ?";
+      params = [
+        progression.series,
+        progression.repetitions,
+        progression.effort,
+        progression.completed,
+        progression.id,
+      ];
+    } else if (hasWeight) {
+      query =
+        "UPDATE progressions SET series = ?, repetitions = ?, effort = ?, weight = ? WHERE id = ?";
+      params = [
+        progression.series,
+        progression.repetitions,
+        progression.effort,
+        progression.weight,
+        progression.id,
+      ];
+    } else if (hasWeightUnit) {
+      query =
+        "UPDATE progressions SET series = ?, repetitions = ?, effort = ?, weight_unit = ? WHERE id = ?";
+      params = [
+        progression.series,
+        progression.repetitions,
+        progression.effort,
+        progression.weightUnit,
+        progression.id,
+      ];
+    } else {
+      query =
+        "UPDATE progressions SET series = ?, repetitions = ?, effort = ? WHERE id = ?";
+      params = [
         progression.series,
         progression.repetitions,
         progression.effort,
         progression.id,
-      ]
-    );
+      ];
+    }
+
+    await db.execute(query, params);
     await pushRecord([{ tableName: "progressions", id: progression.id }]);
   } catch (error) {
     console.error("Error updating progression:", error);
@@ -1371,6 +1940,7 @@ const updateProgression = async (
 
 export {
   getTrainingPlans,
+  getTrainingPlanForAthlete,
   addTrainingPlan,
   addSession,
   addSelectedExercise,

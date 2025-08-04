@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 
-import { Link, router } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import SelectField from "../../components/SelectField";
@@ -26,24 +26,35 @@ const VALIDATION_LIMITS = {
     ft: { max: 8 },
   },
   weight: {
-    kgs: { max: 300 },
-    lbs: { max: 660 },
+    kg: { max: 300 },
+    lb: { max: 660 },
   },
 };
 
 const SignUp = () => {
-  const { user, setUserData, userData } = useUser();
+  const { user, setUserData, userData, saveAthleteDataAsUser } = useUser();
+  const { from } = useLocalSearchParams();
+  const isEditMode = from === "myProfile";
 
+  const athlete = userData as Athlete;
   const [date, setDate] = useState(
-    new Date(Date.now() - 25 * 365.25 * 24 * 60 * 60 * 1000)
+    isEditMode && athlete?.birthDate
+      ? new Date(athlete.birthDate)
+      : new Date(Date.now() - 25 * 365.25 * 24 * 60 * 60 * 1000)
   );
   const [displayDate, setDisplayDate] = useState("");
   const [pickerVisible, setPickerVisible] = useState(false);
   const [nameError, setNameError] = useState(false);
   const [keyboardActiveOn, setKeyboardActiveOn] = useState<string | null>(null);
-  const [prevHeightUnit, setPrevHeightUnit] = useState<"cm" | "ft">("cm");
-  const [prevHeight, setPrevHeight] = useState("");
-  const [prevWeightUnit, setPrevWeightUnit] = useState<"kgs" | "lbs">("kgs");
+  const [prevHeightUnit, setPrevHeightUnit] = useState<"cm" | "ft">(
+    isEditMode && athlete?.heightUnit ? athlete.heightUnit : "cm"
+  );
+  const [prevHeight, setPrevHeight] = useState(
+    isEditMode && athlete?.height ? athlete.height : ""
+  );
+  const [prevWeightUnit, setPrevWeightUnit] = useState<"kg" | "lb">(
+    isEditMode && athlete?.weightUnit ? athlete.weightUnit : "kg"
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const signIn = () => {
@@ -74,12 +85,23 @@ const SignUp = () => {
     setUserData({ ...userData, birthDate: date } as Athlete);
   };
 
-  const onContinue = () => {
+  const onContinue = async () => {
     if (!userData?.name) {
       setNameError(true);
       return;
     }
-    router.push("/(auth)/sign-up-2");
+
+    if (isEditMode) {
+      try {
+        await saveAthleteDataAsUser(userData as Athlete);
+        router.replace("/(tabs)/home");
+      } catch (error) {
+        console.error("Error updating athlete data:", error);
+        // You might want to show an error message to the user here
+      }
+    } else {
+      router.push("/(auth)/sign-up-2");
+    }
   };
 
   const handleInputChange = (field: keyof Athlete, value: string | Date) => {
@@ -157,7 +179,7 @@ const SignUp = () => {
     if (field === "weight" && typeof value === "string" && value !== "") {
       const numValue = parseFloat(value);
       const maxValue =
-        VALIDATION_LIMITS.weight[athlete?.weightUnit as "kgs" | "lbs"]?.max;
+        VALIDATION_LIMITS.weight[athlete?.weightUnit as "kg" | "lb"]?.max;
       if (numValue > maxValue) {
         return;
       }
@@ -218,7 +240,7 @@ const SignUp = () => {
   // Handle weight unit conversion
   useEffect(() => {
     const athlete = userData as Athlete;
-    if (prevWeightUnit === "kgs" && athlete?.weightUnit === "lbs") {
+    if (prevWeightUnit === "kg" && athlete?.weightUnit === "lb") {
       const weightNum = athlete?.weight;
       if (!isNaN(parseFloat(weightNum))) {
         setUserData({
@@ -227,7 +249,7 @@ const SignUp = () => {
         } as Athlete);
       }
     }
-    if (prevWeightUnit === "lbs" && athlete?.weightUnit === "kgs") {
+    if (prevWeightUnit === "lb" && athlete?.weightUnit === "kg") {
       const weightNum = athlete?.weight;
       if (!isNaN(parseFloat(weightNum))) {
         setUserData({
@@ -249,7 +271,9 @@ const SignUp = () => {
         contentContainerStyle={{ flexGrow: 1 }}
       >
         <View className="w-full flex items-center justify-center ">
-          <Text className="text-2xl font-regular ">Registrarse</Text>
+          <Text className="text-2xl font-regular ">
+            {isEditMode ? "Editar Perfil" : "Registrarse"}
+          </Text>
 
           {!pickerVisible && (
             <>
@@ -293,7 +317,7 @@ const SignUp = () => {
                 <TonalButton
                   title={"Guardar"}
                   containerStyles="mt-8 "
-                  icon="next"
+                  icon="arrow-right"
                   onPress={saveChanges}
                 ></TonalButton>
               )}
@@ -373,47 +397,51 @@ const SignUp = () => {
                 />
                 <CustomButton
                   containerStyles={`mr-4 ml-6 mt-6 w-12 ${
-                    (userData as Athlete)?.weightUnit === "kgs"
+                    (userData as Athlete)?.weightUnit === "kg"
                       ? "bg-lightRed"
                       : "bg-offWhite border border-lightRed"
                   }`}
                   textStyles={`text-secondary ${
-                    (userData as Athlete)?.weightUnit === "kgs" &&
+                    (userData as Athlete)?.weightUnit === "kg" &&
                     "font-psemibold"
                   }`}
-                  title={"kgs"}
+                  title={"kg"}
                   onPress={() => {
-                    handleInputChange("weightUnit", "kgs");
+                    handleInputChange("weightUnit", "kg");
                   }}
                 />
                 <CustomButton
                   containerStyles={`w-12 mt-6 ${
-                    (userData as Athlete)?.weightUnit === "lbs"
+                    (userData as Athlete)?.weightUnit === "lb"
                       ? "bg-lightRed"
                       : "bg-offWhite border border-lightRed"
                   }`}
-                  title={"lbs"}
+                  title={"lb"}
                   textStyles={`text-secondary ${
-                    (userData as Athlete)?.weightUnit === "lbs" &&
+                    (userData as Athlete)?.weightUnit === "lb" &&
                     "font-psemibold"
                   }`}
                   onPress={() => {
-                    handleInputChange("weightUnit", "lbs");
+                    handleInputChange("weightUnit", "lb");
                   }}
                 />
               </View>
               <TonalButton
-                title="Continuar"
+                title={isEditMode ? "Actualizar" : "Continuar"}
                 onPress={onContinue}
-                icon="next"
+                icon="arrow-right"
                 containerStyles="self-center mt-8"
               />
-              <View className="justify-center pt-5 flex-row gap-2">
-                <Text className="text-md">Ya tienes cuenta?</Text>
-                <TouchableOpacity onPress={signIn}>
-                  <Text className="text-md text-secondary">Iniciar Sesión</Text>
-                </TouchableOpacity>
-              </View>
+              {!isEditMode && (
+                <View className="justify-center pt-5 flex-row gap-2">
+                  <Text className="text-md">Ya tienes cuenta?</Text>
+                  <TouchableOpacity onPress={signIn}>
+                    <Text className="text-md text-secondary">
+                      Iniciar Sesión
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </>
           )}
         </View>

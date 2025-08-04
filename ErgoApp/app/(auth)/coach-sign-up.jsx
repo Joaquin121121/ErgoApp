@@ -180,7 +180,7 @@ const coachSignUp = () => {
           <TonalButton
             containerStyles="mt-8 self-center"
             title="Continuar"
-            icon="next"
+            icon="arrow-right"
             onPress={onPress}
           />
         )}

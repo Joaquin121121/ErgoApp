@@ -150,7 +150,7 @@ const addClass = () => {
         <View className="w-full mt-8 flex flex-row items-center justify-around">
           <OutlinedButton
             title="Volver"
-            icon="arrowBackRed"
+            icon="arrow-left"
             onPress={() => router.back()}
             containerStyles="w-[40%]"
             inverse
@@ -158,7 +158,7 @@ const addClass = () => {
           <TonalButton
             title="Continuar"
             containerStyles="w-[40%]"
-            icon="next"
+            icon="arrow-forward"
             onPress={onPress}
           />
         </View>

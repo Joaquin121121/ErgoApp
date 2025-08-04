@@ -92,6 +92,8 @@ import sleep from "../assets/icons/sleep.png";
 import antropometry from "../assets/icons/antropometry.png";
 import tools from "../assets/icons/tools.png";
 import logoSimplified from "../assets/icons/logoSimplified.png";
+import nutrition from "../assets/icons/nutrition.png";
+import fatigue from "../assets/icons/fatigue.png";
 
 export default {
   home,
@@ -186,4 +188,6 @@ export default {
   group,
   velocimeter,
   closeWhite,
+  nutrition,
+  fatigue,
 };

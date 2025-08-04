@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Tabs, useRouter } from "expo-router";
 import { useContext } from "react";
 
-import icons from "../../scripts/icons.js";
+import icons from "../../scripts/icons";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (

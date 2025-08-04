@@ -12,13 +12,33 @@ export type StudyType =
   | "custom"
   | "bosco";
 
+export const studyTypes: StudyType[] = [
+  "cmj",
+  "squatJump",
+  "abalakov",
+  "multipleDropJump",
+  "multipleJumps",
+  "custom",
+  "bosco",
+];
+
+export const testDisplayNames = {
+  cmj: "CMJ",
+  squatJump: "Squat Jump",
+  abalakov: "Abalakov",
+  multipleDropJump: "Drop Jump",
+  multipleJumps: "Multiple Jumps",
+  bosco: "BOSCO",
+  custom: "Personalizado",
+};
+
 interface BaseStudy {
   name: string;
   description: string;
   preview: BaseStudyPreview;
 }
 
-type LoadUnit = "kgs" | "lbs";
+type LoadUnit = "kg" | "lb";
 type HeightUnit = "cm" | "ft";
 
 // Modify the interfaces that have load
@@ -108,10 +128,10 @@ const availableStudies: Studies = {
     description: "Salto en Movimiento",
     takeoffFoot: "both",
     load: 0,
-    loadUnit: "kgs",
+    loadUnit: "kg",
     sensitivity: 180,
     preview: {
-      equipment: ["Alfombra de Contacto"],
+      equipment: ["Plataforma de Contacto"],
     },
   },
   squatJump: {
@@ -120,10 +140,10 @@ const availableStudies: Studies = {
     description: "Salto de Sentadilla",
     takeoffFoot: "both",
     load: 0,
-    loadUnit: "kgs",
+    loadUnit: "kg",
     sensitivity: 180,
     preview: {
-      equipment: ["Alfombra de Contacto"],
+      equipment: ["Plataforma de Contacto"],
     },
   },
   abalakov: {
@@ -132,10 +152,10 @@ const availableStudies: Studies = {
     description: "Salto en Movimiento",
     takeoffFoot: "both",
     load: 0,
-    loadUnit: "kgs",
+    loadUnit: "kg",
     sensitivity: 180,
     preview: {
-      equipment: ["Alfombra de Contacto"],
+      equipment: ["Plataforma de Contacto"],
     },
   },
   multipleDropJump: {
@@ -147,7 +167,7 @@ const availableStudies: Studies = {
     sensitivity: 180,
     dropJumpHeights: [],
     preview: {
-      equipment: ["Alfombra de Contacto"],
+      equipment: ["Plataforma de Contacto"],
     },
   },
   bosco: {
@@ -156,7 +176,7 @@ const availableStudies: Studies = {
     description: "Combinación de Tests",
     studies: ["squatJump", "cmj", "abalakov"],
     preview: {
-      equipment: ["Alfombra de Contacto"],
+      equipment: ["Plataforma de Contacto"],
     },
     sensitivity: 180,
   },
@@ -169,12 +189,12 @@ const availableStudies: Studies = {
     criteriaValue: 30,
     sensitivity: 180,
     preview: {
-      equipment: ["Alfombra de Contacto"],
+      equipment: ["Plataforma de Contacto"],
     },
   },
 };
 export const availableEquipment = [
-  "Alfombra de Contacto",
+  "Plataforma de Contacto",
   "Fotocélula",
 ] as const;
 
@@ -303,42 +323,42 @@ export const studyInfoLookup = {
     name: "CMJ",
     description: "Salto en Movimiento",
     preview: {
-      equipment: ["Alfombra de Contacto"],
+      equipment: ["Plataforma de Contacto"],
     },
   },
   squatJump: {
     name: "Squat Jump",
     description: "Salto de Sentadilla",
     preview: {
-      equipment: ["Alfombra de Contacto"],
+      equipment: ["Plataforma de Contacto"],
     },
   },
   abalakov: {
     name: "Abalakov",
     description: "Salto en Movimiento",
     preview: {
-      equipment: ["Alfombra de Contacto"],
+      equipment: ["Plataforma de Contacto"],
     },
   },
   multipleDropJump: {
     name: "Drop Jump",
     description: "Salto de Caída",
     preview: {
-      equipment: ["Alfombra de Contacto"],
+      equipment: ["Plataforma de Contacto"],
     },
   },
   bosco: {
     name: "BOSCO Test",
     description: "Combinación de Tests",
     preview: {
-      equipment: ["Alfombra de Contacto"],
+      equipment: ["Plataforma de Contacto"],
     },
   },
   multipleJumps: {
     name: "Saltos Múltiples",
     description: "Saltos Repetidos Continuos",
     preview: {
-      equipment: ["Alfombra de Contacto"],
+      equipment: ["Plataforma de Contacto"],
     },
   },
 } satisfies Record<keyof Studies, BaseStudy>;
@@ -383,3 +403,44 @@ export const validComparisons = {
 };
 
 export default availableStudies;
+
+export interface TestMeasures {
+  displayName: string;
+  measures: string;
+}
+
+export interface TestInfo {
+  cmj: TestMeasures;
+  squatJump: TestMeasures;
+  abalakov: TestMeasures;
+  multipleDropJump: TestMeasures;
+  multipleJumps: TestMeasures;
+  bosco: TestMeasures;
+}
+
+export const testInfo: TestInfo = {
+  cmj: {
+    displayName: "CMJ",
+    measures: "Potencia Explosiva del Tren Inferior",
+  },
+  squatJump: {
+    displayName: "Squat Jump",
+    measures: "Salto Desde Posición Estática",
+  },
+  abalakov: {
+    displayName: "Abalakov",
+    measures: "Salto con Balanceo de Brazos",
+  },
+  multipleDropJump: {
+    displayName: "Drop Jump",
+    measures: "Capacidad Reactiva y Rigidez Muscular",
+  },
+  multipleJumps: {
+    displayName: "Saltos Múltiples",
+    measures: "Resistencia y Potencia en Saltos",
+  },
+  bosco: {
+    displayName: "BOSCO Test",
+    measures: "Capacidad de Salto",
+  },
+};

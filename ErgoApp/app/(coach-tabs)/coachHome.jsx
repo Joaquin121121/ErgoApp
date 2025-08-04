@@ -3,8 +3,6 @@ import React, { useContext, useEffect, useState } from "react";
 import CustomFlatlist from "../../components/CustomFlatlist";
 
 import icons from "../../scripts/icons";
-import ActivitySummary from "../../components/ActivitySummary";
-import NotificationDisplay from "../../components/NotificationDisplay";
 
 const coachHome = () => {
   const { user, setUser, version } = useContext(UserContext);

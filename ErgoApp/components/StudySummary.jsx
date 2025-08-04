@@ -54,7 +54,7 @@ const StudySummary = () => {
 
       <TonalButton
         title="Ver Todo"
-        icon="next"
+        icon="arrow-right"
         containerStyles="self-center w-1/2 mt-8 mb-4"
         onPress={() => {
           router.push("studyDetails");

@@ -1,3 +1,5 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import icons from "../scripts/icons";
 import CustomButton from "./CustomButton";
 const OutlinedButton = ({
   title,
@@ -7,6 +9,16 @@ const OutlinedButton = ({
   textStyles,
   icon,
   inverse,
+  customIcon,
+}: {
+  title: string;
+  isLoading?: boolean;
+  onPress: () => void;
+  containerStyles?: string;
+  textStyles?: string;
+  icon?: keyof typeof MaterialCommunityIcons.glyphMap;
+  inverse?: boolean;
+  customIcon?: keyof typeof icons;
 }) => {
   return (
     <CustomButton
@@ -17,6 +29,9 @@ const OutlinedButton = ({
       textStyles={`text-secondary ${textStyles}`}
       icon={icon}
       inverse={inverse}
+      customIcon={customIcon}
+      iconColor="#e81d23"
+      iconSize={24}
     />
   );
 };

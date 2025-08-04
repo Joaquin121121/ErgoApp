@@ -57,11 +57,10 @@ const coachViewPlan = () => {
         containerStyles="self-center mt-8 w-[60vw]"
         title="Ver Resumen"
         onPress={() => router.push("planSummary")}
-        icon="plan"
+        customIcon="plan"
       />
       <TonalButton
         title="Continuar"
-        icon="next"
         containerStyles="self-center mt-4 w-[60vw] mb-12"
         onPress={() => router.replace("coachHome")}
       />

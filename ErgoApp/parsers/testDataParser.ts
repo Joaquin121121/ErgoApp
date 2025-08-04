@@ -63,6 +63,7 @@ export const deleteTest = async (
 const createBaseResult = async (
   db: DatabaseInstance,
   athleteId: string,
+  coachId: string,
   takeoffFoot: string,
   sensitivity: number
 ): Promise<PendingRecord> => {
@@ -91,6 +92,7 @@ const createBaseResult = async (
 const createJumpTimes = async (
   db: DatabaseInstance,
   baseResultId: string,
+  athleteId: string,
   times: JumpTime[]
 ): Promise<PendingRecord[]> => {
   const jumpTimeRecords: PendingRecord[] = [];
@@ -101,8 +103,8 @@ const createJumpTimes = async (
     const jumpTimeId = uuidv4();
 
     await db.execute(
-      `INSERT INTO jump_time (id, created_at, last_changed, base_result_id, time, deleted, floor_time, stiffness, performance, "index")
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO jump_time (id, created_at, last_changed, base_result_id, time, deleted, floor_time, stiffness, performance, "index", athlete_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         jumpTimeId,
         currentTimestamp,
@@ -114,6 +116,7 @@ const createJumpTimes = async (
         time.stiffness || null,
         time.performance || null,
         i,
+        athleteId,
       ]
     );
 
@@ -129,6 +132,7 @@ const createJumpTimes = async (
 export const addBasicResult = async (
   study: CompletedStudy,
   athleteId: string,
+  coachId: string,
   pushRecord: (records: PendingRecord[]) => Promise<void>,
   externalDb?: DatabaseInstance
 ): Promise<string | PendingRecord[]> => {
@@ -152,6 +156,7 @@ export const addBasicResult = async (
       const baseResultRecord = await createBaseResult(
         dbToUse,
         athleteId,
+        coachId,
         result.takeoffFoot,
         result.sensitivity
       );
@@ -162,8 +167,8 @@ export const addBasicResult = async (
       const currentTimestamp = new Date().toISOString();
 
       await dbToUse.execute(
-        `INSERT INTO basic_result (id, created_at, last_changed, type, load, loadunit, base_result_id, bosco_result_id)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO basic_result (id, created_at, last_changed, type, load, load_unit, base_result_id, bosco_result_id, athlete_id)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           basicResultId,
           currentTimestamp,
@@ -173,6 +178,7 @@ export const addBasicResult = async (
           result.loadUnit,
           baseResultId,
           null,
+          athleteId,
         ]
       );
       pendingRecords.push({
@@ -183,6 +189,7 @@ export const addBasicResult = async (
       const jumpTimeRecords = await createJumpTimes(
         dbToUse,
         baseResultId,
+        athleteId,
         result.times
       );
       pendingRecords.push(...jumpTimeRecords);
@@ -208,6 +215,7 @@ export const addBasicResult = async (
 export const addBoscoResult = async (
   study: CompletedStudy,
   athleteId: string,
+  coachId: string,
   pushRecord: (records: PendingRecord[]) => Promise<void>,
   externalDb?: DatabaseInstance
 ): Promise<string | PendingRecord[]> => {
@@ -248,6 +256,7 @@ export const addBoscoResult = async (
         const baseResultRecord = await createBaseResult(
           dbToUse,
           athleteId,
+          coachId,
           test.data.takeoffFoot,
           test.data.sensitivity
         );
@@ -256,8 +265,8 @@ export const addBoscoResult = async (
 
         const basicResultId = uuidv4();
         await dbToUse.execute(
-          `INSERT INTO basic_result (id, created_at, last_changed, type, load, loadunit, base_result_id, bosco_result_id)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          `INSERT INTO basic_result (id, created_at, last_changed, type, load, load_unit, base_result_id, bosco_result_id, athlete_id)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             basicResultId,
             currentTimestamp,
@@ -267,6 +276,7 @@ export const addBoscoResult = async (
             test.data.loadUnit,
             baseResultId,
             boscoResultId,
+            athleteId,
           ]
         );
 
@@ -278,6 +288,7 @@ export const addBoscoResult = async (
         const jumpTimeRecords = await createJumpTimes(
           dbToUse,
           baseResultId,
+          athleteId,
           test.data.times
         );
         pendingRecords.push(...jumpTimeRecords);
@@ -304,6 +315,7 @@ export const addBoscoResult = async (
 export const addMultipleJumpsResult = async (
   study: CompletedStudy,
   athleteId: string,
+  coachId: string,
   pushRecord: (records: PendingRecord[]) => Promise<void>,
   externalDb?: DatabaseInstance
 ): Promise<string | PendingRecord[]> => {
@@ -322,6 +334,7 @@ export const addMultipleJumpsResult = async (
       const baseResultRecord = await createBaseResult(
         dbToUse,
         athleteId,
+        coachId,
         result.takeoffFoot,
         result.sensitivity
       );
@@ -332,8 +345,8 @@ export const addMultipleJumpsResult = async (
       const currentTimestamp = new Date().toISOString();
 
       await dbToUse.execute(
-        `INSERT INTO multiple_jumps_result (id, created_at, last_changed, criteria, criteria_value, base_result_id)
-         VALUES (?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO multiple_jumps_result (id, created_at, last_changed, criteria, criteria_value, base_result_id, athlete_id)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
           multipleJumpsResultId,
           currentTimestamp,
@@ -341,6 +354,7 @@ export const addMultipleJumpsResult = async (
           result.criteria,
           result.criteriaValue,
           baseResultId,
+          athleteId,
         ]
       );
 
@@ -352,6 +366,7 @@ export const addMultipleJumpsResult = async (
       const jumpTimeRecords = await createJumpTimes(
         dbToUse,
         baseResultId,
+        athleteId,
         result.times
       );
       pendingRecords.push(...jumpTimeRecords);
@@ -377,6 +392,7 @@ export const addMultipleJumpsResult = async (
 export const addMultipleDropJumpResult = async (
   study: CompletedStudy,
   athleteId: string,
+  coachId: string,
   pushRecord: (records: PendingRecord[]) => Promise<void>,
   externalDb?: DatabaseInstance
 ): Promise<string | PendingRecord[]> => {
@@ -419,6 +435,7 @@ export const addMultipleDropJumpResult = async (
         const baseResultRecord = await createBaseResult(
           dbToUse,
           athleteId,
+          coachId,
           dropJumpResult.takeoffFoot,
           dropJumpResult.sensitivity
         );
@@ -426,10 +443,10 @@ export const addMultipleDropJumpResult = async (
         pendingRecords.push(baseResultRecord);
 
         const dropJumpResultId = uuidv4();
-        // Based on the database schema, the table has: height, stiffness, base_result_id, multiple_drop_jump_id
+        // Based on the database schema, the table has: height, stiffness, base_result_id, multiple_drop_jump_id, athlete_id
         await dbToUse.execute(
-          `INSERT INTO drop_jump_result (id, created_at, last_changed, height, stiffness, base_result_id, multiple_drop_jump_id)
-           VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          `INSERT INTO drop_jump_result (id, created_at, last_changed, height, stiffness, base_result_id, multiple_drop_jump_id, athlete_id)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             dropJumpResultId,
             currentTimestamp,
@@ -438,6 +455,7 @@ export const addMultipleDropJumpResult = async (
             dropJumpResult.stiffness,
             baseResultId,
             multipleDropJumpResultId,
+            athleteId,
           ]
         );
 
@@ -449,6 +467,7 @@ export const addMultipleDropJumpResult = async (
         const jumpTimeRecords = await createJumpTimes(
           dbToUse,
           baseResultId,
+          athleteId,
           dropJumpResult.times
         );
         pendingRecords.push(...jumpTimeRecords);
@@ -475,19 +494,32 @@ export const addMultipleDropJumpResult = async (
 export const addResult = async (
   study: CompletedStudy,
   athleteId: string,
+  coachId: string,
   pushRecord: (records: PendingRecord[]) => Promise<void>,
   db?: DatabaseInstance
 ): Promise<string | PendingRecord[]> => {
   const resultType = study.results.type;
 
   if (resultType === "bosco") {
-    return await addBoscoResult(study, athleteId, pushRecord, db);
+    return await addBoscoResult(study, athleteId, coachId, pushRecord, db);
   } else if (resultType === "multipleJumps") {
-    return await addMultipleJumpsResult(study, athleteId, pushRecord, db);
+    return await addMultipleJumpsResult(
+      study,
+      athleteId,
+      coachId,
+      pushRecord,
+      db
+    );
   } else if (resultType === "multipleDropJump") {
-    return await addMultipleDropJumpResult(study, athleteId, pushRecord, db);
+    return await addMultipleDropJumpResult(
+      study,
+      athleteId,
+      coachId,
+      pushRecord,
+      db
+    );
   } else {
-    return await addBasicResult(study, athleteId, pushRecord, db);
+    return await addBasicResult(study, athleteId, coachId, pushRecord, db);
   }
 };
 
@@ -495,6 +527,7 @@ export const addMultipleResults = async (
   data: {
     studies: CompletedStudy[];
     ids: string[];
+    coachId: string;
   },
   pushRecord: (records: PendingRecord[]) => Promise<void>
 ): Promise<PendingRecord[]> => {
@@ -512,7 +545,13 @@ export const addMultipleResults = async (
     for (let i = 0; i < data.studies.length; i++) {
       const study = data.studies[i];
       const athleteId = data.ids[i];
-      const result = await addResult(study, athleteId, pushRecord, db);
+      const result = await addResult(
+        study,
+        athleteId,
+        data.coachId,
+        pushRecord,
+        db
+      );
       if (!Array.isArray(result)) {
         continue;
       }

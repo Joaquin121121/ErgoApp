@@ -1,10 +1,10 @@
 import { View, Text } from "react-native";
 import React, { useContext, useEffect } from "react";
-import OutlinedButton from "./OutlinedButton";
-import Icon from "./Icon";
-import TonalButton from "./TonalButton";
+import OutlinedButton from "../../components/OutlinedButton";
+import Icon from "../../components/Icon";
+import TonalButton from "../../components/TonalButton";
 import { router } from "expo-router";
-import { calendarData } from "../scripts/calendarData";
+import { calendarData } from "../../scripts/calendarData";
 const ActivityDetailed = ({ week, day, index, studies }) => {
   const { coachInfo } = useContext(CoachContext);
   const isSessionToday = (timeSlots) => {

@@ -10,23 +10,52 @@ import React, { useEffect, useState, useContext } from "react";
 import { router } from "expo-router";
 import icons from "../../scripts/icons";
 import Icon from "../../components/Icon";
-import TonalButton from "../../components/TonalButton";
 import { useRouter } from "expo-router";
 import { useUser } from "../../contexts/UserContext";
+import { VideoView, useVideoPlayer } from "expo-video";
 
 const versionChoice = () => {
   const router = useRouter();
   const [selectedVersion, setSelectedVersion] = useState<
     "coach" | "athlete" | null
   >(null);
-  const [error, setError] = useState(false);
   const { isLoggedIn } = useUser();
 
-  const onPress = () => {
-    if (!selectedVersion) {
-      setError(true);
-      return;
-    }
+  // Video sources
+  const coachVideoSource =
+    "https://github.com/Joaquin121121/ErgoCharacters/raw/refs/heads/main/chico%20con%20lentes%20lee.mp4";
+  const athleteVideoSource =
+    "https://github.com/Joaquin121121/ErgoCharacters/raw/refs/heads/main/musculoso%20pose%20largo.mp4";
+
+  // Video players
+  const coachPlayer = useVideoPlayer(coachVideoSource, (player) => {
+    player.play();
+  });
+
+  const athletePlayer = useVideoPlayer(athleteVideoSource, (player) => {
+    player.play();
+  });
+
+  // Delayed loops for both videos
+  useEffect(() => {
+    const coachInterval = setInterval(() => {
+      coachPlayer.currentTime = 0;
+      coachPlayer.play();
+    }, 5000);
+
+    const athleteInterval = setInterval(() => {
+      athletePlayer.currentTime = 0;
+      athletePlayer.play();
+    }, 5000);
+
+    return () => {
+      clearInterval(coachInterval);
+      clearInterval(athleteInterval);
+    };
+  }, []);
+
+  const handleVersionSelect = (version: "coach" | "athlete") => {
+    setSelectedVersion(version);
     if (isLoggedIn) {
       router.push("/home");
     } else {
@@ -34,9 +63,6 @@ const versionChoice = () => {
     }
   };
 
-  useEffect(() => {
-    setError(false);
-  }, [selectedVersion]);
   return (
     <ScrollView className="pt-20">
       <Image
@@ -51,17 +77,16 @@ const versionChoice = () => {
       <Text className="mt-2 font-plight text-16 text-darkGray self-center">
         Elige una opción para continuar
       </Text>
-      <TouchableOpacity
-        onPress={() => {
-          setSelectedVersion("coach");
-        }}
-      >
+      <TouchableOpacity onPress={() => handleVersionSelect("coach")}>
         <View
-          className={`w-[80vw] h-40 mt-12 self-center bg-white rounded-2xl shadow-sm flex flex-row items-center ${
-            selectedVersion === "coach" && "border border-secondary"
-          }`}
+          className={`w-[80vw] h-40 mt-12 self-center bg-white rounded-2xl shadow-sm flex flex-row items-center `}
         >
-          <View className="w-2/5 h-full" />
+          <View className="w-2/5 h-full relative overflow-hidden pl-4">
+            <VideoView
+              player={coachPlayer}
+              style={{ width: "100%", height: "100%", pointerEvents: "none" }}
+            />
+          </View>
           <View className="w-3/5 h-full justify-evenly items-center">
             <Text className="font-pmedium text-xl ">
               Modo <Text className="text-secondary">Coach</Text>
@@ -71,17 +96,20 @@ const versionChoice = () => {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={() => {
-          setSelectedVersion("athlete");
-        }}
-      >
+      <TouchableOpacity onPress={() => handleVersionSelect("athlete")}>
         <View
-          className={`w-[80vw] h-40 mt-8 self-center bg-white rounded-2xl shadow-sm flex flex-row items-center ${
-            selectedVersion === "athlete" && "border border-secondary"
-          }`}
+          className={`w-[80vw] h-40 mt-8 self-center bg-white rounded-2xl shadow-sm flex flex-row items-center`}
         >
-          <View className="w-2/5 h-full" />
+          <View className="w-2/5 h-full relative overflow-hidden pl-4">
+            <VideoView
+              player={athletePlayer}
+              style={{
+                width: "100%",
+                height: "100%",
+                pointerEvents: "none",
+              }}
+            />
+          </View>
           <View className="w-3/5 h-full justify-evenly items-center">
             <Text className="font-pmedium text-xl ">
               Modo <Text className="text-secondary">Atleta</Text>
@@ -90,19 +118,6 @@ const versionChoice = () => {
           </View>
         </View>
       </TouchableOpacity>
-      <Text
-        className={`mt-12 mb-2 self-center text-secondary font-psemibold ${
-          !error && "opacity-0"
-        }`}
-      >
-        Debe elegir una opción
-      </Text>
-      <TonalButton
-        containerStyles="self-center mt-0"
-        icon="checkWhite"
-        title="Continuar"
-        onPress={onPress}
-      />
     </ScrollView>
   );
 };

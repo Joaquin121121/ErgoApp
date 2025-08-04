@@ -61,7 +61,7 @@ const AthleteCoachLink = () => {
               Ya tienes una cuenta, inicia sesión con tu correo
             </Text>
             <TonalButton
-              icon="next"
+              icon="arrow-right"
               containerStyles="mt-8"
               title="Iniciar Sesión"
               onPress={() => router.push("/sign-in")}

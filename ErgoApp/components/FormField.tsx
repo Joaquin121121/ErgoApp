@@ -1,7 +1,7 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { KeyboardTypeOptions, TextInput } from "react-native";
-import icons from "../scripts/icons.js";
+import icons from "../scripts/icons";
 import Icon from "./Icon";
 const FormField = ({
   title,

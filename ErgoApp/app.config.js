@@ -1,7 +1,7 @@
 export default {
   expo: {
-    name: "ErgoApp",
-    slug: "ErgoApp",
+    name: "ErgoLab",
+    slug: "ErgoLab",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
@@ -34,6 +34,7 @@ export default {
     plugins: [
       "expo-font",
       "expo-router",
+      "expo-sqlite",
       "@react-native-google-signin/google-signin",
       [
         "expo-image-picker",

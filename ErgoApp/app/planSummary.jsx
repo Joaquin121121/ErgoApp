@@ -95,7 +95,7 @@ const planSummary = () => {
           />
           <TonalButton
             title="Continuar"
-            icon="next"
+            icon="arrow-right"
             containerStyles="self-center mt-4 w-[60vw] mb-12"
             onPress={() => router.replace("coachHome")}
           />

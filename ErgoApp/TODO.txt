@@ -1,17 +1,16 @@
 PENDIENTE DE MÍ
-    Implementar Screening --> Continuar y Volver
+    Reagendar sesiones
     Botón de editar información
     Login con auth provider
     Arreglar target cards
     Notificaciones automaticas
-
-POST DESKTOP
     Tests de responsividad
 
 POST BUILD
     Implementar envíos de solicitudes de vinculación mediante redes sociales. Links y QRs. (Prompt: How to allow users on my expo app which uses firebase auth to send themselves friend requests. I want a code or a qr code to be generated and be sendable through social media apps like instagram, whatsapp, facebook)
-    Almacenar en localstorage las imagenes de perfil (a hacer más adelante debido a que usar expo-file-system es mejor que asyncstorage, pero solo se puede usar con production build)
-    
+    Actualizar pfp primero en cotnexto para mayor fluidez
+
+
 VERSION GYM
     Implementar tab de explorar clases: anotarse a clases por unica vez vs todos los dias x
 

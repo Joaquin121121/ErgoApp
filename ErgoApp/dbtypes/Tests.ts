@@ -13,7 +13,7 @@ export interface DbJumpTime {
   base_result_id: string;
   index: number;
   time: number;
-  deleted?: boolean;
+  deleted?: string;
   deleted_at: string | null;
   floor_time: number | null;
   stiffness: number | null;

@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS "basic_result" (
     "deleted_at" TIMESTAMP,
     "type" TEXT NOT NULL CHECK (type IN ('cmj', 'abalakov', 'squatJump', 'custom')),
     "load" REAL NOT NULL,
-    "loadunit" TEXT NOT NULL CHECK (loadunit IN ('kgs', 'lbs')),
+    "load_unit" TEXT NOT NULL CHECK (load_unit IN ('kgs', 'lbs')),
     "base_result_id" UUID NOT NULL,
     "bosco_result_id" UUID,
     FOREIGN KEY ("base_result_id") REFERENCES "base_result"("id"),
@@ -883,6 +883,7 @@ CREATE TABLE IF NOT EXISTS "athlete_session_performance" (
     "performance" INTEGER NOT NULL CHECK (performance >= 0),
     "completed_exercises" INTEGER NOT NULL CHECK (completed_exercises >= 0),
     "athlete_id" TEXT NOT NULL,
+    "alternative_date" DATE, -- Optional alternative date for session performance
     -- Metadata
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "last_changed" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

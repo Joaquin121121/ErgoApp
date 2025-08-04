@@ -1,13 +1,23 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "../utils/supabase";
 import { User, Role } from "../types/User";
-import { Athlete, initialAthlete } from "../types/Athletes";
-import { Coach, initialCoach } from "../types/Coach";
 import {
-  getAthleteDataAsUser,
-  setAthleteDataAsUser,
-} from "../parsers/athleteDataParser";
+  Athlete,
+  initialAthlete,
+  WellnessData,
+  SessionPerformanceData,
+} from "../types/Athletes";
+import { Coach, initialCoach } from "../types/Coach";
+
 import { useDatabaseSync } from "../hooks/useDatabaseSync";
+import {
+  getAthleteAsUser,
+  savePollResults as savePollResultsToDb,
+  saveSessionPerformance as saveSessionPerformanceToDb,
+  saveAthleteDataAsUser as saveAthleteDataAsUserToDb,
+} from "../parsers/athleteDataParser";
+import { Progression } from "../types/trainingPlan";
+import { getCurrentDayName } from "../utils/utils";
 
 const initialUserState: User = {
   email: "",
@@ -32,6 +42,16 @@ interface UserContextType {
   linkAthleteToCoach: (
     athleteId: string
   ) => Promise<"success" | "nonExistent" | "alreadyRegistered">;
+  savePollResults: (
+    athleteId: string,
+    wellnessData: WellnessData
+  ) => Promise<void>;
+  saveSessionPerformance: (
+    athleteId: string,
+    sessionPerformance: SessionPerformanceData,
+    exercises: any[]
+  ) => Promise<void>;
+  saveAthleteDataAsUser: (athleteData: Athlete) => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -42,7 +62,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState<Role>("athlete");
   const [userData, setUserData] = useState<Coach | Athlete | null>(null);
-  const { pushRecord } = useDatabaseSync();
+  const { pushRecord, fullScaleSync, resetSyncMetadata } = useDatabaseSync();
 
   // Map Supabase user to our User type
   const mapSupabaseUser = (supabaseUser: any): User => {
@@ -95,7 +115,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         height: "",
         heightUnit: "cm",
         weight: "",
-        weightUnit: "kgs",
+        weightUnit: "kg",
         completedStudies: [],
       };
       setUserData(newAthlete);
@@ -121,10 +141,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         } else if (data.session) {
           const { user: supabaseUser } = data.session;
           setUser(mapSupabaseUser(supabaseUser));
-          const athlete = await getAthleteDataAsUser(supabaseUser.email || "");
-          if (athlete) {
-            setUserData(athlete);
-          }
 
           setIsLoggedIn(true);
         } else {
@@ -149,7 +165,19 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           setUser(initialUserState);
           setUserData(null);
         } else if (session && session.user) {
-          setUser(mapSupabaseUser(session.user));
+          const supabaseUser = mapSupabaseUser(session.user);
+          setUser(supabaseUser);
+          await resetSyncMetadata();
+          await fullScaleSync(supabaseUser.email || "", "athlete");
+          const athlete = await getAthleteAsUser(supabaseUser.email || "");
+          console.log("athlete from getAthleteAsUser", athlete);
+          console.log(
+            "athlete current training plan: ",
+            athlete?.currentTrainingPlan?.sessions[0].exercises
+          );
+          if (athlete) {
+            setUserData(athlete);
+          }
           setIsLoggedIn(true);
         } else if (event === "TOKEN_REFRESHED" && session?.user) {
           // Session was refreshed, user remains logged in
@@ -185,17 +213,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         password,
       });
 
-      const athleteData: Athlete | null = await getAthleteDataAsUser(email);
-      if (athleteData) {
-        setAthleteDataAsUser(athleteData, pushRecord);
-        setUserData(athleteData);
+      if (error) {
+        return { error: error.message };
       }
 
-      if (error) {
-        return { error };
-      }
+      return undefined; // Success case
     } catch (error) {
-      return { error };
+      return { error: "Error de conexión. Inténtalo de nuevo." };
     }
   };
 
@@ -262,6 +286,174 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Save poll results
+  const savePollResults = async (
+    athleteId: string,
+    wellnessData: WellnessData
+  ): Promise<void> => {
+    try {
+      console.log("Saving poll results for athlete:", athleteId);
+      await savePollResultsToDb(athleteId, wellnessData, pushRecord);
+      const updatedUserData = userData as Athlete;
+      updatedUserData.wellnessData = [
+        ...(updatedUserData.wellnessData || []),
+        wellnessData,
+      ];
+      setUserData(updatedUserData);
+    } catch (error) {
+      console.error("Error saving poll results:", error);
+      throw error;
+    }
+  };
+
+  // Save session performance
+  const saveSessionPerformance = async (
+    athleteId: string,
+    sessionPerformance: SessionPerformanceData,
+    exercises: any[]
+  ): Promise<void> => {
+    // Extract progressions from exercises
+    const progressions: Progression[] = exercises
+      .map((ex) => ex.extendedProgression)
+      .filter((prog) => prog !== undefined)
+      .map((prog) => ({
+        id: prog.id,
+        series: prog.series,
+        repetitions: prog.repetitions,
+        effort: prog.effort,
+        weight: prog.weight,
+        weightUnit: prog.weightUnit,
+        completed: prog.completed,
+      }));
+    const athleteData = userData as Athlete;
+    const currentTrainingSession =
+      athleteData?.currentTrainingPlan?.sessions.find(
+        (session) => session.id === sessionPerformance.sessionId
+      );
+
+    const performancesForSessionAndWeekN =
+      athleteData.sessionPerformanceData?.filter(
+        (session) =>
+          session.sessionId === sessionPerformance.sessionId &&
+          session.week ===
+            new Date(sessionPerformance.week).toISOString().split("T")[0]
+      ).length || 0;
+
+    if (!currentTrainingSession) return;
+    const correspondingDayName =
+      currentTrainingSession.days[
+        Math.min(
+          performancesForSessionAndWeekN,
+          currentTrainingSession.days.length - 1
+        )
+      ];
+    const today = getCurrentDayName();
+    console.log("today: ", today);
+    console.log("correspondingDayName: ", correspondingDayName);
+    const alternativeDate =
+      today !== correspondingDayName ? new Date() : undefined;
+    const processedSessionPerformance: SessionPerformanceData = {
+      ...sessionPerformance,
+      week: new Date(sessionPerformance.week).toISOString().split("T")[0],
+      sessionDayName: correspondingDayName,
+      alternativeDate: alternativeDate?.toISOString().split("T")[0],
+    };
+    console.log("processedSessionPerformance: ", processedSessionPerformance);
+    try {
+      console.log("progressions:", progressions);
+      await saveSessionPerformanceToDb(
+        athleteId,
+        processedSessionPerformance,
+        progressions,
+        pushRecord
+      );
+
+      // Update userData after successful database transaction
+      if (userData && "id" in userData && userData.id === athleteId) {
+        const updatedUserData = { ...userData } as Athlete;
+
+        // Update currentTrainingPlan progressions
+        if (updatedUserData.currentTrainingPlan) {
+          const updatedPlan = { ...updatedUserData.currentTrainingPlan };
+
+          // Update progressions in all sessions
+          updatedPlan.sessions = updatedPlan.sessions.map((session) => ({
+            ...session,
+            exercises: session.exercises.map((exercise) => {
+              if (exercise.type === "selectedExercise") {
+                // Update progressions for selected exercises
+                const updatedProgression = exercise.progression.map((prog) => {
+                  const matchingProgression = progressions.find(
+                    (p) => p.id === prog.id
+                  );
+                  return matchingProgression || prog;
+                });
+                return { ...exercise, progression: updatedProgression };
+              } else if (exercise.type === "trainingBlock") {
+                // Update progressions for exercises within training blocks
+                const updatedSelectedExercises = exercise.selectedExercises.map(
+                  (selectedExercise) => {
+                    const updatedProgression = selectedExercise.progression.map(
+                      (prog) => {
+                        const matchingProgression = progressions.find(
+                          (p) => p.id === prog.id
+                        );
+                        return matchingProgression || prog;
+                      }
+                    );
+                    return {
+                      ...selectedExercise,
+                      progression: updatedProgression,
+                    };
+                  }
+                );
+                return {
+                  ...exercise,
+                  selectedExercises: updatedSelectedExercises,
+                };
+              }
+              return exercise;
+            }),
+          }));
+
+          updatedUserData.currentTrainingPlan = updatedPlan;
+        }
+
+        // Add session performance to sessionPerformanceData
+        if (!updatedUserData.sessionPerformanceData) {
+          updatedUserData.sessionPerformanceData = [];
+        }
+
+        updatedUserData.sessionPerformanceData.push(
+          processedSessionPerformance
+        );
+
+        // Update the userData state
+        console.log(
+          "updatedUserData: ",
+          updatedUserData.sessionPerformanceData
+        );
+        setUserData(updatedUserData);
+      }
+    } catch (error) {
+      console.error("Error saving session performance:", error);
+      throw error;
+    }
+  };
+
+  // Save athlete data as user
+  const saveAthleteDataAsUser = async (athleteData: Athlete): Promise<void> => {
+    try {
+      console.log("Saving athlete data for user:", athleteData);
+      await saveAthleteDataAsUserToDb(athleteData, pushRecord);
+      // Update the local userData state with the new data
+      setUserData(athleteData);
+    } catch (error) {
+      console.error("Error saving athlete data:", error);
+      throw error;
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -278,6 +470,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         userData,
         setUserData,
         linkAthleteToCoach,
+        savePollResults,
+        saveSessionPerformance,
+        saveAthleteDataAsUser,
       }}
     >
       {children}

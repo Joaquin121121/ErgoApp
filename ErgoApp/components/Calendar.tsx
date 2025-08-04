@@ -9,31 +9,25 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 import Day from "./Day";
 import Icon from "./Icon";
 import { TouchableOpacity } from "react-native";
-import { calendarData, dayTranslations } from "../scripts/calendarData";
+import {
+  dayTranslations,
+  calendarData,
+  getCurrentWeekIndex,
+  CalendarData,
+} from "../scripts/calendarData";
+import { useUser } from "../contexts/UserContext";
+import { useCalendar } from "../contexts/CalendarContext";
+import { Athlete } from "../types/Athletes";
 
 const Calendar = () => {
-  // Sort weeks in chronological order
-  const sortedWeeks = Object.keys(calendarData).sort((a, b) => {
-    const [dayA] = a.split("-")[0].split("/").reverse();
-    const [dayB] = b.split("-")[0].split("/").reverse();
-    return parseInt(dayA) - parseInt(dayB);
-  });
+  const { userData } = useUser();
+  const { calendarData } = useCalendar();
+  const athleteData = userData as Athlete;
+  const trainingPlan = athleteData?.currentTrainingPlan;
 
-  // Find the current week index
-  const getCurrentWeekIndex = () => {
-    const today = new Date();
-    return sortedWeeks.findIndex((weekRange) => {
-      const [startDate] = weekRange.split("-");
-      const [day, month, year] = startDate.split("/").map(Number);
-      const weekStart = new Date(year, month - 1, day);
-      const weekEnd = new Date(weekStart);
-      weekEnd.setDate(weekEnd.getDate() + 6);
-
-      return today >= weekStart && today <= weekEnd;
-    });
-  };
-
-  const initialWeekIndex = getCurrentWeekIndex();
+  const { initialWeekIndex, sortedWeeks } = getCurrentWeekIndex(
+    calendarData as CalendarData
+  );
   const [currentWeekIndex, setCurrentWeekIndex] = useState(
     initialWeekIndex !== -1 ? initialWeekIndex : sortedWeeks.length - 1
   );
@@ -77,18 +71,15 @@ const Calendar = () => {
             <View className="w-full h-[110px] flex flex-row justify-between">
               {item.days.slice(0, 3).map((day: string) => {
                 const dayData = item.data[day];
-                const hasActivity = dayData.scheduledActivities.length > 0;
-                const studies = dayData.scheduledStudies;
 
                 return (
                   <Day
                     key={day}
                     day={dayTranslations[day as keyof typeof dayTranslations]}
-                    sessions={
-                      hasActivity ? dayData.scheduledActivities : "restDay"
-                    }
+                    dayData={dayData}
                     currentWeekIndex={currentWeekIndex}
-                    studies={studies}
+                    weekKey={item.key}
+                    dayKey={day}
                   />
                 );
               })}
@@ -98,18 +89,33 @@ const Calendar = () => {
             <View className="w-full h-[110px] flex flex-row justify-between">
               {item.days.slice(3, 6).map((day: string) => {
                 const dayData = item.data[day];
-                const hasActivity = dayData.scheduledActivities.length > 0;
-                const studies = dayData.scheduledStudies;
 
                 return (
                   <Day
                     key={day}
                     day={dayTranslations[day as keyof typeof dayTranslations]}
-                    sessions={
-                      hasActivity ? dayData.scheduledActivities : "restDay"
-                    }
+                    dayData={dayData}
                     currentWeekIndex={currentWeekIndex}
-                    studies={studies}
+                    weekKey={item.key}
+                    dayKey={day}
+                  />
+                );
+              })}
+            </View>
+
+            {/* Third row - Sunday */}
+            <View className="w-full h-[110px] flex flex-row justify-center">
+              {item.days.slice(6, 7).map((day: string) => {
+                const dayData = item.data[day];
+
+                return (
+                  <Day
+                    key={day}
+                    day={dayTranslations[day as keyof typeof dayTranslations]}
+                    dayData={dayData}
+                    currentWeekIndex={currentWeekIndex}
+                    weekKey={item.key}
+                    dayKey={day}
                   />
                 );
               })}
@@ -160,8 +166,8 @@ const Calendar = () => {
 
   const flatListData = sortedWeeks.map((week) => ({
     key: week,
-    data: calendarData[week as keyof typeof calendarData],
-    days: Object.keys(calendarData[week as keyof typeof calendarData]),
+    data: calendarData?.[week as keyof typeof calendarData],
+    days: Object.keys(calendarData?.[week as keyof typeof calendarData] || {}),
   }));
 
   const formatDateRange = (dateRange: string) => {
@@ -179,15 +185,11 @@ const Calendar = () => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(currentWeekIndex);
-  }, [currentWeekIndex]);
-
   return (
-    <View className="h-[280] w-[85%] self-center flex gap-4 items-center">
+    <View className="min-h-[390] w-[85%] self-center flex gap-4 items-center">
       <View
         style={{
-          height: 250,
+          minHeight: 360,
           overflow: "visible",
         }}
         className="w-full"

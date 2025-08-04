@@ -123,7 +123,7 @@ export const debugPersistence = {
       height: "180",
       height_unit: "cm",
       weight: "75",
-      weight_unit: "kgs",
+      weight_unit: "kg",
       discipline: "Football",
       category: "Professional",
       institution: "UCLA",

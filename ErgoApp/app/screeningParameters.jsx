@@ -82,7 +82,7 @@ const screeningParameters = () => {
       </View>
       <TonalButton
         title="Continuar"
-        icon="next"
+        icon="arrow-right"
         containerStyles="self-center mt-8"
         onPress={() => router.push("screening")}
       />

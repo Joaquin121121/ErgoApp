@@ -1,3 +1,4 @@
+import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import { Event, RawEvent, EventType } from "../types/Events";
 import { PendingRecord } from "../types/Sync";

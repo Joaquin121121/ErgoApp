@@ -2,10 +2,11 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Tabs, useRouter } from "expo-router";
 import { useUser } from "../../contexts/UserContext";
-import icons from "../../scripts/icons.js";
+import icons from "../../scripts/icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface TabIconProps {
-  icon: any;
+  icon?: keyof typeof icons;
   color: string;
   name: string;
   focused: boolean;
@@ -15,7 +16,7 @@ const TabIcon = ({ icon, color, name, focused }: TabIconProps) => {
   return (
     <View className="w-[25vw] items-center justify-center mt-6">
       <Image
-        source={icon}
+        source={icon || icons.home}
         resizeMode="contain"
         tintColor={color}
         className="w-6 h-6"
@@ -110,15 +111,15 @@ const TabsLayout = () => {
           }}
         />
         <Tabs.Screen
-          name="myMessages"
+          name="myTests"
           options={{
-            title: "Mensajes",
+            title: "Mis Tests",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={icons.chat}
+                icon={icons.myStudies}
                 color={color}
-                name="Mensajes"
+                name="Mis Tests"
                 focused={focused}
               />
             ),

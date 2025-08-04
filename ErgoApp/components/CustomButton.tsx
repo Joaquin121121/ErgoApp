@@ -1,6 +1,7 @@
-import { View, Text, Image } from "react-native";
+import { View, Text } from "react-native";
 import React from "react";
 import { TouchableOpacity } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import icons from "../scripts/icons";
 import Icon from "./Icon";
 
@@ -12,8 +13,10 @@ const CustomButton = ({
   isLoading,
   provider,
   icon,
-  iconSize,
+  iconSize = 24,
   inverse,
+  iconColor,
+  customIcon,
 }: {
   title: string;
   onPress: () => void;
@@ -21,9 +24,11 @@ const CustomButton = ({
   textStyles?: string;
   isLoading?: boolean;
   provider?: boolean;
-  icon?: string;
+  icon?: keyof typeof MaterialCommunityIcons.glyphMap;
   iconSize?: number;
   inverse?: boolean;
+  iconColor?: string;
+  customIcon?: keyof typeof icons;
 }) => {
   return (
     <TouchableOpacity
@@ -36,14 +41,16 @@ const CustomButton = ({
     >
       {inverse ? (
         <>
-          {provider && (
-            <Image
-              source={icons.google}
-              resizeMode="contain"
-              className="w-10 h-10"
-            ></Image>
-          )}
-          {icon && <Icon icon={icon} size={iconSize} style={{}} />}
+          {provider && <Icon icon="google" size={40} />}
+          {customIcon ? (
+            <Icon icon={customIcon} size={40} />
+          ) : icon ? (
+            <MaterialCommunityIcons
+              name={icon}
+              size={iconSize}
+              color={iconColor}
+            />
+          ) : null}
           <Text className={`text-primary font-pmedium text-16 ${textStyles}`}>
             {title}
           </Text>
@@ -53,14 +60,16 @@ const CustomButton = ({
           <Text className={`text-primary font-pmedium text-16 ${textStyles}`}>
             {title}
           </Text>
-          {provider && (
-            <Image
-              source={icons.google}
-              resizeMode="contain"
-              className="w-10 h-10"
-            ></Image>
-          )}
-          {icon && <Icon icon={icon} size={iconSize} style={{}} />}
+          {provider && <Icon icon="google" size={40} />}
+          {customIcon ? (
+            <Icon icon={customIcon} />
+          ) : icon ? (
+            <MaterialCommunityIcons
+              name={`${icon}`}
+              size={iconSize}
+              color={iconColor}
+            />
+          ) : null}
         </>
       )}
     </TouchableOpacity>

@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import icons from "../../scripts/icons.js";
+import icons from "../../scripts/icons";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import { router, useLocalSearchParams } from "expo-router";
@@ -33,12 +33,36 @@ const SignIn = () => {
     }
     setLoading(true);
     try {
-      await login(form.email, form.password);
+      const result = await login(form.email, form.password);
+      if (result?.error) {
+        // Map common Supabase auth errors to Spanish messages
+        const errorMessage = result.error;
+        if (
+          errorMessage.includes("Invalid login credentials") ||
+          errorMessage.includes("Email not confirmed") ||
+          errorMessage.includes("Invalid email or password")
+        ) {
+          setPasswordError("Email o contraseña incorrectos");
+        } else if (errorMessage.includes("Too many requests")) {
+          setPasswordError("Demasiados intentos. Inténtalo más tarde");
+        } else if (errorMessage.includes("Email not found")) {
+          setPasswordError("Email no encontrado");
+        } else if (
+          errorMessage.includes("network") ||
+          errorMessage.includes("fetch")
+        ) {
+          setPasswordError("Error de conexión. Verifica tu internet");
+        } else {
+          setPasswordError("Error al iniciar sesión. Inténtalo de nuevo");
+        }
+        setLoading(false);
+        return;
+      }
       router.push("/home");
     } catch (error) {
-      setPasswordError("Email o contraseña incorrectos");
+      setPasswordError("Error inesperado. Inténtalo de nuevo");
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -87,7 +111,9 @@ const SignIn = () => {
             containerStyles="mt-16 bg-secondary z-50"
             textStyles="text-white"
             isLoading={loading}
-            icon="next"
+            icon="arrow-right"
+            iconSize={24}
+            iconColor="white"
           ></CustomButton>
 
           <View className="justify-center pt-5 flex-row gap-2">

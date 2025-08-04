@@ -1,8 +1,8 @@
 import { View, Text } from "react-native";
 import React, { useContext } from "react";
-import Icon from "./Icon";
-import OutlinedButton from "./OutlinedButton";
-import TonalButton from "./TonalButton";
+import Icon from "../../components/Icon";
+import OutlinedButton from "../../components/OutlinedButton";
+import TonalButton from "../../components/TonalButton";
 import { router } from "expo-router";
 const ActivitySummary = ({ index }) => {
   const { coachInfo } = useContext(CoachContext);

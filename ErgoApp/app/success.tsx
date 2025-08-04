@@ -1,12 +1,43 @@
-import { View, Text, ScrollView, Animated } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Animated,
+  useWindowDimensions,
+} from "react-native";
 import React, { useEffect, useRef } from "react";
 import Icon from "../components/Icon";
-import { router, useLocalSearchParams } from "expo-router";
+import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import TonalButton from "../components/TonalButton";
+import ItemCard from "../components/ItemCard";
 import { fractionToPercentage } from "../scripts/utils";
+import { VideoView, useVideoPlayer } from "expo-video";
 
 const Success = () => {
-  const { completedExercises, improvedExercises } = useLocalSearchParams();
+  const { completedExercises, performance } = useLocalSearchParams();
+  const [completedExercisesNumber, totalExercisesNumber] = completedExercises
+    .toString()
+    .split("/")
+    .slice(0, 2);
+  const [performanceNumber] = performance.toString().split("/");
+  console.log("completedExercisesNumber", completedExercisesNumber);
+  console.log("totalExercisesNumber", totalExercisesNumber);
+  console.log("performanceNumber", performanceNumber);
+  console.log("completedExercises", completedExercises);
+  console.log("performance", performance);
+  const { width: screenWidth } = useWindowDimensions();
+
+  const videoSource =
+    "https://github.com/Joaquin121121/ErgoCharacters/raw/refs/heads/main/musculoso%20lo%20logra.mp4";
+
+  const player = useVideoPlayer(videoSource, (player) => {
+    player.play();
+  });
+
+  // Video dimensions for 1080x1920 aspect ratio
+  // Aspect ratio = 1080/1920 = 0.5625
+  const videoWidth = screenWidth;
+  const videoHeight = screenWidth * (1080 / 1920); // Maintain aspect ratio
 
   // Create animated value refs for each section
   const fadeAnim1 = useRef(new Animated.Value(0)).current;
@@ -45,7 +76,7 @@ const Success = () => {
   }, []);
 
   return (
-    <ScrollView className="mt-4">
+    <ScrollView className="mt-4 bg-white">
       <Animated.View style={{ opacity: fadeAnim1 }}>
         <View className="self-center flex flex-row items-center">
           <Text className="text-[32px] font-pregular mr-2">
@@ -56,46 +87,46 @@ const Success = () => {
         <Text className="mt-4 text-secondary text-2xl font-pregular self-center">
           Sesion completada
         </Text>
-        <View className="mt-6 flex justify-center bg-gray rounded-2xl self-center w-3/4 h-40">
-          <Text className="font-pregular text-2xl self-center">Animación</Text>
-        </View>
+
+        <VideoView
+          player={player}
+          style={{
+            width: videoWidth,
+            height: videoHeight,
+            pointerEvents: "none",
+          }}
+        />
       </Animated.View>
 
       <Animated.View style={{ opacity: fadeAnim2 }}>
-        <View className="shadow-sm self-center mt-6 border-blue border-2 border-t-[10px] h-28 w-3/4 rounded-2xl flex flex-row justify-around items-center">
-          <Text className="text-[32px] text-blue font-psemibold">
-            {fractionToPercentage(
-              parseInt(completedExercises[0]),
-              parseInt(completedExercises[2])
-            )}
-          </Text>
-          <Text className="text-blue text-sm font-psemibold">
-            Ejercicios completados
-          </Text>
-        </View>
+        <ItemCard
+          percentage={fractionToPercentage(
+            parseInt(completedExercisesNumber),
+            parseInt(totalExercisesNumber)
+          )}
+          label="Ejercicios completados"
+          color="blue"
+        />
       </Animated.View>
 
       <Animated.View style={{ opacity: fadeAnim3 }}>
-        <View className="shadow-sm self-center mt-4 border-green border-2 border-t-[10px] h-28 w-3/4 rounded-2xl flex flex-row justify-around items-center">
-          <Text className="text-[32px] text-green font-psemibold">
-            {fractionToPercentage(
-              parseInt(improvedExercises[0]),
-              parseInt(improvedExercises[2])
-            )}
-          </Text>
-          <Text className="text-green text-sm font-psemibold">
-            Ejercicios con progreso
-          </Text>
-        </View>
+        <ItemCard
+          percentage={fractionToPercentage(
+            parseInt(performanceNumber),
+            parseInt(completedExercisesNumber)
+          )}
+          label="Ejercicios con progreso"
+          color="green"
+        />
       </Animated.View>
 
       <Animated.View style={{ opacity: fadeAnim4 }}>
         <TonalButton
           containerStyles="mt-6 self-center"
-          icon="checkWhite"
+          icon="check"
           title="Continuar"
           onPress={() => {
-            router.replace("myStats");
+            router.replace("myStats" as RelativePathString);
           }}
         ></TonalButton>
       </Animated.View>

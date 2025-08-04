@@ -19,7 +19,7 @@ const initialAthlete: Athlete = {
   height: "",
   heightUnit: "cm",
   weight: "",
-  weightUnit: "kgs",
+  weightUnit: "kg",
   discipline: "",
   category: "",
   institution: "",

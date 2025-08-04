@@ -44,7 +44,7 @@ const ScreeningInfo = () => {
         </View>
         <TonalButton
           title="Comenzar"
-          icon="next"
+          icon="arrow-right"
           containerStyles="self-center mt-8"
           onPress={onPress}
         />

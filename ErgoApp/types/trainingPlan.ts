@@ -1,4 +1,5 @@
 import React from "react";
+import { StudyType } from "./Studies";
 
 export interface RawTrainingPlan {
   id: string;
@@ -76,14 +77,19 @@ export interface RawExercise {
   deleted_at: string | null;
 }
 
+export type WeightUnit = "kg" | "lbs";
+
 export interface RawProgression {
   id: string;
   selected_exercise_id: string | null;
   training_block_id: string | null;
   series: number;
   repetitions: string;
+  weight?: number;
+  weight_unit?: WeightUnit;
   effort: number;
   week_number: number;
+  completed: boolean;
   created_at: string;
   deleted_at: string | null;
 }
@@ -109,13 +115,33 @@ export interface RawEffortReduction {
 }
 
 // Type definitions for training plans
-export type DayName = string;
+export type DayName =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
+
+export const dayNames: DayName[] = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+];
 
 export interface Progression {
   id: string;
   series: number;
   repetitions: string;
   effort: number;
+  weight?: number;
+  weightUnit?: WeightUnit;
+  completed?: boolean;
 }
 
 export interface DisplayProgression {
@@ -144,11 +170,17 @@ export interface SelectedExercise {
   series: number;
   repetitions: string;
   effort: number;
+  weight?: number;
+  weightUnit?: WeightUnit;
   reduceVolume?: VolumeReduction;
   reduceEffort?: EffortReduction;
   restTime: number;
   progression: Progression[];
   comments: string;
+  blockId?: string;
+}
+
+export interface DisplaySelectedExercise extends SelectedExercise {
   blockId?: string;
 }
 
@@ -344,35 +376,51 @@ export const defaultProgression: Progression[] = [
     series: 3,
     repetitions: "6-8",
     effort: 80,
+    completed: false,
   },
   {
     id: "",
     series: 3,
     repetitions: "8-10",
     effort: 85,
+    completed: false,
   },
   {
     id: "",
     series: 3,
     repetitions: "10-12",
     effort: 90,
+    completed: false,
   },
   {
     id: "",
     series: 3,
     repetitions: "12-14",
     effort: 95,
+    completed: false,
   },
   {
     id: "",
     series: 3,
     repetitions: "14-16",
     effort: 100,
+    completed: false,
   },
   {
     id: "",
     series: 4,
     repetitions: "14-16",
     effort: 100,
+    completed: false,
   },
 ];
+export interface TestValueHistory {
+  testType: StudyType;
+  currentValue: number;
+  currentValueDate: Date;
+  pastValue?: number;
+  pastValueDate?: Date;
+  difference?: number;
+  percentageChange?: number;
+  valueType: "height" | "ECR" | "RSI";
+}

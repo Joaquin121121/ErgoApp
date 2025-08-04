@@ -130,7 +130,7 @@ const targets = () => {
         </View>
         <TonalButton
           title="Continuar"
-          icon="next"
+          icon="arrow-right"
           containerStyles="absolute bottom-16 mt-8 left-[25%]"
           onPress={onContinue}
         />

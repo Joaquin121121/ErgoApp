@@ -2,7 +2,7 @@ import { View, Text, Image } from "react-native";
 import React, { useContext, useState } from "react";
 import { TextInput } from "react-native";
 import { TouchableOpacity } from "react-native";
-import icons from "../scripts/icons.js";
+import icons from "../scripts/icons";
 import { router, RelativePathString } from "expo-router";
 import { useUser } from "../contexts/UserContext";
 import type { User } from "../types/User";
