@@ -1176,7 +1176,7 @@ export const getTestStatsSummary = (
 
     statsSummary.push(ecrValueHistory);
   }
-
+  console.log("statsSummary", statsSummary);
   return statsSummary;
 };
 
@@ -1288,3 +1288,212 @@ export const getCurrentProgression = (
   }
   return currentExercise.progression[currentProgressionIndex];
 };
+
+/**
+ * Calculates the date of a specific day within a week
+ * @param dayName - The day of the week (e.g., "monday", "tuesday", etc.)
+ * @param weekDate - The date of the Monday of that week (can be Date, "YYYY-MM-DD", or "DD/MM/YYYY" format)
+ * @returns The date string of the specified day in "DD/MM/YYYY" format
+ */
+export function getScheduledDate(
+  dayName: DayName,
+  weekDate: Date | string
+): string {
+  console.log("dayName", dayName);
+  console.log("weekDate", weekDate);
+  let mondayDate: Date;
+
+  // Handle both Date and string formats
+  if (typeof weekDate === "string") {
+    // Check if it's ISO format (YYYY-MM-DD) or DD/MM/YYYY format
+    if (weekDate.includes("-")) {
+      // ISO format: YYYY-MM-DD - treat as local date to avoid timezone issues
+      const [year, month, day] = weekDate.split("-").map(Number);
+      mondayDate = new Date(year, month - 1, day); // month is 0-indexed in Date constructor
+    } else {
+      // DD/MM/YYYY format
+      const [day, month, year] = weekDate.split("/").map(Number);
+      mondayDate = new Date(year, month - 1, day); // month is 0-indexed in Date constructor
+    }
+  } else {
+    // weekDate is already a Date object
+    mondayDate = new Date(weekDate);
+  }
+
+  // Map day names to their offset from Monday (0 = Monday, 1 = Tuesday, etc.)
+  const dayOffsets: Record<DayName, number> = {
+    monday: 0,
+    tuesday: 1,
+    wednesday: 2,
+    thursday: 3,
+    friday: 4,
+    saturday: 5,
+    sunday: 6,
+  };
+
+  // Calculate the target date
+  const targetDate = new Date(mondayDate);
+  targetDate.setDate(mondayDate.getDate() + dayOffsets[dayName]);
+
+  // Format the result as "DD/MM/YYYY"
+  const resultDay = targetDate.getDate().toString().padStart(2, "0");
+  const resultMonth = (targetDate.getMonth() + 1).toString().padStart(2, "0");
+  const resultYear = targetDate.getFullYear();
+
+  return `${resultDay}/${resultMonth}/${resultYear}`;
+}
+
+/**
+ * Formats a date to DD/MM format
+ * @param date - The date to format
+ * @returns A string in DD/MM format
+ */
+export function formatDateToDDMM(date: Date): string {
+  console.log("date", date);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  return `${day}/${month}`;
+}
+
+/**
+ * Returns an array of the most equidistant dates from the input array
+ * Always starts with the earliest date and distributes remaining dates equidistantly
+ * @param dates - Array of date strings or Date objects
+ * @param count - Number of dates to return
+ * @returns Array of the most equidistant dates from the input, sorted chronologically (oldest first)
+ */
+export function getEquidistantDates(
+  dates: (string | Date)[],
+  count: number
+): (string | Date)[] {
+  if (!dates || dates.length === 0) return [];
+  if (count <= 0) return [];
+  if (count === 1) {
+    // Return the earliest date when only one is requested
+    const sortedDates = [...dates].sort((a, b) => {
+      const dateA = typeof a === "string" ? new Date(a) : a;
+      const dateB = typeof b === "string" ? new Date(b) : b;
+      return dateA.getTime() - dateB.getTime();
+    });
+    return [sortedDates[0]];
+  }
+  if (count >= dates.length) {
+    // Return all dates sorted chronologically
+    return [...dates].sort((a, b) => {
+      const dateA = typeof a === "string" ? new Date(a) : a;
+      const dateB = typeof b === "string" ? new Date(b) : b;
+      return dateA.getTime() - dateB.getTime();
+    });
+  }
+
+  // Sort dates to ensure they're in chronological order (oldest first)
+  const sortedDates = [...dates].sort((a, b) => {
+    const dateA = typeof a === "string" ? new Date(a) : a;
+    const dateB = typeof b === "string" ? new Date(b) : b;
+    return dateA.getTime() - dateB.getTime();
+  });
+
+  const result: (string | Date)[] = [];
+  const step = (sortedDates.length - 1) / (count - 1);
+
+  for (let i = 0; i < count; i++) {
+    const index = Math.round(i * step);
+    result.push(sortedDates[index]);
+  }
+
+  return result;
+}
+
+/**
+ * Calculates RSI or ECR values from completed studies
+ * @param valueType - "rsi" for Reactive Strength Index or "ecr" for Eccentric Contribution Ratio
+ * @param studies - Array of completed studies
+ * @returns Array of calculated values
+ */
+export function getDataForValue(
+  valueType: "RSI" | "ECR",
+  studies: CompletedStudy[]
+): number[] {
+  console.log("completedStudies", studies);
+  if (valueType === "RSI") {
+    // RSI calculation for multipleJumps tests
+    return studies
+      .filter((study) => study.results.type === "multipleJumps")
+      .map((study) => {
+        const result = study.results as MultipleJumpsResult;
+        if (result.avgFlightTime && result.avgFloorTime) {
+          return (
+            Math.floor((result.avgFlightTime / result.avgFloorTime) * 100) / 100
+          );
+        }
+        return 0;
+      })
+      .filter((value) => value > 0); // Filter out invalid calculations
+  }
+
+  if (valueType === "ECR") {
+    // ECR calculation for CMJ and SquatJump pairs on the same date
+    const dateGroups: { [date: string]: CompletedStudy[] } = {};
+
+    // Group studies by date, filtering for CMJ and SquatJump only
+    studies
+      .filter(
+        (study) =>
+          study.results.type === "cmj" || study.results.type === "squatJump"
+      )
+      .forEach((study) => {
+        const dateKey = new Date(study.date).toDateString();
+        if (!dateGroups[dateKey]) {
+          dateGroups[dateKey] = [];
+        }
+        dateGroups[dateKey].push(study);
+      });
+
+    const ecrValues: number[] = [];
+
+    // Process each date group
+    Object.values(dateGroups).forEach((dayStudies) => {
+      const cmjStudies = dayStudies.filter(
+        (study) => study.results.type === "cmj"
+      );
+      const squatJumpStudies = dayStudies.filter(
+        (study) => study.results.type === "squatJump"
+      );
+
+      // Only proceed if we have both CMJ and SquatJump tests on the same day
+      if (cmjStudies.length > 0 && squatJumpStudies.length > 0) {
+        // Find the best CMJ (highest avgHeightReached)
+        const bestCmj = cmjStudies.reduce((best, current) => {
+          const currentResult = current.results as CMJResult;
+          const bestResult = best.results as CMJResult;
+          return currentResult.avgHeightReached > bestResult.avgHeightReached
+            ? current
+            : best;
+        });
+
+        // Find the best SquatJump (highest avgHeightReached)
+        const bestSquatJump = squatJumpStudies.reduce((best, current) => {
+          const currentResult = current.results as SquatJumpResult;
+          const bestResult = best.results as SquatJumpResult;
+          return currentResult.avgHeightReached > bestResult.avgHeightReached
+            ? current
+            : best;
+        });
+
+        const cmjResult = bestCmj.results as CMJResult;
+        const sjResult = bestSquatJump.results as SquatJumpResult;
+
+        // Calculate ECR: (1 - avgSj / avgCmj) * 100
+        if (cmjResult.avgHeightReached > 0) {
+          const ecr =
+            (1 - sjResult.avgHeightReached / cmjResult.avgHeightReached) * 100;
+          ecrValues.push(Math.round(ecr * 100) / 100); // Round to 2 decimal places
+        }
+      }
+    });
+
+    return ecrValues;
+  }
+
+  return [];
+}

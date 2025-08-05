@@ -335,6 +335,18 @@ export default function _layout() {
                   headerShadowVisible: false,
                 }}
               />
+              <Stack.Screen
+                name="testInfoDisplay"
+                options={{
+                  headerShown: true,
+                  headerTitle: "",
+                  headerBackTitle: "\np",
+                  headerStyle: {
+                    backgroundColor: "#F5F5F5",
+                  },
+                  headerShadowVisible: false,
+                }}
+              />
             </Stack>
           </BlurProvider>
         </CalendarProvider>

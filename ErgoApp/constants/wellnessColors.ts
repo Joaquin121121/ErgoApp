@@ -1,3 +1,5 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 export const wellnessColors = {
   sleep: {
     veryLight: "#E6D4F7",
@@ -24,3 +26,11 @@ export const wellnessTranslations = {
   nutrition: "Nutrición",
   fatigue: "Fatiga",
 } as const;
+export const iconsMap: Record<
+  WellnessType,
+  keyof typeof MaterialCommunityIcons.glyphMap
+> = {
+  nutrition: "silverware-fork-knife",
+  sleep: "moon-waning-crescent",
+  fatigue: "speedometer",
+};

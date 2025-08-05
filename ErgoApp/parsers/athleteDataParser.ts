@@ -93,9 +93,14 @@ const processBasicResults = async (
 
     const jumpTimesForResult = jumpTimeMap.get(baseResult.id) || [];
 
+    console.log(
+      "jt.deleted",
+      jumpTimesForResult.map((jt) => jt.deleted)
+    );
+
     const processedTimes: JumpTime[] = jumpTimesForResult.map((jt) => ({
       time: jt.time,
-      deleted: jt.deleted === "false" ? false : true,
+      deleted: jt.deleted === 0 ? false : true,
       floorTime: jt.floor_time || undefined,
       stiffness: jt.stiffness || undefined,
       performance: jt.performance || undefined,
@@ -203,7 +208,7 @@ const processMultipleJumpsResults = async (
     const jumpTimesForResult = jumpTimeMap.get(baseResult.id) || [];
     const processedTimes: JumpTime[] = jumpTimesForResult.map((jt) => ({
       time: jt.time,
-      deleted: jt.deleted === "false" ? false : true,
+      deleted: jt.deleted === 0 ? false : true,
       floorTime: jt.floor_time || undefined,
       stiffness: jt.stiffness || undefined,
       performance: jt.performance ?? undefined,
@@ -280,7 +285,7 @@ const processMultipleDropJumpResults = async (
       const jumpTimesForResult = jumpTimeMap.get(baseResult.id) || [];
       const processedTimes: JumpTime[] = jumpTimesForResult.map((jt) => ({
         time: jt.time,
-        deleted: jt.deleted === "false" ? false : true,
+        deleted: jt.deleted === 0 ? false : true,
         floorTime: jt.floor_time || undefined,
         stiffness: jt.stiffness || undefined,
         performance: jt.performance ?? undefined,
@@ -391,7 +396,7 @@ const processBoscoResults = async (
       const jumpTimesForResult = jumpTimeMap.get(baseResult.id) || [];
       const processedTimes: JumpTime[] = jumpTimesForResult.map((jt) => ({
         time: jt.time,
-        deleted: jt.deleted === "false" ? false : true,
+        deleted: jt.deleted === 0 ? false : true,
         floorTime: jt.floor_time || undefined,
         stiffness: jt.stiffness || undefined,
         performance: jt.performance ?? undefined,
@@ -544,7 +549,7 @@ const processPerformanceData = async (
         id: pd.id,
         sessionDayName: pd.day_name,
         sessionId: pd.session_id,
-        week: pd.week_start_date,
+        week: new Date(pd.week_start_date),
         performance: pd.performance,
         completedExercises: pd.completed_exercises,
         alternativeDate: pd.alternative_date,

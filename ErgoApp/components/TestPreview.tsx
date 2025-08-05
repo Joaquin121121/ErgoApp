@@ -53,19 +53,17 @@ const TestPreview = ({
               };
         return (
           <>
-            <Text className="text-tertiary text-lg  ">
-              Altura Promedio:{" "}
-              <Text className="text-secondary  text-lg">
-                {tests.data[0].results.avgHeightReached} cm
-              </Text>
-              {tests.data.length > 1 ? (
-                <Text style={{ color: basicDiff.iconColor }}>
-                  {basicDiff.icon} {basicDiff.content}
-                </Text>
-              ) : (
-                ""
-              )}
+            <Text className="text-tertiary text-lg">Altura Promedio: </Text>
+            <Text className="text-secondary  text-lg">
+              {tests.data[0].results.avgHeightReached.toFixed(2)} cm
             </Text>
+            {tests.data.length > 1 ? (
+              <Text style={{ color: basicDiff.iconColor }}>
+                {basicDiff.icon} {basicDiff.content}
+              </Text>
+            ) : (
+              ""
+            )}
             <Text className="text-tertiary text-lg mt-4">
               Ultimo Test:{" "}
               <Text className="text-secondary  text-lg">
@@ -110,7 +108,7 @@ const TestPreview = ({
             <Text className="text-tertiary text-lg mt-4">
               Altura con mayor rendimiento:{" "}
               <Text className="text-secondary  text-lg">
-                {tests.data[0].results.bestHeight}
+                {Number(tests.data[0].results.bestHeight).toFixed(2)}
               </Text>
               cm
             </Text>

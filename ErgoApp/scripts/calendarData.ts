@@ -1,6 +1,6 @@
 import { SessionPerformanceData } from "../types/Athletes";
 import { DayName } from "../types/trainingPlan";
-import { findMonday } from "../utils/utils";
+import { findMonday, spanishDateToIso } from "../utils/utils";
 
 // Types for calendar data structure
 
@@ -67,7 +67,7 @@ export const generateWeeks = (
       monday: {
         id: "",
         sessionId: "",
-        week: startDateStr,
+        week: spanishDateToIso(startDateStr),
         performance: 0,
         completedExercises: 0,
         sessionDayName: "monday",
@@ -76,7 +76,7 @@ export const generateWeeks = (
       tuesday: {
         id: "",
         sessionId: "",
-        week: startDateStr,
+        week: spanishDateToIso(startDateStr),
         performance: 0,
         completedExercises: 0,
         sessionDayName: "tuesday",
@@ -85,7 +85,7 @@ export const generateWeeks = (
       wednesday: {
         id: "",
         sessionId: "",
-        week: startDateStr,
+        week: spanishDateToIso(startDateStr),
         performance: 0,
         completedExercises: 0,
         sessionDayName: "wednesday",
@@ -94,7 +94,7 @@ export const generateWeeks = (
       thursday: {
         id: "",
         sessionId: "",
-        week: startDateStr,
+        week: spanishDateToIso(startDateStr),
         performance: 0,
         completedExercises: 0,
         sessionDayName: "thursday",
@@ -103,7 +103,7 @@ export const generateWeeks = (
       friday: {
         id: "",
         sessionId: "",
-        week: startDateStr,
+        week: spanishDateToIso(startDateStr),
         performance: 0,
         completedExercises: 0,
         sessionDayName: "friday",
@@ -112,7 +112,7 @@ export const generateWeeks = (
       saturday: {
         id: "",
         sessionId: "",
-        week: startDateStr,
+        week: spanishDateToIso(startDateStr),
         performance: 0,
         completedExercises: 0,
         sessionDayName: "saturday",
@@ -121,7 +121,7 @@ export const generateWeeks = (
       sunday: {
         id: "",
         sessionId: "",
-        week: startDateStr,
+        week: spanishDateToIso(startDateStr),
         performance: 0,
         completedExercises: 0,
         sessionDayName: "sunday",
@@ -132,6 +132,7 @@ export const generateWeeks = (
     // Move to next week (Monday of next week)
     currentDate.setDate(mondayDate.getDate() + 7);
   }
+  ``;
 
   console.log("weeks", Object.keys(weeks));
   return weeks;
@@ -143,7 +144,6 @@ export const calendarData: CalendarData = generateWeeks(
 );
 
 export const getCurrentWeekIndex = (calendarData: CalendarData) => {
-  console.log("calendarData", calendarData);
   const sortedWeeks = Object.keys(calendarData).sort((a, b) => {
     const [dayA] = a.split("-")[0].split("/").reverse();
     const [dayB] = b.split("-")[0].split("/").reverse();

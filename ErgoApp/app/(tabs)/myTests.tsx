@@ -45,7 +45,14 @@ const MyTests = () => {
           </Text>
         </View>
       );
-    return <TestPreview tests={item} onPress={() => {}} />;
+    return (
+      <TestPreview
+        tests={item}
+        onPress={() => {
+          router.push(`/testInfoDisplay?testType=${item.key}`);
+        }}
+      />
+    );
   };
 
   const handleItemChangeTestInfo = (index: number): void =>

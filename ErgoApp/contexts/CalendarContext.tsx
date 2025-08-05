@@ -37,6 +37,7 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
         athleteData.currentTrainingPlan,
         athleteData.sessionPerformanceData
       );
+      console.log("data", data);
       setCalendarData(data);
     } catch (error) {
       console.error("Error generating calendar data:", error);

@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS "athlete" (
     "last_changed" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMP,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "user_id" TEXT NOT NULL,
     FOREIGN KEY ("coach_id") REFERENCES "coach"("id")
 );
 
@@ -44,7 +45,8 @@ CREATE TABLE IF NOT EXISTS "coach" (
     "id" UUID PRIMARY KEY,
     "created_at" TIMESTAMP NOT NULL,
     "last_changed" TIMESTAMP NOT NULL,
-    "deleted_at" TIMESTAMP
+    "deleted_at" TIMESTAMP,
+    "user_id" TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "base_result" (

@@ -29,7 +29,7 @@ export const testDisplayNames = {
   multipleDropJump: "Drop Jump",
   multipleJumps: "Multiple Jumps",
   bosco: "BOSCO",
-  custom: "Personalizado",
+  custom: "Custom",
 };
 
 interface BaseStudy {
@@ -416,6 +416,7 @@ export interface TestInfo {
   multipleDropJump: TestMeasures;
   multipleJumps: TestMeasures;
   bosco: TestMeasures;
+  custom: TestMeasures;
 }
 
 export const testInfo: TestInfo = {
@@ -441,6 +442,10 @@ export const testInfo: TestInfo = {
   },
   bosco: {
     displayName: "BOSCO Test",
+    measures: "Capacidad de Salto",
+  },
+  custom: {
+    displayName: "Custom",
     measures: "Capacidad de Salto",
   },
 };

@@ -9,8 +9,6 @@ import { useState } from "react";
 import { SyncMetadata, PendingRecord } from "../types/Sync";
 import { useSyncContext } from "../contexts/SyncContext";
 import { getDatabaseInstance } from "../adapters/DatabaseAdapterFactory";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { initializeDatabase } from "../database/init";
 
 export const useDatabaseSync = () => {
   const SYNC_METADATA_KEY = "syncMetadata";
@@ -21,7 +19,7 @@ export const useDatabaseSync = () => {
 
   const getInitialSyncMetadata = async (): Promise<SyncMetadata> => {
     try {
-      const storedMetadata = await AsyncStorage.getItem(SYNC_METADATA_KEY);
+      const storedMetadata = localStorage.getItem(SYNC_METADATA_KEY);
       if (storedMetadata) {
         return JSON.parse(storedMetadata);
       } else {
@@ -29,7 +27,7 @@ export const useDatabaseSync = () => {
           lastSync: "1970-01-01T00:00:00.000Z",
           pendingRecords: [],
         };
-        await AsyncStorage.setItem(
+        localStorage.setItem(
           SYNC_METADATA_KEY,
           JSON.stringify(initialMetadata)
         );
@@ -52,10 +50,7 @@ export const useDatabaseSync = () => {
         ...currentMetadata,
         ...metadata,
       };
-      await AsyncStorage.setItem(
-        SYNC_METADATA_KEY,
-        JSON.stringify(updatedMetadata)
-      );
+      localStorage.setItem(SYNC_METADATA_KEY, JSON.stringify(updatedMetadata));
     } catch (error) {
       console.error("Error updating sync metadata:", error);
     }
@@ -63,7 +58,7 @@ export const useDatabaseSync = () => {
 
   const resetSyncMetadata = async () => {
     try {
-      await AsyncStorage.removeItem(SYNC_METADATA_KEY);
+      localStorage.removeItem(SYNC_METADATA_KEY);
     } catch (error) {
       console.error("Error resetting sync metadata:", error);
     }
@@ -482,64 +477,6 @@ export const useDatabaseSync = () => {
     }
   };
 
-  // BOOLEAN CONVERSION: Convert boolean values from Supabase (true/false) to SQLite (1/0)
-  // Called when pulling data FROM Supabase TO SQLite during sync operations
-  const convertBooleansForSQLite = (
-    tableName: string,
-    records: any[]
-  ): any[] => {
-    const booleanFieldsByTable: Record<string, string[]> = {
-      jump_time: ["deleted"],
-      progressions: ["completed"],
-      exercise_performance: ["completed", "performed"],
-    };
-
-    const booleanFields = booleanFieldsByTable[tableName];
-    if (!booleanFields) return records;
-
-    return records.map((record) => {
-      const convertedRecord = { ...record };
-      for (const field of booleanFields) {
-        if (
-          field in convertedRecord &&
-          typeof convertedRecord[field] === "boolean"
-        ) {
-          convertedRecord[field] = convertedRecord[field] ? 1 : 0;
-        }
-      }
-      return convertedRecord;
-    });
-  };
-
-  // BOOLEAN CONVERSION: Convert boolean values from SQLite (1/0) to Supabase (true/false)
-  // Called when pushing data FROM SQLite TO Supabase during sync operations
-  const convertBooleansForSupabase = (
-    tableName: string,
-    records: any[]
-  ): any[] => {
-    const booleanFieldsByTable: Record<string, string[]> = {
-      jump_time: ["deleted"],
-      progressions: ["completed"],
-      exercise_performance: ["completed", "performed"],
-    };
-
-    const booleanFields = booleanFieldsByTable[tableName];
-    if (!booleanFields) return records;
-
-    return records.map((record) => {
-      const convertedRecord = { ...record };
-      for (const field of booleanFields) {
-        if (
-          field in convertedRecord &&
-          typeof convertedRecord[field] === "number"
-        ) {
-          convertedRecord[field] = convertedRecord[field] === 1 ? true : false;
-        }
-      }
-      return convertedRecord;
-    });
-  };
-
   const batchUpsertToLocal = async (
     db: any,
     tableName: string,
@@ -558,13 +495,10 @@ export const useDatabaseSync = () => {
 
     if (validRecords.length === 0) return;
 
-    // Convert boolean values for SQLite storage
-    const convertedRecords = convertBooleansForSQLite(tableName, validRecords);
-
     const BATCH_SIZE = 100;
 
-    for (let i = 0; i < convertedRecords.length; i += BATCH_SIZE) {
-      const batch = convertedRecords.slice(i, i + BATCH_SIZE);
+    for (let i = 0; i < validRecords.length; i += BATCH_SIZE) {
+      const batch = validRecords.slice(i, i + BATCH_SIZE);
 
       try {
         for (const record of batch) {
@@ -1017,7 +951,7 @@ export const useDatabaseSync = () => {
     return await db.select(query, [lastSync, ...params]);
   };
 
-  const fullScaleSync = async (email: string, role: "coach" | "athlete") => {
+  const fullScaleSync = async (id: string, role: "coach" | "athlete") => {
     try {
       let athleteIds: string[] = [];
       let coachId = "";
@@ -1026,9 +960,9 @@ export const useDatabaseSync = () => {
         const { data: coach } = await supabase
           .from("coach")
           .select("*")
-          .eq("email", email);
+          .eq("user_id", id);
         if (!coach || coach.length === 0) {
-          console.warn("Coach not found for email:", email);
+          console.warn("Coach not found for id:", id);
           return;
         }
         coachId = coach[0].id;
@@ -1041,9 +975,9 @@ export const useDatabaseSync = () => {
         const { data: athlete } = await supabase
           .from("athlete")
           .select("*")
-          .eq("email", email);
+          .eq("user_id", id);
         if (!athlete || athlete.length === 0) {
-          console.warn("Athlete not found for email:", email);
+          console.warn("Athlete not found for id:", id);
           return;
         }
         athleteIds = [athlete[0].id];
@@ -1056,15 +990,6 @@ export const useDatabaseSync = () => {
 
       setSyncStatus("syncing");
       setSyncing(true);
-
-      try {
-        await initializeDatabase();
-      } catch (error) {
-        console.error("❌ Database initialization failed:", error);
-        setSyncStatus("error");
-        setSyncing(false);
-        return;
-      }
 
       const db = await getDatabaseInstance();
       const metadata = await getInitialSyncMetadata();
@@ -1132,61 +1057,26 @@ export const useDatabaseSync = () => {
         async ({ tableName, localWins }) => {
           if (localWins.length === 0) return;
 
-          // Convert boolean values for Supabase
-          const convertedLocalWins = convertBooleansForSupabase(
-            tableName,
-            localWins
-          );
-
-          console.log(
-            `📤 Preparing to upsert ${convertedLocalWins.length} records to Supabase table: ${tableName}`
-          );
-          if (convertedLocalWins.length > 0) {
-            // Log first record to see the structure
-            console.log(
-              `📤 Sample record being sent to Supabase:`,
-              JSON.stringify(convertedLocalWins[0], null, 2)
-            );
-          }
-
           const BATCH_SIZE = 100;
           const batchPromises = [];
 
-          for (let i = 0; i < convertedLocalWins.length; i += BATCH_SIZE) {
-            const batch = convertedLocalWins.slice(i, i + BATCH_SIZE);
+          for (let i = 0; i < localWins.length; i += BATCH_SIZE) {
+            const batch = localWins.slice(i, i + BATCH_SIZE);
             // Determine the conflict resolution strategy for upsert
             const primaryKeys = tablesInfo
               .get(tableName as TableName)
               ?.split(",") || ["id"];
             const conflictColumns = primaryKeys.join(",");
 
-            console.log(
-              `📤 Upserting batch ${
-                Math.floor(i / BATCH_SIZE) + 1
-              } to ${tableName} (${
-                batch.length
-              } records, conflict: ${conflictColumns})`
-            );
-
             batchPromises.push(
               supabase
                 .from(String(tableName))
                 .upsert(batch, { onConflict: conflictColumns })
-                .then(({ error, data, status, statusText }) => {
+                .then(({ error }) => {
                   if (error) {
                     console.error(
-                      `❌ Error pushing batch to remote ${String(tableName)}:`,
+                      `Error pushing batch to remote ${String(tableName)}:`,
                       error
-                    );
-                    console.error(`❌ Error details:`, {
-                      message: error.message,
-                      details: error.details,
-                      hint: error.hint,
-                      code: error.code,
-                    });
-                  } else {
-                    console.log(
-                      `✅ Successfully upserted batch to ${tableName} (status: ${status})`
                     );
                   }
                 })
@@ -1212,6 +1102,63 @@ export const useDatabaseSync = () => {
         lastSync: new Date().toISOString(),
         pendingRecords: [],
       });
+
+      // Log the final state of the training_plans table after sync completion
+      try {
+        const trainingPlansAfterSync = await db.select(
+          "SELECT * FROM training_plans WHERE deleted_at IS NULL ORDER BY last_changed DESC"
+        );
+        console.log(
+          "📊 Final state of training_plans table after fullScaleSync:"
+        );
+        console.log(`   Total records: ${trainingPlansAfterSync?.length || 0}`);
+        if (trainingPlansAfterSync && trainingPlansAfterSync.length > 0) {
+          console.log("   Records:");
+          trainingPlansAfterSync.forEach((plan, index) => {
+            console.log(`   [${index + 1}] ID: ${plan.id}`);
+            console.log(`       Coach ID: ${plan.coach_id || "N/A"}`);
+            console.log(`       Athlete ID: ${plan.athlete_id || "N/A"}`);
+            console.log(`       Weeks: ${plan.n_of_weeks || "N/A"}`);
+            console.log(`       Sessions: ${plan.n_of_sessions || "N/A"}`);
+            console.log(`       Last Changed: ${plan.last_changed || "N/A"}`);
+            console.log(`       Created At: ${plan.created_at || "N/A"}`);
+          });
+        } else {
+          console.log("   No training_plans records found in local database");
+        }
+      } catch (logError) {
+        console.error("Error logging training_plans state:", logError);
+      }
+
+      // Log the final state of the sessions table after sync completion
+      try {
+        const sessionsAfterSync = await db.select(
+          "SELECT * FROM sessions WHERE deleted_at IS NULL ORDER BY last_changed DESC"
+        );
+        console.log("📊 Final state of sessions table after fullScaleSync:");
+        console.log(`   Total records: ${sessionsAfterSync?.length || 0}`);
+        if (sessionsAfterSync && sessionsAfterSync.length > 0) {
+          console.log("   Records:");
+          sessionsAfterSync.forEach((session, index) => {
+            console.log(`   [${index + 1}] ID: ${session.id}`);
+            console.log(`       Name: ${session.name || "N/A"}`);
+            console.log(`       Plan ID: ${session.plan_id || "N/A"}`);
+            console.log(`       Coach ID: ${session.coach_id || "N/A"}`);
+            console.log(`       Athlete ID: ${session.athlete_id || "N/A"}`);
+            console.log(
+              `       Session Date: ${session.session_date || "N/A"}`
+            );
+            console.log(
+              `       Last Changed: ${session.last_changed || "N/A"}`
+            );
+            console.log(`       Created At: ${session.created_at || "N/A"}`);
+          });
+        } else {
+          console.log("   No sessions records found in local database");
+        }
+      } catch (logError) {
+        console.error("Error logging sessions state:", logError);
+      }
     } catch (error) {
       setSyncStatus("error");
       console.error("Error syncing database:", error);
@@ -1301,11 +1248,6 @@ export const useDatabaseSync = () => {
 
           // Push local winner to remote
           if (localWins.length > 0) {
-            // Convert boolean values for Supabase
-            const convertedWinner = convertBooleansForSupabase(tableName, [
-              localWins[0],
-            ])[0];
-
             // Determine the conflict resolution strategy for upsert
             let conflictColumns: string;
             if (typeof id === "string") {
@@ -1314,31 +1256,16 @@ export const useDatabaseSync = () => {
               conflictColumns = primaryKeys.join(",");
             }
 
-            console.log(
-              `📤 Upserting pending record to ${tableName}:`,
-              JSON.stringify(convertedWinner, null, 2)
-            );
-
-            const { error, data, status } = await supabase
+            const { error } = await supabase
               .from(String(tableName))
-              .upsert(convertedWinner, { onConflict: conflictColumns });
+              .upsert(localWins[0], { onConflict: conflictColumns });
 
             if (error) {
               console.error(
-                `❌ Error syncing pending record to ${String(tableName)}:`,
+                `Error syncing pending record to ${String(tableName)}:`,
                 error
               );
-              console.error(`❌ Pending record error details:`, {
-                message: error.message,
-                details: error.details,
-                hint: error.hint,
-                code: error.code,
-              });
               throw error;
-            } else {
-              console.log(
-                `✅ Successfully upserted pending record to ${tableName} (status: ${status})`
-              );
             }
           }
 

@@ -170,11 +170,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           await resetSyncMetadata();
           await fullScaleSync(supabaseUser.email || "", "athlete");
           const athlete = await getAthleteAsUser(supabaseUser.email || "");
-          console.log("athlete from getAthleteAsUser", athlete);
-          console.log(
-            "athlete current training plan: ",
-            athlete?.currentTrainingPlan?.sessions[0].exercises
-          );
           if (athlete) {
             setUserData(athlete);
           }
